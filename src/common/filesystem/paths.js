@@ -13,7 +13,6 @@ export const MARKDOWN_EXTENSIONS = Object.freeze([
   'mdwn',
   'mdtxt',
   'mdtext',
-  'mdx',
   'text',
   'txt'
 ])

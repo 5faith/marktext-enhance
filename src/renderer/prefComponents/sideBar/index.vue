@@ -34,7 +34,6 @@
   </div>
 </template>
 <script>
-import { ipcRenderer } from 'electron'
 import { category, searchContent } from './config'
 
 export default {
@@ -81,26 +80,10 @@ export default {
           path: item.path
         })
       }
-    },
-    onIpcCategoryChange (event, category) {
-      const validRoute = category && this.$router.getRoutes().findIndex(route => route.path.endsWith(`/${category}`)) !== -1
-      if (validRoute) {
-        this.$router.push({
-          path: `/preference/${category}`
-        })
-      }
     }
   },
-
   mounted () {
     this.restaurants = this.loadAll()
-    if (this.$route && this.$route.name) {
-      this.currentCategory = this.$route.name
-    }
-    ipcRenderer.on('settings::change-tab', this.onIpcCategoryChange)
-  },
-  unmounted () {
-    ipcRenderer.removeAllListener('settings::change-tab', this.onIpcCategoryChange)
   }
 }
 </script>

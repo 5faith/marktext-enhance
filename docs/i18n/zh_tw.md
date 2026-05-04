@@ -48,7 +48,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://github.com/marktext/marktext">
+    <a href="https://marktext.app">
       官網
     </a>
     <span> | </span>
@@ -112,10 +112,10 @@
 
 <h2 align="center">支援 MarkText</h2>
 
-MarkText 是基於 MIT 授權條款的開源專案，您可以持續在 GitHub 發布頁面免費下載最新版本。MarkText 仍然在開發中，其發展與所有贊助商都密不可分。我希望您加入此行列：
+MarkText 是 MIT 許可的開源專案，你可以持續在 GitHub 發布頁面免費下載最新版本。MarkText 仍然在開發中，其發展與所有贊助商都密不可分。我希望你加入他們的行列：
 
-- [透過 Patreon 成為支持者或贊助商](https://www.patreon.com/ranluo) 或 [一次性贊助](https://github.com/Jocs/sponsor.me)
-- [透過 Open Collective 成為支持者或贊助商](https://opencollective.com/marktext)
+- [Become a backer or sponsor on Patreon](https://www.patreon.com/ranluo) or [One time donation](https://github.com/Jocs/sponsor.me)
+- [Become a backer or sponsor on Open Collective](https://opencollective.com/marktext)
 
 ##### 使用 Patreon 和 OpenCollective 贊助有什麼不同？
 
@@ -145,13 +145,13 @@ MarkText 是基於 MIT 授權條款的開源專案，您可以持續在 GitHub �
   <img src="https://opencollective.com/marktext/tiers/bronze-sponsors.svg?avatarHeight=36&width=600">
 </a>
 
-**支持者**
+**維護者**
 
 <a href="https://opencollective.com/marktext#backers">
   <img src="https://opencollective.com/marktext/tiers/backer.svg?avatarHeight=36&width=600">
 </a>
 
-## 螢幕擷圖
+## 螢幕截圖
 
 ![](../../docs/marktext.png?raw=true)
 
@@ -164,9 +164,8 @@ MarkText 是基於 MIT 授權條款的開源專案，您可以持續在 GitHub �
 - 可以輸出 **HTML** 和 **PDF** 文件。
 - 各種主題：**Cadmium Light**、**Material Dark** 等等。
 - 各種編輯模式：**原始碼模式**、**打字機模式**、**專注模式**。
-- 直接從剪貼簿中貼上圖片。
 
-<h4 align="center">:crescent_moon: 主題 :high_brightness:</h4>
+<h4 align="center">:crescent_moon: 主题 :high_brightness:</h4>
 
 | Cadmium Light                                     | Dark                                            |
 |:-------------------------------------------------:|:-----------------------------------------------:|
@@ -185,10 +184,10 @@ MarkText 是基於 MIT 授權條款的開源專案，您可以持續在 GitHub �
 
 ## 為什麼要另外寫一個編輯器？
 
-1. 我熱愛寫作。我曾經用過很多 Markdown 編輯器，但沒有一個編輯器可以滿足我的需求。我不喜歡在我寫作的時候被莫名其妙的 bug 所干擾。
+1. 我愛寫作。我曾經用過很多 Markdown 編輯器，但沒有一個編輯器可以滿足我的需求。我不喜歡在我寫作的時候被莫名其妙的bug干擾。
 **MarkText** 使用 virtual DOM 來呈現畫面，擁有高效能和開源的附加優勢。任何喜歡 Markdown 和寫作的人都可以使用 MarkText。
 2. 承上所述，**MarkText** 是完全免費和開源的，且將永遠開源。我們希望所有 Markdown 愛好者都可以協助開發並貢獻自己的程式，讓 **MarkText** 成為流行的 Markdown 編輯器。
-3. Markdown 編輯器很多，各有不同的優點與功能。我們很難滿足所有 Markdown 使用者的需求，但是我們希望 **MarkText** 盡可能滿足每一個 Markdown 使用者的需求。儘管最新的 **MarkText** 仍不完美，但我們會盡力使它更加完善。
+3. Markdown 編輯器很多，各有優點，有些則沒有。我們很難滿足所有 Markdown 用户的需求，但是我們希望 **MarkText** 盡可能滿足每一個 Markdown 用户的需求。儘管最新的 **MarkText** 仍不完美，但我們會盡力使它更加完善。
 
 ## 下載及安裝
 
@@ -202,7 +201,7 @@ MarkText 是基於 MIT 授權條款的開源專案，您可以持續在 GitHub �
 
 #### macOS
 
-您可以從 [release page](https://github.com/marktext/marktext/releases/latest) 下載最新的 `marktext-%version%.dmg` 或是使用 [**homebrew cask**](https://github.com/caskroom/homebrew-cask) 安裝 MarkText。如果使用 Homebrew-Cask，您只需要安裝 [Homebrew](https://brew.sh/)。
+你可以從 [release page](https://github.com/marktext/marktext/releases/latest) 下載最新的 `marktext-%version%.dmg` 或是使用 [**homebrew cask**](https://github.com/caskroom/homebrew-cask) 安裝 MarkText。如果使用 Homebrew-Cask，您只需要安裝 [Homebrew](https://brew.sh/)。
 
 ```bash
 brew install --cask mark-text
@@ -210,45 +209,28 @@ brew install --cask mark-text
 
 #### Windows
 
-只需要透過安裝精靈 (`marktext-setup-％version％.exe`）下載並安裝 MarkText，然後選擇為單一使用者或是所有使用者安裝。
-
-或者可以使用 Chocolatey 或 Winget 等套件管理器來安裝 MarkText。
-
-- 使用 Chocolatey 前需要安裝好 [Chocolatey](https://chocolatey.org/install)。
-
-```bash
-choco install marktext
-```
-
-- 使用 Winget 前需要安裝好 [Winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/#install-winget)。
-
-```bash
-winget install marktext
-```
+只需要透過安裝精靈 (`marktext-setup-％version％.exe`）下載並安裝 MarkText，然後選擇替用户或是機器安裝。
 
 #### Linux
 
-請依照 [Linux installation instructions](../../docs/LINUX.md) 的說明進行安裝。
+請依照 [Linux installation instructions](../../docs/LINUX.md) 的說明安裝。
 
 #### 其它
 
-您可以從以下網址下載 Linux、macOS 和 Windows 的安裝檔：[release page](https://github.com/marktext/marktext/releases/latest)。如果該版本在您的系統中無法正常使用，請開一個 [issue](https://github.com/marktext/marktext/issues)。
+可以從下面網址下載 Linux、macOS 和 Windows 的安裝檔：[release page](https://github.com/marktext/marktext/releases/latest)。如果該版本在你的系统不能使用，請開一個 [issue](https://github.com/marktext/marktext/issues).
 
 ## 開發
 
-如果您想自己建置 **MarkText**，請查看我們的 [build instructions](../../docs/dev/BUILD.md)。
-
-- [使用者說明文件](../../docs/README.md)
-- [開發人員說明文件](../../docs/dev/README.md)
+如果您想自己建置 **MarkText**，請查看我們的 [developer documentation](../../.github.md#build-instructions).
 
 如果您對 **MarkText** 有任何疑問，歡迎開一個 issue，並使用開 issue 時的預設格式。當然您也可以直接提交 PR，我們將感激不盡。
 
 ## 整合
-- [Alfred Workflow](http://www.packal.org/workflow/mark-text)：macOS 應用程式 Alfred 的使用流程：使用 "mt" 在檔案或者檔案夾中打開 MarkText。
+- [Alfred Workflow](http://www.packal.org/workflow/mark-text)：macOS 應用程式 Alfred 的使用流程：使用 "mt" 在文件或者文件夾中打開 MarkText。
 
 ## 貢獻
 
-MarkText 正在全面開發中，請確保在提出 PR 之前先閱讀 [Contributing Guide](../../CONTRIBUTING.md) 想要為 MarkText 新增一些功能嗎？請先看看 [roadmap](../../ROADMAP.md) 並新增一個 issue。
+MarkText 正在全面開發中，請確保在提出 PR 之前先閱讀 [Contributing Guide](../../CONTRIBUTING.md) 想要给 MarkText 新增一些功能嗎？請先看看 [ROADMAP](../../ROADMAP.md) 並創建一個 issue。
 
 ## 貢獻者
 
@@ -259,8 +241,8 @@ MarkText 正在全面開發中，請確保在提出 PR 之前先閱讀 [Contribu
 
 <a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
-### 授權條款
+### License
 
-[**MIT**](../../LICENSE)
+[**MIT**](../../LICENSE).
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarktext%2Fmarktext.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarktext%2Fmarktext?ref=badge_large)

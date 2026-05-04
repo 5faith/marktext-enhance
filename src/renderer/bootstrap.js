@@ -26,6 +26,7 @@ const parseUrlArgs = () => {
   const userDataPath = params.get('udp')
   const windowId = Number(params.get('wid'))
   const type = params.get('type')
+  const spellcheckerIsHunspell = params.get('slp') === '1'
 
   if (Number.isNaN(windowId)) {
     throw new Error('Error while parsing URL arguments: windowId!')
@@ -42,7 +43,8 @@ const parseUrlArgs = () => {
       hideScrollbar,
       theme,
       titleBarStyle
-    }
+    },
+    spellcheckerIsHunspell
   }
 }
 
@@ -71,7 +73,8 @@ const bootstrapRenderer = () => {
     initialState,
     userDataPath,
     windowId,
-    type
+    type,
+    spellcheckerIsHunspell
   } = parseUrlArgs()
   const paths = new RendererPaths(userDataPath)
   const marktext = {
@@ -85,6 +88,14 @@ const bootstrapRenderer = () => {
     paths
   }
   global.marktext = marktext
+
+  // Set option to always use Hunspell instead OS spell checker.
+  if (spellcheckerIsHunspell && type !== 'settings') {
+    // HACK: This code doesn't do anything because `node-spellchecker` is loaded by
+    // `internal/modules/cjs/loader.js` before we can set the envoriment variable here.
+    // The code is additionally added to `index.ejs` to workaound the problem.
+    process.env['SPELLCHECKER_PREFER_HUNSPELL'] = 1 // eslint-disable-line dot-notation
+  }
 
   configureLogger()
 }

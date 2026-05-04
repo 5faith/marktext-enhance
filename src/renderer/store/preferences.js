@@ -57,7 +57,9 @@ const state = {
   autoSwitchTheme: 2,
 
   spellcheckerEnabled: false,
+  spellcheckerIsHunspell: false, // macOS/Windows 10 only
   spellcheckerNoUnderline: false,
+  spellcheckerAutoDetectLanguage: false,
   spellcheckerLanguage: 'en-US',
 
   // Default values that are overwritten with the entries below.
@@ -115,7 +117,7 @@ const mutations = {
 }
 
 const actions = {
-  ASK_FOR_USER_PREFERENCE ({ commit }) {
+  ASK_FOR_USER_PREFERENCE ({ commit, state, rootState }) {
     ipcRenderer.send('mt::ask-for-user-preference')
     ipcRenderer.send('mt::ask-for-user-data')
 
@@ -141,27 +143,15 @@ const actions = {
     ipcRenderer.send('mt::select-default-directory-to-open')
   },
 
-  LISTEN_FOR_VIEW ({ commit, dispatch }) {
-    ipcRenderer.on('mt::show-command-palette', () => {
-      bus.$emit('show-command-palette')
-    })
-    ipcRenderer.on('mt::toggle-view-mode-entry', (event, entryName) => {
-      commit('TOGGLE_VIEW_MODE', entryName)
-      dispatch('DISPATCH_EDITOR_VIEW_STATE', { [entryName]: state[entryName] })
-    })
-  },
-
   // Toggle a view option and notify main process to toggle menu item.
-  LISTEN_TOGGLE_VIEW ({ commit, dispatch, state }) {
+  LISTEN_TOGGLE_VIEW ({ commit, state }) {
     bus.$on('view:toggle-view-entry', entryName => {
       commit('TOGGLE_VIEW_MODE', entryName)
-      dispatch('DISPATCH_EDITOR_VIEW_STATE', { [entryName]: state[entryName] })
+      const item = {}
+      item[entryName] = state[entryName]
+      const { windowId } = global.marktext.env
+      ipcRenderer.send('mt::view-layout-changed', windowId, item)
     })
-  },
-
-  DISPATCH_EDITOR_VIEW_STATE (_, viewState) {
-    const { windowId } = global.marktext.env
-    ipcRenderer.send('mt::view-layout-changed', windowId, viewState)
   }
 }
 

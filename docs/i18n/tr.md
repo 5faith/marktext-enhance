@@ -47,7 +47,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://github.com/marktext/marktext">
+    <a href="https://marktext.app">
       Web sitesi
     </a>
      <span> | </span>

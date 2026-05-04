@@ -1,6 +1,6 @@
 import { clipboard, ipcRenderer, shell, webFrame } from 'electron'
 import path from 'path'
-import equal from 'fast-deep-equal'
+import equal from 'deep-equal'
 import { isSamePathSync } from 'common/filesystem/paths'
 import bus from '../bus'
 import { hasKeys, getUniqueId } from '../util'
@@ -646,7 +646,7 @@ const actions = {
         showSideBar: !!sideBarVisibility,
         showTabBar: !!tabBarVisibility
       })
-      dispatch('DISPATCH_LAYOUT_MENU_ITEMS')
+      dispatch('SET_LAYOUT_MENU_ITEM')
 
       commit('SET_MODE', {
         type: 'sourceCode',
@@ -701,8 +701,35 @@ const actions = {
   },
 
   LISTEN_FOR_SWITCH_TABS ({ commit, state, dispatch }) {
-    ipcRenderer.on('mt::switch-tab-by-index', (event, index) => {
-      dispatch('SWITCH_TAB_BY_INDEX', index)
+    ipcRenderer.on('mt::switch-first-tab', e => {
+      dispatch('SWITCH_TABS', 1)
+    })
+    ipcRenderer.on('mt::switch-second-tab', e => {
+      dispatch('SWITCH_TABS', 2)
+    })
+    ipcRenderer.on('mt::switch-third-tab', e => {
+      dispatch('SWITCH_TABS', 3)
+    })
+    ipcRenderer.on('mt::switch-fourth-tab', e => {
+      dispatch('SWITCH_TABS', 4)
+    })
+    ipcRenderer.on('mt::switch-fifth-tab', e => {
+      dispatch('SWITCH_TABS', 5)
+    })
+    ipcRenderer.on('mt::switch-sixth-tab', e => {
+      dispatch('SWITCH_TABS', 6)
+    })
+    ipcRenderer.on('mt::switch-seventh-tab', e => {
+      dispatch('SWITCH_TABS', 7)
+    })
+    ipcRenderer.on('mt::switch-eighth-tab', e => {
+      dispatch('SWITCH_TABS', 8)
+    })
+    ipcRenderer.on('mt::switch-ninth-tab', e => {
+      dispatch('SWITCH_TABS', 9)
+    })
+    ipcRenderer.on('mt::switch-tenth-tab', e => {
+      dispatch('SWITCH_TABS', 10)
     })
   },
 
@@ -769,30 +796,29 @@ const actions = {
       console.error(`CYCLE_TABS: Cannot find next tab (index="${nextTabIndex}").`)
       return
     }
-
     commit('SET_CURRENT_FILE', nextTab)
     dispatch('UPDATE_LINE_ENDING_MENU')
   },
 
-  SWITCH_TAB_BY_INDEX ({ commit, dispatch, state }, nextTabIndex) {
+  // switch tabs with Alt+#num.
+  SWITCH_TABS ({ commit, dispatch, state }, num) {
     const { tabs, currentFile } = state
-    if (nextTabIndex < 0 || nextTabIndex >= tabs.length) {
-      console.warn('Invalid tab index:', nextTabIndex)
+    if (tabs.length <= 1 || num > tabs.length) {
       return
     }
 
     const currentIndex = tabs.findIndex(t => t.id === currentFile.id)
     if (currentIndex === -1) {
-      console.error('Cannot find current tab index.')
+      console.error('CYCLE_TABS: Cannot find current tab index.')
       return
     }
 
+    const nextTabIndex = num - 1
     const nextTab = tabs[nextTabIndex]
     if (!nextTab || !nextTab.id) {
-      console.error(`Cannot find tab by index="${nextTabIndex}".`)
+      console.error(`CYCLE_TABS: Cannot find next tab (index="${nextTabIndex}").`)
       return
     }
-
     commit('SET_CURRENT_FILE', nextTab)
     dispatch('UPDATE_LINE_ENDING_MENU')
   },
@@ -890,7 +916,7 @@ const actions = {
     const { tabs } = state
     if (always || tabs.length === 1) {
       commit('SET_LAYOUT', { showTabBar: true })
-      dispatch('DISPATCH_LAYOUT_MENU_ITEMS')
+      dispatch('SET_LAYOUT_MENU_ITEM')
     }
   },
 
@@ -1205,32 +1231,8 @@ const actions = {
   },
 
   LISTEN_FOR_RELOAD_IMAGES () {
-    ipcRenderer.on('mt::invalidate-image-cache', () => {
+    ipcRenderer.on('mt::invalidate-image-cache', (e) => {
       bus.$emit('invalidate-image-cache')
-    })
-  },
-
-  LISTEN_FOR_CONTEXT_MENU () {
-    // General context menu
-    ipcRenderer.on('mt::cm-copy-as-markdown', () => {
-      bus.$emit('copyAsMarkdown', 'copyAsMarkdown')
-    })
-    ipcRenderer.on('mt::cm-copy-as-html', () => {
-      bus.$emit('copyAsHtml', 'copyAsHtml')
-    })
-    ipcRenderer.on('mt::cm-paste-as-plain-text', () => {
-      bus.$emit('pasteAsPlainText', 'pasteAsPlainText')
-    })
-    ipcRenderer.on('mt::cm-insert-paragraph', (e, location) => {
-      bus.$emit('insertParagraph', location)
-    })
-
-    // Spelling
-    ipcRenderer.on('mt::spelling-replace-misspelling', (e, info) => {
-      bus.$emit('replace-misspelling', info)
-    })
-    ipcRenderer.on('mt::spelling-show-switch-language', () => {
-      bus.$emit('open-command-spellchecker-switch-language')
     })
   }
 }

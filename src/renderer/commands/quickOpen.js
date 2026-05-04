@@ -45,7 +45,7 @@ class QuickOpenCommand {
     }
 
     await timeout
-    return this._doSearch(query)
+    return await this._doSearch(query)
   }
 
   run = async () => {

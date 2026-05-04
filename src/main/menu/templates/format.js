@@ -9,24 +9,24 @@ export default function (keybindings) {
       label: 'Bold',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.strong'),
-      click (menuItem, focusedWindow) {
-        actions.strong(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'strong')
       }
     }, {
       id: 'emphasisMenuItem',
       label: 'Italic',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.emphasis'),
-      click (menuItem, focusedWindow) {
-        actions.emphasis(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'em')
       }
     }, {
       id: 'underlineMenuItem',
       label: 'Underline',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.underline'),
-      click (menuItem, focusedWindow) {
-        actions.underline(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'u')
       }
     }, {
       type: 'separator'
@@ -35,24 +35,24 @@ export default function (keybindings) {
       label: 'Superscript',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.superscript'),
-      click (menuItem, focusedWindow) {
-        actions.superscript(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'sup')
       }
     }, {
       id: 'subscriptMenuItem',
       label: 'Subscript',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.subscript'),
-      click (menuItem, focusedWindow) {
-        actions.subscript(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'sub')
       }
     }, {
       id: 'highlightMenuItem',
       label: 'Highlight',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.highlight'),
-      click (menuItem, focusedWindow) {
-        actions.highlight(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'mark')
       }
     }, {
       type: 'separator'
@@ -61,16 +61,16 @@ export default function (keybindings) {
       label: 'Inline Code',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.inline-code'),
-      click (menuItem, focusedWindow) {
-        actions.inlineCode(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'inline_code')
       }
     }, {
       id: 'inlineMathMenuItem',
       label: 'Inline Math',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.inline-math'),
-      click (menuItem, focusedWindow) {
-        actions.inlineMath(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'inline_math')
       }
     }, {
       type: 'separator'
@@ -79,32 +79,32 @@ export default function (keybindings) {
       label: 'Strikethrough',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.strike'),
-      click (menuItem, focusedWindow) {
-        actions.strikethrough(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'del')
       }
     }, {
       id: 'hyperlinkMenuItem',
       label: 'Hyperlink',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.hyperlink'),
-      click (menuItem, focusedWindow) {
-        actions.hyperlink(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'link')
       }
     }, {
       id: 'imageMenuItem',
       label: 'Image',
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('format.image'),
-      click (menuItem, focusedWindow) {
-        actions.image(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'image')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Clear Formatting',
       accelerator: keybindings.getAccelerator('format.clear-format'),
-      click (menuItem, focusedWindow) {
-        actions.clearFormat(focusedWindow)
+      click (menuItem, browserWindow) {
+        actions.format(browserWindow, 'clear')
       }
     }]
   }

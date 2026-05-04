@@ -1,7 +1,5 @@
 import { autoUpdater } from 'electron-updater'
-import { ipcMain, BrowserWindow, Menu } from 'electron'
-import { COMMANDS } from '../../commands'
-import { isOsx } from '../../config'
+import { ipcMain, BrowserWindow } from 'electron'
 
 let runningUpdate = false
 let win = null
@@ -38,21 +36,6 @@ autoUpdater.on('update-downloaded', () => {
   setImmediate(() => autoUpdater.quitAndInstall())
 })
 
-ipcMain.on('mt::NEED_UPDATE', (e, { needUpdate }) => {
-  if (needUpdate) {
-    autoUpdater.downloadUpdate()
-  } else {
-    runningUpdate = false
-  }
-})
-
-ipcMain.on('mt::check-for-update', e => {
-  const win = BrowserWindow.fromWebContents(e.sender)
-  checkUpdates(win)
-})
-
-// --------------------------------------------------------
-
 export const userSetting = () => {
   ipcMain.emit('app-create-settings-window')
 }
@@ -65,27 +48,15 @@ export const checkUpdates = browserWindow => {
   }
 }
 
-export const osxHide = () => {
-  if (isOsx) {
-    Menu.sendActionToFirstResponder('hide:')
+ipcMain.on('mt::NEED_UPDATE', (e, { needUpdate }) => {
+  if (needUpdate) {
+    autoUpdater.downloadUpdate()
+  } else {
+    runningUpdate = false
   }
-}
+})
 
-export const osxHideAll = () => {
-  if (isOsx) {
-    Menu.sendActionToFirstResponder('hideOtherApplications:')
-  }
-}
-
-export const osxShowAll = () => {
-  if (isOsx) {
-    Menu.sendActionToFirstResponder('unhideAllApplications:')
-  }
-}
-
-// --- Commands -------------------------------------------------------------
-
-export const loadMarktextCommands = commandManager => {
-  commandManager.add(COMMANDS.MT_HIDE, osxHide)
-  commandManager.add(COMMANDS.MT_HIDE_OTHERS, osxHideAll)
-}
+ipcMain.on('mt::check-for-update', e => {
+  const win = BrowserWindow.fromWebContents(e.sender)
+  checkUpdates(win)
+})

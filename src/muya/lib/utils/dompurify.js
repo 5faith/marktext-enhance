@@ -1,4 +1,7 @@
-import { sanitize, isValidAttribute } from 'dompurify'
+import DOMPurify from 'dompurify'
+
+const sanitize = DOMPurify.sanitize.bind(DOMPurify)
+const isValidAttribute = DOMPurify.isValidAttribute.bind(DOMPurify)
 
 export { isValidAttribute }
 

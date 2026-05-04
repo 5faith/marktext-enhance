@@ -1,39 +1,38 @@
 import * as actions from '../actions/edit'
 import { isOsx } from '../../config'
-import { COMMANDS } from '../../commands'
 
 export default function (keybindings) {
   return {
     label: '&Edit',
     submenu: [{
       label: 'Undo',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_UNDO),
+      accelerator: keybindings.getAccelerator('edit.undo'),
       click: (menuItem, browserWindow) => {
-        actions.editorUndo(browserWindow)
+        actions.edit(browserWindow, 'undo')
       }
     }, {
       label: 'Redo',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_REDO),
+      accelerator: keybindings.getAccelerator('edit.redo'),
       click: (menuItem, browserWindow) => {
-        actions.editorRedo(browserWindow)
+        actions.edit(browserWindow, 'redo')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Cut',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_CUT),
+      accelerator: keybindings.getAccelerator('edit.cut'),
       click (menuItem, browserWindow) {
         actions.nativeCut(browserWindow)
       }
     }, {
       label: 'Copy',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_COPY),
+      accelerator: keybindings.getAccelerator('edit.copy'),
       click (menuItem, browserWindow) {
         actions.nativeCopy(browserWindow)
       }
     }, {
       label: 'Paste',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_PASTE),
+      accelerator: keybindings.getAccelerator('edit.paste'),
       click (menuItem, browserWindow) {
         actions.nativePaste(browserWindow)
       }
@@ -41,83 +40,83 @@ export default function (keybindings) {
       type: 'separator'
     }, {
       label: 'Copy as Markdown',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_COPY_AS_MARKDOWN),
+      accelerator: keybindings.getAccelerator('edit.copy-as-markdown'),
       click (menuItem, browserWindow) {
-        actions.editorCopyAsMarkdown(browserWindow)
+        actions.edit(browserWindow, 'copyAsMarkdown')
       }
     }, {
       label: 'Copy as HTML',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_COPY_AS_HTML),
+      accelerator: keybindings.getAccelerator('edit.copy-as-html'),
       click (menuItem, browserWindow) {
-        actions.editorCopyAsHtml(browserWindow)
+        actions.edit(browserWindow, 'copyAsHtml')
       }
     }, {
       label: 'Paste as Plain Text',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_PASTE_AS_PLAINTEXT),
+      accelerator: keybindings.getAccelerator('edit.paste-as-plaintext'),
       click (menuItem, browserWindow) {
-        actions.editorPasteAsPlainText(browserWindow)
+        actions.edit(browserWindow, 'pasteAsPlainText')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Select All',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_SELECT_ALL),
+      accelerator: keybindings.getAccelerator('edit.select-all'),
       click (menuItem, browserWindow) {
-        actions.editorSelectAll(browserWindow)
+        actions.edit(browserWindow, 'selectAll')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Duplicate',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_DUPLICATE),
+      accelerator: keybindings.getAccelerator('edit.duplicate'),
       click (menuItem, browserWindow) {
-        actions.editorDuplicate(browserWindow)
+        actions.edit(browserWindow, 'duplicate')
       }
     }, {
       label: 'Create Paragraph',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_CREATE_PARAGRAPH),
+      accelerator: keybindings.getAccelerator('edit.create-paragraph'),
       click (menuItem, browserWindow) {
-        actions.editorCreateParagraph(browserWindow)
+        actions.edit(browserWindow, 'createParagraph')
       }
     }, {
       label: 'Delete Paragraph',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_DELETE_PARAGRAPH),
+      accelerator: keybindings.getAccelerator('edit.delete-paragraph'),
       click (menuItem, browserWindow) {
-        actions.editorDeleteParagraph(browserWindow)
+        actions.edit(browserWindow, 'deleteParagraph')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Find',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_FIND),
+      accelerator: keybindings.getAccelerator('edit.find'),
       click (menuItem, browserWindow) {
-        actions.editorFind(browserWindow)
+        actions.edit(browserWindow, 'find')
       }
     }, {
       label: 'Find Next',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_FIND_NEXT),
+      accelerator: keybindings.getAccelerator('edit.find-next'),
       click (menuItem, browserWindow) {
-        actions.editorFindNext(browserWindow)
+        actions.edit(browserWindow, 'findNext')
       }
     }, {
       label: 'Find Previous',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_FIND_PREVIOUS),
+      accelerator: keybindings.getAccelerator('edit.find-previous'),
       click (menuItem, browserWindow) {
-        actions.editorFindPrevious(browserWindow)
+        actions.edit(browserWindow, 'findPrev')
       }
     }, {
       label: 'Replace',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_REPLACE),
+      accelerator: keybindings.getAccelerator('edit.replace'),
       click (menuItem, browserWindow) {
-        actions.editorReplace(browserWindow)
+        actions.edit(browserWindow, 'replace')
       }
     }, {
       type: 'separator'
     }, {
       label: 'Find in Folder',
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_FIND_IN_FOLDER),
+      accelerator: keybindings.getAccelerator('edit.find-in-folder'),
       click (menuItem, browserWindow) {
-        actions.findInFolder(browserWindow)
+        actions.edit(browserWindow, 'findInFolder')
       }
     }, {
       type: 'separator'
@@ -125,7 +124,7 @@ export default function (keybindings) {
       label: 'Screenshot',
       id: 'screenshot',
       visible: isOsx,
-      accelerator: keybindings.getAccelerator(COMMANDS.EDIT_SCREENSHOT),
+      accelerator: keybindings.getAccelerator('edit.screenshot'),
       click (menuItem, browserWindow) {
         actions.screenshot(browserWindow)
       }
