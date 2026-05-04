@@ -32,7 +32,8 @@ export default defineConfig(({ command }) => {
         'crypto': resolve(__dirname, 'src/renderer/shims/crypto.js'),
         'electron': resolve(__dirname, 'src/renderer/shims/electron.js')
       },
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+      dedupe: ['path-browserify']
     },
     define: {
       __static: JSON.stringify(resolve(__dirname, 'static'))
@@ -151,7 +152,6 @@ export default defineConfig(({ command }) => {
         'child_process',
         'os',
         'crypto',
-        'path',
         'util'
         ]
       }
@@ -162,7 +162,7 @@ export default defineConfig(({ command }) => {
     },
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
-      include: ['snapsvg'],
+      include: ['snapsvg', 'path-browserify'],
       exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep']
     },
     ssr: {

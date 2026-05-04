@@ -8,6 +8,12 @@ import locale from 'element-ui/lib/locale'
 import axios from './axios'
 import store from './store'
 import './assets/symbolIcon'
+
+// Load eve before snap.svg (which depends on eve being a global variable)
+import eve from 'eve-raphael'
+if (typeof window !== 'undefined') {
+  window.eve = eve
+}
 import {
   Dialog,
   Form,
