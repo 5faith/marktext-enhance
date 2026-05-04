@@ -29,7 +29,7 @@ import Tabs from './tabs.vue'
 import Editor from './editor.vue'
 import SourceCode from './sourceCode.vue'
 import TabNotifications from './notifications.vue'
-import DevtoolsButton from 'renderer/components/devtools-button'
+import DevtoolsButton from '@/components/devtools-button'
 
 export default {
   props: {
