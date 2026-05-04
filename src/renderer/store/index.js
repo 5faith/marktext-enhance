@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { Store } from 'vuex'
 import { ipcRenderer } from 'electron'
 
 import listenForMain from './listenForMain'
@@ -45,7 +45,7 @@ const actions = {
   }
 }
 
-const store = new Vuex.Store({
+const store = new Store({
   state,
   getters,
   mutations,

@@ -23,7 +23,7 @@ const isProduction = process.env.NODE_ENV === 'production'
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-const whiteListedModules = ['vue']
+const whiteListedModules = ['vue', 'snabbdom', 'snabbdom-to-html']
 
 /** @type {import('webpack').Configuration} */
 const rendererConfig = {
@@ -43,6 +43,12 @@ const rendererConfig = {
   ],
   module: {
     rules: [
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
       {
         test: require.resolve(path.join(__dirname, '../src/muya/lib/assets/libs/snap.svg-min.js')),
         use: 'imports-loader?this=>window,fix=>module.exports=0'
@@ -87,6 +93,12 @@ const rendererConfig = {
       {
         test: /\.html$/,
         use: 'vue-html-loader'
+      },
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        }
       },
       {
         test: /\.js$/,

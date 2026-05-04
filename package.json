@@ -181,7 +181,8 @@
     "cld": "^2.7.1",
     "node-abi": "^3.5.0",
     "node-addon-api": "^7.0.0",
-    "turndown": "7.1.1"
+    "turndown": "7.1.1",
+    "snabbdom": "3.3.1"
   },
   "repository": {
     "type": "git",
