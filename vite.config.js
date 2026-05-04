@@ -20,8 +20,17 @@ export default defineConfig(({ command }) => {
         'vue': 'vue/dist/vue.esm.js',
         'eve': resolve(__dirname, 'node_modules/eve-raphael'),
         'fs-extra': resolve(__dirname, 'src/renderer/shims/fs-extra.js'),
+        'fs/promises': resolve(__dirname, 'src/renderer/shims/fs-promises.js'),
         '@hfelix/electron-spellchecker': resolve(__dirname, 'src/renderer/shims/electron-spellchecker.js'),
-        'element-ui/lib/theme-chalk/index.css': resolve(__dirname, 'src/renderer/shims/element-ui-css.js')
+        'element-ui/lib/theme-chalk/index.css': resolve(__dirname, 'src/renderer/shims/element-ui-css.js'),
+        'vscode-ripgrep': resolve(__dirname, 'src/renderer/shims/vscode-ripgrep.js'),
+        '@electron/remote': resolve(__dirname, 'src/renderer/shims/electron-remote.js'),
+        'path': resolve(__dirname, 'src/renderer/shims/path.js'),
+        'fs': resolve(__dirname, 'src/renderer/shims/fs.js'),
+        'child_process': resolve(__dirname, 'src/renderer/shims/child_process.js'),
+        'os': resolve(__dirname, 'src/renderer/shims/os.js'),
+        'crypto': resolve(__dirname, 'src/renderer/shims/crypto.js'),
+        'electron': resolve(__dirname, 'src/renderer/shims/electron.js')
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
@@ -139,10 +148,11 @@ export default defineConfig(({ command }) => {
           'graceful-fs',
           'chokidar',
           'fs/promises',
-          'child_process',
-          'os',
-          'crypto',
-          'path'
+        'child_process',
+        'os',
+        'crypto',
+        'path',
+        'util'
         ]
       }
     },
@@ -153,7 +163,7 @@ export default defineConfig(({ command }) => {
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
       include: ['snapsvg'],
-      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker']
+      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep']
     },
     ssr: {
       external: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker']

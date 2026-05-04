@@ -1,0 +1,95 @@
+// Shim for fs module in Vite dev mode
+// Uses raw require for Electron renderer process
+
+const _fs = typeof require === 'function' ? require('fs') : {}
+
+export default _fs
+
+export const access = _fs.access
+export const constants = _fs.constants
+export const F_OK = _fs.F_OK
+export const R_OK = _fs.R_OK
+export const W_OK = _fs.W_OK
+export const X_OK = _fs.X_OK
+
+export const accessSync = _fs.accessSync
+export const appendFile = _fs.appendFile
+export const appendFileSync = _fs.appendFileSync
+export const chmod = _fs.chmod
+export const chmodSync = _fs.chmodSync
+export const chown = _fs.chown
+export const chownSync = _fs.chownSync
+export const close = _fs.close
+export const closeSync = _fs.closeSync
+export const copyFile = _fs.copyFile
+export const copyFileSync = _fs.copyFileSync
+export const createReadStream = _fs.createReadStream
+export const createWriteStream = _fs.createWriteStream
+export const exists = _fs.exists
+export const existsSync = _fs.existsSync
+export const fchmod = _fs.fchmod
+export const fchmodSync = _fs.fchmodSync
+export const fchown = _fs.fchown
+export const fchownSync = _fs.fchownSync
+export const fdatasync = _fs.fdatasync
+export const fdatasyncSync = _fs.fdatasyncSync
+export const fstat = _fs.fstat
+export const fstatSync = _fs.fstatSync
+export const fsync = _fs.fsync
+export const fsyncSync = _fs.fsyncSync
+export const ftruncate = _fs.ftruncate
+export const ftruncateSync = _fs.ftruncateSync
+export const futimes = _fs.futimes
+export const futimesSync = _fs.futimesSync
+export const lchmod = _fs.lchmod
+export const lchmodSync = _fs.lchmodSync
+export const lchown = _fs.lchown
+export const lchownSync = _fs.lchownSync
+export const link = _fs.link
+export const linkSync = _fs.linkSync
+export const lstat = _fs.lstat
+export const lstatSync = _fs.lstatSync
+export const mkdir = _fs.mkdir
+export const mkdirSync = _fs.mkdirSync
+export const mkdtemp = _fs.mkdtemp
+export const mkdtempSync = _fs.mkdtempSync
+export const open = _fs.open
+export const openSync = _fs.openSync
+export const read = _fs.read
+export const readSync = _fs.readSync
+export const readdir = _fs.readdir
+export const readdirSync = _fs.readdirSync
+export const readFile = _fs.readFile
+export const readFileSync = _fs.readFileSync
+export const readlink = _fs.readlink
+export const readlinkSync = _fs.readlinkSync
+export const realpath = _fs.realpath
+export const realpathSync = _fs.realpathSync
+export const rename = _fs.rename
+export const renameSync = _fs.renameSync
+export const rmdir = _fs.rmdir
+export const rmdirSync = _fs.rmdirSync
+export const rm = _fs.rm
+export const rmSync = _fs.rmSync
+export const stat = _fs.stat
+export const statSync = _fs.statSync
+export const symlink = _fs.symlink
+export const symlinkSync = _fs.symlinkSync
+export const truncate = _fs.truncate
+export const truncateSync = _fs.truncateSync
+export const unlink = _fs.unlink
+export const unlinkSync = _fs.unlinkSync
+export const unwatch = _fs.unwatchFile
+export const utimes = _fs.utimes
+export const utimesSync = _fs.utimesSync
+export const watch = _fs.watch
+export const watchFile = _fs.watchFile
+export const write = _fs.write
+export const writeSync = _fs.writeSync
+export const writeFile = _fs.writeFile
+export const writeFileSync = _fs.writeFileSync
+export const WriteStream = _fs.WriteStream
+export const ReadStream = _fs.ReadStream
+export const Dir = _fs.Dir
+export const Dirent = _fs.Dirent
+export const Stats = _fs.Stats
