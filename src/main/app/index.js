@@ -581,6 +581,13 @@ class App {
       const { keybindings } = this._accessor
       return await keybindings.setUserKeybindings(userKeybindings)
     })
+
+    ipcMain.on('mt::open-devtools', e => {
+      const win = BrowserWindow.fromWebContents(e.sender)
+      if (win) {
+        win.webContents.openDevTools()
+      }
+    })
   }
 }
 
