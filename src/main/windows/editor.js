@@ -79,6 +79,11 @@ class EditorWindow extends BaseWindow {
       this.lifecycle = WindowLifecycle.READY
       this.emit('window-ready')
 
+      // 开发模式自动打开 DevTools
+      if (process.env.NODE_ENV === 'development') {
+        win.webContents.openDevTools()
+      }
+
       // Restore and focus window
       this.bringToFront()
 
