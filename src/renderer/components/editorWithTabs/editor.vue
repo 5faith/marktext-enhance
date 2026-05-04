@@ -75,8 +75,9 @@
 <script>
 import { shell } from 'electron'
 import path from 'path'
-import log from 'electron-log'
 import { mapState } from 'vuex'
+
+const log = require('electron-log')
 // import ViewImage from 'view-image'
 import { isChildOfDirectory } from 'common/filesystem/paths'
 import Muya from 'muya/lib'

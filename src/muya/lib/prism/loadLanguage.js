@@ -1,6 +1,7 @@
 import components from 'prismjs/components.js'
 import getLoader from 'prismjs/dependencies'
 import { getDefer } from '../utils'
+
 /**
  * The set of all languages which have been loaded using the below function.
  *
@@ -72,7 +73,8 @@ function initLoadLanguage (Prism) {
         })
       } else {
         delete Prism.languages[lang]
-        await import('prismjs/components/prism-' + lang)
+        // use @prism-components/ alias for Vite to resolve
+        await import('@prism-components/prism-' + lang)
         defer.resolve({
           lang,
           status: 'loaded'

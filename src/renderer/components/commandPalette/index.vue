@@ -50,9 +50,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import log from 'electron-log'
 import bus from '../../bus'
 import loading from '../loading'
+
+const log = require('electron-log')
 
 export default {
   components: {

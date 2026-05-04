@@ -1,11 +1,13 @@
 import path from 'path'
 import { ipcRenderer } from 'electron'
-import log from 'electron-log'
 import RendererPaths from './node/paths'
 
+let log
 let exceptionLogger = s => console.error(s)
 
-const configureLogger = () => {
+const configureLogger = async () => {
+  log = require('electron-log')
+
   const { debug, paths, windowId } = global.marktext.env
   log.transports.console.level = process.env.NODE_ENV === 'development' ? 'info' : false // mirror to window console
   log.transports.mainConsole = null

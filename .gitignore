@@ -40,3 +40,4 @@ pnpm-debug.log*
 *.sw?
 .cursor
 graphify-out/cache
+.superpower/*

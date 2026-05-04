@@ -1,6 +1,5 @@
 import path from 'path'
 import crypto from 'crypto'
-import fs from 'fs-extra'
 import { statSync, constants } from 'fs'
 import cp from 'child_process'
 import { tmpdir } from 'os'
@@ -8,6 +7,8 @@ import dayjs from 'dayjs'
 import { Octokit } from '@octokit/rest'
 import { isImageFile } from 'common/filesystem/paths'
 import { isWindows } from './index'
+
+import fs from 'fs-extra'
 
 export const create = async (pathname, type) => {
   return type === 'directory'

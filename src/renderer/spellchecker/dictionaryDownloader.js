@@ -1,8 +1,9 @@
-import fs from 'fs-extra'
 import path from 'path'
 import { SpellChecker } from '@hfelix/electron-spellchecker'
 import axios from '../axios'
 import { getDictionaryPath } from '../spellchecker'
+
+import fs from 'fs-extra'
 
 /**
  * Try to download the given Hunspell dictionary.

@@ -1,0 +1,136 @@
+<h2>渐进式升级方案对比</h2>
+<p class="subtitle">基于：渐进迁移 + 低到高复杂度 + 现有测试保障</p>
+
+<div class="cards">
+  <div class="card" data-choice="plan-a" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>方案 A：分阶段独立升级（推荐）</h3>
+      <div class="label">6个阶段，每阶段独立可运行</div>
+      <div style="margin-top: 12px; font-size: 13px;">
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段1:</strong> Webpack → Vite（保持Vue2）
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段2:</strong> Vue 2.6 → Vue 2.7（过渡版本）
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段3:</strong> Vue 2.7 → Vue 3 + @vue/compat
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段4:</strong> Vuex 3 → Pinia
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段5:</strong> Element UI → Element Plus
+        </div>
+        <div style="padding: 6px 0;">
+          <strong>阶段6:</strong> 移除兼容层，组件转 Composition API
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>每阶段风险最小化</li>
+            <li>可随时回退到上一阶段</li>
+            <li>Vue 2.7 提供迁移指南</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>缺点</h4>
+          <ul>
+            <li>阶段较多，周期长</li>
+            <li>Vue 2.7 是额外步骤</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="plan-b" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>方案 B：构建工具 + Vue 同步升级</h3>
+      <div class="label">4个阶段，合并相关步骤</div>
+      <div style="margin-top: 12px; font-size: 13px;">
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段1:</strong> Webpack → Vite + Vue 2 → Vue 3（同时）
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段2:</strong> Vuex 3 → Pinia
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段3:</strong> Element UI → Element Plus
+        </div>
+        <div style="padding: 6px 0;">
+          <strong>阶段4:</strong> 组件转 Composition API + 优化
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>阶段更少，速度更快</li>
+            <li>避免 Vue 2.7 过渡</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>缺点</h4>
+          <ul>
+            <li>阶段1风险较高</li>
+            <li>问题定位更困难</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="plan-c" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>方案 C：兼容模式先行</h3>
+      <div class="label">5个阶段，@vue/compat 贯穿</div>
+      <div style="margin-top: 12px; font-size: 13px;">
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段1:</strong> Webpack → Vite（保持Vue2）
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段2:</strong> 直接 Vue 3 + @vue/compat 运行
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段3:</strong> Vuex 3 → Pinia
+        </div>
+        <div style="padding: 6px 0; border-bottom: 1px solid #eee;">
+          <strong>阶段4:</strong> Element UI → Element Plus
+        </div>
+        <div style="padding: 6px 0;">
+          <strong>阶段5:</strong> 逐组件移除兼容层
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 12px;">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>应用快速运行在Vue3上</li>
+            <li>兼容模式自动处理大部分 breaking changes</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>缺点</h4>
+          <ul>
+            <li>兼容层有性能开销</li>
+            <li>最终仍需逐个修复组件</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>我的推荐</h3>
+  <p><strong>方案 A</strong> 最适合 MarkText 这种成熟的 Electron 应用。理由：</p>
+  <ul>
+    <li>MarkText 有 47 个 Vue 组件 + 复杂的 Electron IPC 通信，需要谨慎迁移</li>
+    <li>Vue 2.7 提供了 Composition API 和迁移工具，是官方推荐的过渡路径</li>
+    <li>每阶段都可独立测试，降低 Electron 打包问题的排查难度</li>
+    <li>现有测试套件可以在每个阶段验证功能正确性</li>
+  </ul>
+</div>

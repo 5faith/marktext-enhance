@@ -5,6 +5,8 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 
+const prismjsComponentsDir = resolve(__dirname, 'node_modules/prismjs/components')
+
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
   
@@ -17,8 +19,12 @@ export default defineConfig(({ command }) => {
         'common': resolve(__dirname, 'src/common'),
         'muya': resolve(__dirname, 'src/muya'),
         'snapsvg': resolve(__dirname, 'src/muya/lib/assets/libs/snap.svg-min.js'),
-        'vue$': 'vue/dist/vue.esm.js',
-        'eve': resolve(__dirname, 'node_modules/eve-raphael')
+        'vue': 'vue/dist/vue.esm.js',
+        'eve': resolve(__dirname, 'node_modules/eve-raphael'),
+        'fs-extra': resolve(__dirname, 'src/renderer/shims/fs-extra.js'),
+        '@hfelix/electron-spellchecker': resolve(__dirname, 'src/renderer/shims/electron-spellchecker.js'),
+        'element-ui/lib/theme-chalk/index.css': resolve(__dirname, 'src/renderer/shims/element-ui-css.js'),
+        '@prism-components/': prismjsComponentsDir + '/'
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
@@ -123,21 +129,37 @@ export default defineConfig(({ command }) => {
           'native-keymap',
           'ced',
           'cld',
-          '@hfelix/spellchecker'
+          '@hfelix/spellchecker',
+          'electron-log',
+          '@electron/remote',
+          'electron-store',
+          'electron-window-state',
+          '@hfelix/electron-localshortcut',
+          '@hfelix/electron-spellchecker',
+          'vscode-ripgrep',
+          'octokit/rest',
+          'fs-extra',
+          'graceful-fs',
+          'chokidar',
+          'fs/promises',
+          'child_process',
+          'os',
+          'crypto',
+          'path'
         ]
       }
     },
     server: {
       port: 9091,
-      strictPort: true
+      strictPort: false
     },
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
-      include: ['snapsvg'],
-      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker']
+      include: ['snapsvg', 'prismjs', 'prismjs/components.js', 'prismjs/dependencies', 'prismjs/components/prism-latex', 'prismjs/components/prism-yaml'],
+      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker']
     },
     ssr: {
-      external: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker']
+      external: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker']
     }
   }
 })

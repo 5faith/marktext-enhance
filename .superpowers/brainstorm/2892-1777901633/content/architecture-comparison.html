@@ -1,0 +1,90 @@
+<h2>MarkText 升级方案对比</h2>
+<p class="subtitle">当前架构 vs 目标架构</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">当前架构 (Vue2 + Webpack)</div>
+    <div class="mockup-body">
+      <div class="mock-nav">Electron Main Process</div>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <div style="flex: 1;">
+          <div class="label" style="margin-bottom: 4px;">Renderer Process</div>
+          <div style="background: #42b883; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vue 2.6</div>
+          <div style="background: #8bc34a; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vuex 3.x</div>
+          <div style="background: #ff9800; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vue Router 3.x</div>
+          <div style="background: #9c27b0; color: white; padding: 8px; border-radius: 4px; font-size: 12px;">Element UI 2.x</div>
+        </div>
+        <div style="flex: 1;">
+          <div class="label" style="margin-bottom: 4px;">Build System</div>
+          <div style="background: #b71c1c; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Webpack 5</div>
+          <div style="background: #e64a19; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">.electron-vue/</div>
+          <div style="background: #f57c00; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Babel 7</div>
+          <div style="background: #795548; color: white; padding: 8px; border-radius: 4px; font-size: 12px;">vue-loader 15</div>
+        </div>
+      </div>
+      <div style="margin-top: 12px; padding: 8px; background: #f5f5f5; border-radius: 4px; font-size: 11px;">
+        <strong>问题:</strong> 构建慢、热更新慢、Vue2 停止维护、Options API 代码组织困难
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">目标架构 (Vue3 + Vite)</div>
+    <div class="mockup-body">
+      <div class="mock-nav">Electron Main Process</div>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <div style="flex: 1;">
+          <div class="label" style="margin-bottom: 4px;">Renderer Process</div>
+          <div style="background: #42b883; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vue 3.4+</div>
+          <div style="background: #8bc34a; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Pinia (或 Vuex 4)</div>
+          <div style="background: #ff9800; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vue Router 4.x</div>
+          <div style="background: #9c27b0; color: white; padding: 8px; border-radius: 4px; font-size: 12px;">Element Plus / Naive UI</div>
+        </div>
+        <div style="flex: 1;">
+          <div class="label" style="margin-bottom: 4px;">Build System</div>
+          <div style="background: #673ab7; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">Vite 5+</div>
+          <div style="background: #3f51b5; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">vite-plugin-electron</div>
+          <div style="background: #2196f3; color: white; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">原生 ESM</div>
+          <div style="background: #00bcd4; color: white; padding: 8px; border-radius: 4px; font-size: 12px;">@vitejs/plugin-vue</div>
+        </div>
+      </div>
+      <div style="margin-top: 12px; padding: 8px; background: #e8f5e9; border-radius: 4px; font-size: 11px;">
+        <strong>优势:</strong> 极速热更新、Composition API、更好的 TypeScript 支持、更小的打包体积
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>关键变化</h3>
+  <div class="options" data-multiselect>
+    <div class="option" data-choice="vue" onclick="toggleSelect(this)">
+      <div class="letter">1</div>
+      <div class="content">
+        <h3>Vue 2 → Vue 3</h3>
+        <p>Options API → Composition API，47个 .vue 组件需要迁移</p>
+      </div>
+    </div>
+    <div class="option" data-choice="build" onclick="toggleSelect(this)">
+      <div class="letter">2</div>
+      <div class="content">
+        <h3>Webpack → Vite</h3>
+        <p>移除 .electron-vue/ 配置，改用 vite.config.js + vite-plugin-electron</p>
+      </div>
+    </div>
+    <div class="option" data-choice="ui" onclick="toggleSelect(this)">
+      <div class="letter">3</div>
+      <div class="content">
+        <h3>Element UI → Element Plus</h3>
+        <p>UI 组件库升级，API 有 breaking changes</p>
+      </div>
+    </div>
+    <div class="option" data-choice="state" onclick="toggleSelect(this)">
+      <div class="letter">4</div>
+      <div class="content">
+        <h3>Vuex 3 → Pinia/Vuex 4</h3>
+        <p>状态管理升级，Pinia 是 Vue3 推荐方案</p>
+      </div>
+    </div>
+  </div>
+</div>

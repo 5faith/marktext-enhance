@@ -48,8 +48,9 @@
 
 <script>
 import { ipcRenderer, shell } from 'electron'
-import log from 'electron-log'
 import { setKeyboardLayout } from '@hfelix/electron-localshortcut'
+
+const log = require('electron-log')
 import Compound from '../common/compound'
 import Separator from '../common/separator'
 import KeyInputDialog from './key-input-dialog.vue'

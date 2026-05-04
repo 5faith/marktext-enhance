@@ -1,8 +1,9 @@
 import { MenuItem as RemoteMenuItem } from '@electron/remote'
-import log from 'electron-log'
 import bus from '@/bus'
 import { getLanguageName } from '@/spellchecker/languageMap'
 import { SEPARATOR } from './menuItems'
+
+const log = /* @vite-ignore */ require('electron-log')
 
 /**
  * Build the spell checker menu depending on input.
