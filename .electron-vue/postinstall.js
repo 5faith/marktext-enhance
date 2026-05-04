@@ -2,6 +2,34 @@
 const fs = require('fs')
 const path = require('path')
 
+// WORKAROUND: Fix @hfelix/spellchecker compilation error on Windows with newer compilers.
+//   The error is: cannot bind non-const lvalue reference to an rvalue.
+//   NOTE: This fix must be applied BEFORE node-gyp rebuild in the yarn install process.
+//   We fix it in postinstall and then re-run node-gyp manually.
+const spellcheckerPath = path.resolve(__dirname, '../node_modules/@hfelix/spellchecker/src/spellchecker_win.cc')
+if (fs.existsSync(spellcheckerPath)) {
+  let content = fs.readFileSync(spellcheckerPath, { encoding: 'utf-8' })
+  const fixedContent = content.replace(
+    /std::wstring& wword = ToWString\(word\);/g,
+    'const std::wstring wword = ToWString(word);'
+  )
+  if (content !== fixedContent) {
+    console.log('[WORKAROUND] Fixing @hfelix/spellchecker compilation error...')
+    fs.writeFileSync(spellcheckerPath, fixedContent, { encoding: 'utf-8' })
+    
+    // Rebuild the spellchecker native module after fixing
+    const { execSync } = require('child_process')
+    const spellcheckerDir = path.resolve(__dirname, '../node_modules/@hfelix/spellchecker')
+    try {
+      console.log('[WORKAROUND] Rebuilding @hfelix/spellchecker...')
+      execSync('node-gyp rebuild', { cwd: spellcheckerDir, stdio: 'inherit' })
+      console.log('[WORKAROUND] @hfelix/spellchecker rebuilt successfully')
+    } catch (err) {
+      console.error('[ERROR] Failed to rebuild @hfelix/spellchecker:', err.message)
+    }
+  }
+}
+
 // WORKAROUND: Fix slow startup time on Windows due to blocking powershell call(s) in windows-release.
 //   Replace the problematic file with our "fixed" version.
 const windowsReleasePath = path.resolve(__dirname, '../node_modules/windows-release')
