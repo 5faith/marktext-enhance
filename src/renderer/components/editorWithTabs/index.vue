@@ -19,6 +19,7 @@
         ></source-code>
       </div>
       <tab-notifications></tab-notifications>
+      <devtools-button />
     </div>
 </template>
 
@@ -28,6 +29,7 @@ import Tabs from './tabs.vue'
 import Editor from './editor.vue'
 import SourceCode from './sourceCode.vue'
 import TabNotifications from './notifications.vue'
+import DevtoolsButton from 'renderer/components/devtools-button'
 
 export default {
   props: {
@@ -62,7 +64,8 @@ export default {
     Tabs,
     Editor,
     SourceCode,
-    TabNotifications
+    TabNotifications,
+    DevtoolsButton
   },
     computed: {
     ...mapState({
