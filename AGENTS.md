@@ -4,7 +4,7 @@ MarkText is an Electron-based WYSIWYG Markdown editor built with Vue 2, Vuex, an
 
 ## Environment
 
-- Node.js **>=16 <17** (strict version range) and **yarn**
+- Node.js **>=22** (LTS) and **yarn**
 - Python 3.6+ and C++ build tools (for native modules: `keytar`, `fontmanager-redux`, `native-keymap`, `ced`)
 - Linux extra deps: `libx11-dev libxkbfile-dev libsecret-1-dev libfontconfig-dev`
 
