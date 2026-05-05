@@ -131,7 +131,7 @@ onMounted(() => {
       showContextMenu(event, !!clipboard.value)
     })
   }
-  
+
   bus.on('SIDEBAR::show-new-input', handleInputFocus)
   bus.on('SIDEBAR::show-rename-input', focusRenameInput)
 })

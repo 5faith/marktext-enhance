@@ -106,32 +106,32 @@ onMounted(() => {
   nextTick(() => {
     const dragBarEl = dragBar.value
     if (!dragBarEl) return
-    
+
     let startX = 0
     let sideBarWidthVal = +sideBarWidth.value
     let startWidth = sideBarWidthVal
-    
+
     sideBarViewWidth.value = sideBarWidthVal
-    
+
     const mouseUpHandler = (event) => {
       document.removeEventListener('mousemove', mouseMoveHandler, false)
       document.removeEventListener('mouseup', mouseUpHandler, false)
       useLayoutStore().changeSideBarWidth(sideBarWidthVal < 220 ? 220 : sideBarWidthVal)
     }
-    
+
     const mouseMoveHandler = (event) => {
       const offset = event.clientX - startX
       sideBarWidthVal = startWidth + offset
       sideBarViewWidth.value = sideBarWidthVal
     }
-    
+
     const mouseDownHandler = (event) => {
       startX = event.clientX
       startWidth = +sideBarWidth.value
       document.addEventListener('mousemove', mouseMoveHandler, false)
       document.addEventListener('mouseup', mouseUpHandler, false)
     }
-    
+
     dragBarEl.addEventListener('mousedown', mouseDownHandler, false)
   })
 })

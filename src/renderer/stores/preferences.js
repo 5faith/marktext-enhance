@@ -95,7 +95,7 @@ export const usePreferencesStore = defineStore('preferences', {
   }),
 
   actions: {
-    setUserPreference(preference) {
+    setUserPreference (preference) {
       Object.keys(preference).forEach(key => {
         if (typeof preference[key] !== 'undefined' && typeof this[key] !== 'undefined') {
           this[key] = preference[key]
@@ -103,15 +103,15 @@ export const usePreferencesStore = defineStore('preferences', {
       })
     },
 
-    setMode({ type, checked }) {
+    setMode ({ type, checked }) {
       this[type] = checked
     },
 
-    toggleViewMode(entryName) {
+    toggleViewMode (entryName) {
       this[entryName] = !this[entryName]
     },
 
-    askForUserPreference() {
+    askForUserPreference () {
       ipcRenderer.send('mt::ask-for-user-preference')
       ipcRenderer.send('mt::ask-for-user-data')
 
@@ -120,23 +120,23 @@ export const usePreferencesStore = defineStore('preferences', {
       })
     },
 
-    setSinglePreference({ type, value }) {
+    setSinglePreference ({ type, value }) {
       ipcRenderer.send('mt::set-user-preference', { [type]: value })
     },
 
-    setUserData({ type, value }) {
+    setUserData ({ type, value }) {
       ipcRenderer.send('mt::set-user-data', { [type]: value })
     },
 
-    setImageFolderPath(value) {
+    setImageFolderPath (value) {
       ipcRenderer.send('mt::ask-for-modify-image-folder-path', value)
     },
 
-    selectDefaultDirectoryToOpen() {
+    selectDefaultDirectoryToOpen () {
       ipcRenderer.send('mt::select-default-directory-to-open')
     },
 
-    listenToggleView() {
+    listenToggleView () {
       bus.on('view:toggle-view-entry', entryName => {
         this.toggleViewMode(entryName)
         const item = {}

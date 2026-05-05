@@ -179,7 +179,7 @@ const handleDocumentKeyDown = (event) => {
 onMounted(() => {
   nextTick(() => {
     bus.on('SIDEBAR::show-new-input', handleInputFocus)
-    
+
     document.addEventListener('click', handleDocumentClick)
     document.addEventListener('contextmenu', handleDocumentContextMenu)
     document.addEventListener('keydown', handleDocumentKeyDown)

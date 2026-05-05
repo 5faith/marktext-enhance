@@ -220,18 +220,18 @@ const search = (event) => {
   if (event && event.key === 'Escape') {
     return
   }
-  
+
   if (event && event.key === 'Enter') {
     return find('next')
   }
-  
-  const { searchValue: val, isCaseSensitive: isCS, isWholeWord: isWW, isRegexp: isRG } = { 
-    searchValue: searchValue.value, 
-    isCaseSensitive: isCaseSensitive.value, 
-    isWholeWord: isWholeWord.value, 
-    isRegexp: isRegexp.value 
+
+  const { searchValue: val, isCaseSensitive: isCS, isWholeWord: isWW, isRegexp: isRG } = {
+    searchValue: searchValue.value,
+    isCaseSensitive: isCaseSensitive.value,
+    isWholeWord: isWholeWord.value,
+    isRegexp: isRegexp.value
   }
-  
+
   if (isRG) {
     try {
       new RegExp(val)

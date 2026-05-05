@@ -1,0 +1,234 @@
+yarn run v1.22.22
+$ eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module 'github-markdown-css/github-markdown.css?inline'            
+  src\muya\lib\utils\exportHtml.js:6:31
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/styles/exportStyle.css?inline'                   
+  src\muya\lib\utils\exportHtml.js:7:25
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module 'prismjs/themes/prism.css?inline'                           
+  src\muya\lib\utils\exportHtml.js:8:26
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/styles/headerFooterStyle.css?inline'             
+  src\muya\lib\utils\exportHtml.js:10:29
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'props' is assigned a value but never used                                                   
+  src\renderer\components\editorWithTabs\index.vue:35:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\editorWithTabs\index.vue:35:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'autoScrollerMixins' is assigned a value but never used                                      
+  src\renderer\components\editorWithTabs\tabs.vue:53:9
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'tabsMixinsData' is assigned a value but never used                                          
+  src\renderer\components\editorWithTabs\tabs.vue:53:41
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'pageSizeListRef' is assigned a value but never used                                         
+  src\renderer\components\exportSettings\index.vue:243:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'headerFooterTypesRef' is assigned a value but never used                                    
+  src\renderer\components\exportSettings\index.vue:244:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'headerFooterStylesRef' is assigned a value but never used                                   
+  src\renderer\components\exportSettings\index.vue:245:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'onMounted' is not defined                                                                   
+  src\renderer\components\import\index.vue:73:1
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'onBeforeUnmount' is not defined                                                             
+  src\renderer\components\import\index.vue:77:1
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\icon.vue:9:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'lastKeyword' is assigned a value but never used                                             
+  src\renderer\components\sideBar\search.vue:103:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'lastSearchTime' is assigned a value but never used                                          
+  src\renderer\components\sideBar\search.vue:104:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'keyUpTimer' is assigned a value but never used                                              
+  src\renderer\components\sideBar\search.vue:105:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'fileMixins' is defined but never used                                                       
+  src\renderer\components\sideBar\searchResultItem.vue:65:10
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\searchResultItem.vue:69:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'tabs' is assigned a value but never used                                                    
+  src\renderer\components\sideBar\searchResultItem.vue:81:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'currentFile' is assigned a value but never used                                             
+  src\renderer\components\sideBar\searchResultItem.vue:82:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'dirname' is assigned a value but never used                                                 
+  src\renderer\components\sideBar\searchResultItem.vue:107:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'createFileOrDirectoryMixins' is defined but never used                                      
+  src\renderer\components\sideBar\tree.vue:90:10
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'showNewInput' is assigned a value but never used                                            
+  src\renderer\components\sideBar\tree.vue:96:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\tree.vue:104:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'fileMixins' is defined but never used                                                       
+  src\renderer\components\sideBar\treeFile.vue:30:10
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\treeFile.vue:35:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'tabs' is assigned a value but never used                                                    
+  src\renderer\components\sideBar\treeFile.vue:56:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'createFileOrDirectoryMixins' is defined but never used                                      
+  src\renderer\components\sideBar\treeFolder.vue:57:10
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\treeFolder.vue:60:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'props' is assigned a value but never used                                                   
+  src\renderer\components\sideBar\treeOpenedTab.vue:21:7
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\sideBar\treeOpenedTab.vue:21:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'defineProps' is not defined                                                                 
+  src\renderer\components\titleBar\index.vue:152:15
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'locale' is not defined                                                                      
+  src\renderer\main.js:61:1
+  
+
+  鉁? http://eslint.org/docs/rules/no-undef           'lang' is not defined                                                                        
+  src\renderer\main.js:61:12
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module './index.html?raw'                                          
+  src\renderer\services\notification\index.js:1:22
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module 'element-ui/lib/theme-chalk/index.css?inline'               
+  src\renderer\shims\element-ui-css.js:3:26
+  
+
+  鉁? https://google.com/#q=node%2Fno-deprecated-api  'fs.exists' was deprecated since v4.0.0. Use 'fs.stat()' or 'fs.access()' instead            
+  src\renderer\shims\fs.js:28:23
+  
+
+  鉁? https://google.com/#q=node%2Fno-deprecated-api  'fs.lchmod' was deprecated since v0.4.0                                                      
+  src\renderer\shims\fs.js:44:23
+  
+
+  鉁? https://google.com/#q=node%2Fno-deprecated-api  'fs.lchmodSync' was deprecated since v0.4.0                                                  
+  src\renderer\shims\fs.js:45:27
+  
+
+  鉁? https://google.com/#q=node%2Fno-deprecated-api  'os.getNetworkInterfaces' was deprecated since v0.6.0. Use 'os.networkInterfaces()' instead  
+  src\renderer\shims\os.js:10:37
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'addBlankTab' is assigned a value but never used                                             
+  src\renderer\stores\editor.js:601:9
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'markdownList' is assigned a value but never used                                            
+  src\renderer\stores\editor.js:602:9
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'preferencesStore' is assigned a value but never used                                        
+  src\renderer\stores\listenForMain.js:12:13
+  
+
+  鉁? http://eslint.org/docs/rules/no-unused-vars     'fileState' is assigned a value but never used                                               
+  src\renderer\stores\project.js:96:21
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '@/assets/themes/export/academic.theme.css?inline'          
+  src\renderer\util\pdf.js:5:27
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '@/assets/themes/export/liber.theme.css?inline'             
+  src\renderer\util\pdf.js:6:24
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module 'element-ui/lib/theme-chalk/index.css?inline'               
+  src\renderer\util\theme.js:4:26
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/dark.theme.css?inline'                    
+  src\renderer\util\themeColor.js:1:23
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/graphite.theme.css?inline'                
+  src\renderer\util\themeColor.js:2:27
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/material-dark.theme.css?inline'           
+  src\renderer\util\themeColor.js:3:31
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/one-dark.theme.css?inline'                
+  src\renderer\util\themeColor.js:4:26
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/ulysses.theme.css?inline'                 
+  src\renderer\util\themeColor.js:5:26
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/prismjs/dark.theme.css?inline'            
+  src\renderer\util\themeColor.js:7:28
+  
+
+  鉁? https://google.com/#q=import%2Fno-unresolved    Unable to resolve path to module '../assets/themes/prismjs/one-dark.theme.css?inline'        
+  src\renderer\util\themeColor.js:8:31
+  
+
+
+鉁?55 problems (55 errors, 0 warnings)
+
+
+Errors:
+  23  http://eslint.org/docs/rules/no-unused-vars
+  16  https://google.com/#q=import%2Fno-unresolved
+  12  http://eslint.org/docs/rules/no-undef
+   4  https://google.com/#q=node%2Fno-deprecated-api
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+error Command failed with exit code 1.

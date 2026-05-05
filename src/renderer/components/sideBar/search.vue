@@ -132,7 +132,7 @@ const searchResultInfo = computed(() => {
   const matchCount = searchResult.value.reduce((acc, item) => {
     return acc + item.matches.length
   }, 0)
-  
+
   return `${matchCount} ${matchCount > 1 ? 'matches' : 'match'} in ${fileCount} ${fileCount > 1 ? 'files' : 'file'}`
 })
 
@@ -157,7 +157,7 @@ const search = () => {
   if (showNoFolderOpenedMessage.value) {
     return
   }
-  
+
   const { pathname: rootDirectoryPath } = projectTree.value
   const {
     keyword: currentKeyword,
@@ -176,24 +176,24 @@ const search = () => {
     isRegexp: isRegexp.value,
     ripgrepDirectorySearcher: ripgrepDirectorySearcher.value
   }
-  
+
   if (isRunning && cancelCb) {
     cancelCb()
   }
-  
+
   searchErrorString.value = ''
   searcherCancelCallback.value = null
-  
+
   if (!currentKeyword) {
     searchResult.value = []
     searcherRunning.value = false
     return
   }
-  
+
   let canceled = false
   searcherRunning.value = true
   startShowSearchCancelAreaTimer()
-  
+
   const newSearchResult = []
   const promises = searcher.search([rootDirectoryPath], currentKeyword, {
     didMatch: searchResult => {
@@ -210,19 +210,19 @@ const search = () => {
         searchErrorString.value = 'Search was limited to 100 files.'
       }
     },
-    
+
     // UI options
     isCaseSensitive: caseSensitive,
     isWholeWord: wholeWord,
     isRegexp: regexp,
-    
+
     // Options loaded from settings
     exclusions: searchExclusions.value,
     maxFileSize: searchMaxFileSize.value || null,
     includeHidden: searchIncludeHidden.value,
     noIgnore: searchNoIgnore.value,
     followSymlinks: searchFollowSymlinks.value,
-    
+
     // Only search markdown files
     inclusions: MARKDOWN_INCLUSIONS
   })
@@ -240,11 +240,11 @@ const search = () => {
       searcherRunning.value = false
       searcherCancelCallback.value = null
       stopShowSearchCancelAreaTimer()
-      
+
       searchErrorString.value = err.message
       log.error(err)
     })
-  
+
   searcherCancelCallback.value = () => {
     stopShowSearchCancelAreaTimer()
     canceled = true
@@ -256,7 +256,7 @@ const search = () => {
 
 const startShowSearchCancelAreaTimer = () => {
   stopShowSearchCancelAreaTimer()
-  
+
   const SHOW_SEARCH_CANCEL_DELAY_MS = 5000
   showSearchCancelAreaTimer.value = window.setTimeout(() => {
     showSearchCancelArea.value = true

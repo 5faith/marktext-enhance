@@ -16,7 +16,7 @@ const props = defineProps({
 
 const className = computed(() => {
   let classNames = fileIcons.getClassByName(props.name ? props.name : 'mock.md')
-  
+
   if (!classNames) {
     // Use fallback icon when the icon is unknown.
     classNames = fileIcons.getClassByName('mock.md')

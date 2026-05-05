@@ -113,7 +113,7 @@ const handleBeforeInput = (event) => {
       } else {
         selectedCommandIndex.value--
       }
-      
+
       const items = commandItemsRef.value
       if (items && items.length > 0) {
         items[selectedCommandIndex.value]?.scrollIntoView({ block: 'end' })
@@ -128,7 +128,7 @@ const handleBeforeInput = (event) => {
       } else {
         selectedCommandIndex.value++
       }
-      
+
       const items = commandItemsRef.value
       if (items && items.length > 0) {
         items[selectedCommandIndex.value]?.scrollIntoView({ block: 'end' })
@@ -176,14 +176,14 @@ const search = (commandId = null) => {
     executeCommand(availCmds[selIdx].id)
     return
   }
-  
+
   updateCommands()
 }
 
 const updateCommands = () => {
   const { currentCommand: currCmd, query: q } = { currentCommand: currentCommand.value, query: query.value }
   const queryString = q.trim()
-  
+
   if (currCmd?.search) {
     searcherBusy.value = true
     currCmd.search(queryString)
@@ -202,7 +202,7 @@ const updateCommands = () => {
       })
     return
   }
-  
+
   if (!queryString) {
     availableCommands.value = currCmd?.subcommands || []
   } else {
@@ -219,7 +219,7 @@ const executeCommand = (commandId) => {
     log.error(`Cannot find command "${commandId}".`)
     return
   }
-  
+
   const { executeSubcommand } = currCmd || {}
   if (executeSubcommand) {
     showCommandPalette.value = false

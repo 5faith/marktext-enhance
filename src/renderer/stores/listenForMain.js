@@ -52,5 +52,3 @@ export const useListenForMainStore = defineStore('listenForMain', {
     }
   }
 })
-
-

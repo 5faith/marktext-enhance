@@ -52,7 +52,7 @@ const handleClick = (status) => {
     console.error('notifications::handleClick: Cannot find notification on stack.')
     return
   }
-  
+
   const item = notifications.shift()
   const action = item.action
   if (action) {

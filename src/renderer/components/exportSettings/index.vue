@@ -240,9 +240,6 @@ import {
 // State
 const exportType = ref('')
 const themesLoaded = ref(false)
-const pageSizeListRef = ref(pageSizeList)
-const headerFooterTypesRef = ref(headerFooterTypes)
-const headerFooterStylesRef = ref(headerFooterStyles)
 
 const isPrintable = ref(true)
 const showExportSettingsDialog = ref(false)

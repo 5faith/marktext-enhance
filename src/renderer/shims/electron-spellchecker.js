@@ -2,12 +2,12 @@
 const mockSpellChecker = {
   SpellCheckHandler: class {},
   SpellChecker: class {
-    constructor() { this.enabled = false }
-    setLanguage() {}
-    isMisspelled() { return false }
-    getAvailableDictionaries() { return [] }
+    constructor () { this.enabled = false }
+    setLanguage () {}
+    isMisspelled () { return false }
+    getAvailableDictionaries () { return [] }
   },
-  setGlobalLogger() {},
+  setGlobalLogger () {},
   fallbackLocales: [],
   normalizeLanguageCode: (code) => code
 }

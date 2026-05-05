@@ -20,7 +20,7 @@ export const useProjectStore = defineStore('project', {
     projectTree: null
   }),
   actions: {
-    setRootDirectory(pathname) {
+    setRootDirectory (pathname) {
       let name = path.basename(pathname)
       if (!name) {
         name = pathname
@@ -37,43 +37,43 @@ export const useProjectStore = defineStore('project', {
       }
     },
 
-    setNewFileName(name) {
+    setNewFileName (name) {
       this.newFileNameCache = name
     },
 
-    addFileToTree(change) {
+    addFileToTree (change) {
       addFile(this.projectTree, change)
     },
 
-    unlinkFileFromTree(change) {
+    unlinkFileFromTree (change) {
       unlinkFile(this.projectTree, change)
     },
 
-    addDirectoryToTree(change) {
+    addDirectoryToTree (change) {
       addDirectory(this.projectTree, change)
     },
 
-    unlinkDirectoryFromTree(change) {
+    unlinkDirectoryFromTree (change) {
       unlinkDirectory(this.projectTree, change)
     },
 
-    setActiveItem(activeItem) {
+    setActiveItem (activeItem) {
       this.activeItem = activeItem
     },
 
-    setClipboard(data) {
+    setClipboard (data) {
       this.clipboard = data
     },
 
-    setCreateCache(cache) {
+    setCreateCache (cache) {
       this.createCache = cache
     },
 
-    setRenameCache(cache) {
+    setRenameCache (cache) {
       this.renameCache = cache
     },
 
-    listenForLoadProject() {
+    listenForLoadProject () {
       ipcRenderer.on('mt::open-directory', (e, pathname) => {
         this.setRootDirectory(pathname)
         const layoutStore = useLayoutStore()
@@ -86,7 +86,7 @@ export const useProjectStore = defineStore('project', {
       })
     },
 
-    listenForUpdateProject() {
+    listenForUpdateProject () {
       ipcRenderer.on('mt::update-object-tree', (e, { type, change }) => {
         switch (type) {
           case 'add': {
@@ -122,19 +122,19 @@ export const useProjectStore = defineStore('project', {
       })
     },
 
-    changeActiveItem(activeItem) {
+    changeActiveItem (activeItem) {
       this.setActiveItem(activeItem)
     },
 
-    changeClipboard(data) {
+    changeClipboard (data) {
       this.setClipboard(data)
     },
 
-    askForOpenProject() {
+    askForOpenProject () {
       ipcRenderer.send('mt::ask-for-open-project-in-sidebar')
     },
 
-    listenForSidebarContextMenu() {
+    listenForSidebarContextMenu () {
       bus.on('SIDEBAR::show-in-folder', () => {
         const { pathname } = this.activeItem
         shell.showItemInFolder(pathname)
@@ -195,7 +195,7 @@ export const useProjectStore = defineStore('project', {
       })
     },
 
-    createFileDirectory(name) {
+    createFileDirectory (name) {
       const { dirname, type } = this.createCache
 
       if (type === 'file' && !hasMarkdownExtension(name)) {
@@ -220,7 +220,7 @@ export const useProjectStore = defineStore('project', {
         })
     },
 
-    renameInSidebar(name) {
+    renameInSidebar (name) {
       const src = this.renameCache
       const dirname = path.dirname(src)
       const dest = dirname + PATH_SEPARATOR + name
@@ -231,7 +231,7 @@ export const useProjectStore = defineStore('project', {
         })
     },
 
-    openSettingWindow() {
+    openSettingWindow () {
       ipcRenderer.send('mt::open-setting-window')
     }
   }

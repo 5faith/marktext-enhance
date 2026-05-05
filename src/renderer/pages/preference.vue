@@ -40,7 +40,7 @@ onMounted(() => {
   nextTick(() => {
     const state = global.marktext.initialState || DEFAULT_STYLE
     addThemeStyle(state.theme)
-    
+
     usePreferencesStore().askForUserPreference()
     hideLoadingPage()
   })

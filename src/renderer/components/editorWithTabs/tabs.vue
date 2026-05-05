@@ -69,7 +69,7 @@ const handleTabScroll = (event) => {
   if (event.deltaX !== 0) {
     delta = event.deltaX
   }
-  
+
   const tabsEl = tabContainer.value
   const newLeft = Math.max(0, Math.min(tabsEl.scrollWidth, tabsEl.scrollLeft + delta))
   tabsEl.scrollLeft = newLeft
@@ -135,10 +135,10 @@ const removeFileInTab = (file) => {
 onMounted(() => {
   nextTick(() => {
     const tabsEl = tabContainer.value
-    
+
     // Allow to scroll through the tabs by mouse wheel or touchpad.
     tabsEl.addEventListener('wheel', handleTabScroll)
-    
+
     // Allow tab drag and drop to reorder tabs.
     drake.value = dragula([tabDropContainer.value], {
       direction: 'horizontal',
@@ -155,17 +155,17 @@ onMounted(() => {
       if (!droppedId || (sibling && !nextTabId)) {
         throw new Error('Cannot reorder tabs: invalid tab id.')
       }
-      
+
       useEditorStore().exchangeTabsById({
         fromId: droppedId,
         toId: isLastTab ? null : nextTabId
       })
     })
-    
+
     // TODO(perf): Create a copy of dom-autoscroller and just hook tabs-container to
     //   improve performance. Currently autoScroll is triggered when the mouse is moved
     //   in MarkText window.
-    
+
     // Scroll when dragging a tab to the beginning or end of the tab container.
     autoScroller.value = autoScroll([tabsEl], {
       margin: 20,
@@ -183,7 +183,7 @@ onBeforeUnmount(() => {
   if (tabsEl) {
     tabsEl.removeEventListener('wheel', handleTabScroll)
   }
-  
+
   if (autoScroller.value) {
     // Force destroy
     autoScroller.value.destroy(true)
@@ -191,7 +191,7 @@ onBeforeUnmount(() => {
   if (drake.value) {
     drake.value.destroy()
   }
-  
+
   bus.off('TABS::close-this', closeTab)
   bus.off('TABS::close-others', closeOthers)
   bus.off('TABS::close-saved', closeSaved)

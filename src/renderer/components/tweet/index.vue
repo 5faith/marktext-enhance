@@ -104,15 +104,15 @@ const reportViaTwitter = () => {
   const currentFace = selectedFace.value
   if (!currentValue) return
   const origin = 'https://twitter.com/intent/tweet'
-  
+
   const params = {
     via: 'marktextme',
     url: encodeURI('https://github.com/marktext/marktext/'),
     text: currentValue
   }
-  
+
   if (currentFace === 'smile') params.hashtags = 'happyMarkText'
-  
+
   shell.openExternal(`${origin}?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`)
   showTweetDialog.value = false
 }

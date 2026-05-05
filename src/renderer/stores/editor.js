@@ -596,7 +596,6 @@ export const useEditorStore = defineStore('editor', {
       this.updateLineEndingMenu()
     },
 
-
     bootstrap (config) {
       const {
         addBlankTab,

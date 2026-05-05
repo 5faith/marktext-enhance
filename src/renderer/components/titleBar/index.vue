@@ -184,7 +184,7 @@ watch(() => props.filename, (value) => {
   } else {
     title = hasOpenFolder ? props.project.name : 'MarkText'
   }
-  
+
   document.title = title
 })
 
