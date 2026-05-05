@@ -56,7 +56,7 @@ export const fileMixins = {
           this.$store.dispatch('UPDATE_CURRENT_FILE', openedTab)
         } else {
           const { id, markdown, cursor, history } = this.currentFile
-          bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+          bus.emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
         }
       } else {
         ipcRenderer.send('mt::open-file', filePath, {

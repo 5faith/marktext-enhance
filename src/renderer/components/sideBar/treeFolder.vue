@@ -92,8 +92,8 @@ export default {
         this.$store.dispatch('CHANGE_ACTIVE_ITEM', this.folder)
         showContextMenu(event, !!this.clipboard)
       })
-      bus.$on('SIDEBAR::show-new-input', this.handleInputFocus)
-      bus.$on('SIDEBAR::show-rename-input', this.focusRenameInput)
+      bus.on('SIDEBAR::show-new-input', this.handleInputFocus)
+      bus.on('SIDEBAR::show-rename-input', this.focusRenameInput)
     })
   },
   methods: {

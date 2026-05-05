@@ -22,7 +22,7 @@ const mutations = {
 const actions = {
   LISTEN_COMMAND_CENTER_BUS ({ commit, state }) {
     // Init stuff
-    bus.$on('cmd::sort-commands', () => {
+    bus.on('cmd::sort-commands', () => {
       commit('SORT_COMMANDS')
     })
     ipcRenderer.on('mt::keybindings-response', (e, keybindingMap) => {
@@ -36,12 +36,12 @@ const actions = {
     })
 
     // Register commands that are created at runtime.
-    bus.$on('cmd::register-command', command => {
+    bus.on('cmd::register-command', command => {
       commit('REGISTER_COMMAND', command)
     })
 
     // Allow other compontents to execute commands with predefined values.
-    bus.$on('cmd::execute', commandId => {
+    bus.on('cmd::execute', commandId => {
       executeCommand(state, commandId)
     })
     ipcRenderer.on('mt::execute-command-by-id', (e, commandId) => {

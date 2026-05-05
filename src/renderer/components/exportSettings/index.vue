@@ -292,10 +292,10 @@ export default {
     })
   },
   created () {
-    bus.$on('showExportDialog', this.showDialog)
+    bus.on('showExportDialog', this.showDialog)
   },
   beforeDestroy () {
-    bus.$off('showExportDialog', this.showDialog)
+    bus.off('showExportDialog', this.showDialog)
   },
   methods: {
     showDialog (type) {
@@ -306,7 +306,7 @@ export default {
       }
 
       this.showExportSettingsDialog = true
-      bus.$emit('editor-blur')
+      bus.emit('editor-blur')
 
       if (!this.themesLoaded) {
         this.themesLoaded = true
@@ -406,7 +406,7 @@ export default {
       }
 
       this.showExportSettingsDialog = false
-      bus.$emit('export', options)
+      bus.emit('export', options)
     },
     onSelectChange (key, value) {
       this[key] = value

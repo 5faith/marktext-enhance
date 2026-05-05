@@ -4,7 +4,9 @@
  *  @license Simplified BSD license.
  */
 import _ from 'underscore'
-import Snap from 'snapsvg'
+import 'eve-raphael'
+import 'snapsvg'
+var Snap = window.Snap
 import WebFont from 'webfontloader'
 
 function Diagram() {

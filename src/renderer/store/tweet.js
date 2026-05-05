@@ -11,7 +11,7 @@ const actions = {
   LISTEN_FOR_TWEET () {
     ipcRenderer.on('mt::tweet', (e, type) => {
       if (type === 'twitter') {
-        bus.$emit('tweetDialog')
+        bus.emit('tweetDialog')
       }
     })
   }

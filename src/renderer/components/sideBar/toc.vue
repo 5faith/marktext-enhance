@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     handleClick ({ slug }) {
-      bus.$emit('scroll-to-header', slug)
+      bus.emit('scroll-to-header', slug)
     }
   }
 }

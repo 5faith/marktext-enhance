@@ -78,11 +78,11 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      bus.$on('show-command-palette', this.handleShow)
+      bus.on('show-command-palette', this.handleShow)
     })
   },
   beforeDestroy () {
-    bus.$off('show-command-palette', this.handleShow)
+    bus.off('show-command-palette', this.handleShow)
   },
   methods: {
     handleShow (command) {
@@ -94,7 +94,7 @@ export default {
           this.placeholderText = this.currentCommand.placeholder || this.defaultPlaceholderText
           this.query = ''
           this.showCommandPalette = true
-          bus.$emit('editor-blur')
+          bus.emit('editor-blur')
           this.$nextTick(() => {
             if (this.$refs.search) {
               this.$refs.search.focus()

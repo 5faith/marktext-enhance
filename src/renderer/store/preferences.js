@@ -145,7 +145,7 @@ const actions = {
 
   // Toggle a view option and notify main process to toggle menu item.
   LISTEN_TOGGLE_VIEW ({ commit, state }) {
-    bus.$on('view:toggle-view-entry', entryName => {
+    bus.on('view:toggle-view-entry', entryName => {
       commit('TOGGLE_VIEW_MODE', entryName)
       const item = {}
       item[entryName] = state[entryName]

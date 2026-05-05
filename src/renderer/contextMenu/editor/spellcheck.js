@@ -27,7 +27,7 @@ export default (spellchecker, selectedWord, wordSuggestions, replaceCallback) =>
         label: getLanguageName(dict),
         enabled: dict !== currentLanguage,
         click () {
-          bus.$emit('switch-spellchecker-language', dict)
+          bus.emit('switch-spellchecker-language', dict)
         }
       }))
     }

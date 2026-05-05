@@ -39,7 +39,7 @@ const mutations = {
       window.DIRNAME = pathname ? path.dirname(pathname) : ''
       // set state first, then emit file changed event
       state.currentFile = currentFile
-      bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+      bus.emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
     }
   },
   ADD_FILE_TO_TABS (state, currentFile) {
@@ -62,7 +62,7 @@ const mutations = {
       if (typeof fileState.markdown === 'string') {
         const { id, markdown, cursor, history, pathname } = fileState
         window.DIRNAME = pathname ? path.dirname(pathname) : ''
-        bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+        bus.emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
       }
     }
 
@@ -166,7 +166,7 @@ const mutations = {
     if (pathname === currentFile.pathname) {
       state.currentFile = tab
       const { id, cursor, history } = tab
-      bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+      bus.emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
     }
   },
   // NOTE: Please call this function only from main process via "mt::set-pathname" and free resources before!
@@ -275,7 +275,7 @@ const mutations = {
       if (typeof state.currentFile.markdown === 'string') {
         const { id, markdown, cursor, history, pathname } = state.currentFile
         window.DIRNAME = pathname ? path.dirname(pathname) : ''
-        bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+        bus.emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
       }
     }
 
@@ -341,7 +341,7 @@ const actions = {
 
   LISTEN_SCREEN_SHOT ({ commit }) {
     ipcRenderer.on('mt::screenshot-captured', e => {
-      bus.$emit('screenshot-captured')
+      bus.emit('screenshot-captured')
     })
   },
 
@@ -592,7 +592,7 @@ const actions = {
         defaultPath
       })
     } else {
-      bus.$emit('rename')
+      bus.emit('rename')
     }
   },
 
@@ -618,14 +618,14 @@ const actions = {
   LISTEN_FOR_BOOTSTRAP_WINDOW ({ commit, state, dispatch, rootState }) {
     // Delay load runtime commands and initialize commands.
     setTimeout(() => {
-      bus.$emit('cmd::register-command', new FileEncodingCommand(rootState.editor))
-      bus.$emit('cmd::register-command', new QuickOpenCommand(rootState))
-      bus.$emit('cmd::register-command', new LineEndingCommand(rootState.editor))
-      bus.$emit('cmd::register-command', new TrailingNewlineCommand(rootState.editor))
+      bus.emit('cmd::register-command', new FileEncodingCommand(rootState.editor))
+      bus.emit('cmd::register-command', new QuickOpenCommand(rootState))
+      bus.emit('cmd::register-command', new LineEndingCommand(rootState.editor))
+      bus.emit('cmd::register-command', new TrailingNewlineCommand(rootState.editor))
 
       setTimeout(() => {
         ipcRenderer.send('mt::request-keybindings')
-        bus.$emit('cmd::sort-commands')
+        bus.emit('cmd::sort-commands')
       }, 100)
     }, 400)
 
@@ -766,7 +766,7 @@ const actions = {
   RENAME_FILE ({ commit, dispatch }, file) {
     commit('SET_CURRENT_FILE', file)
     dispatch('UPDATE_LINE_ENDING_MENU')
-    bus.$emit('rename')
+    bus.emit('rename')
   },
 
   // Direction is a boolean where false is left and true right.
@@ -845,7 +845,7 @@ const actions = {
     if (selected) {
       const { id, markdown } = fileState
       dispatch('UPDATE_CURRENT_FILE', fileState)
-      bus.$emit('file-loaded', { id, markdown })
+      bus.emit('file-loaded', { id, markdown })
     } else {
       commit('ADD_FILE_TO_TABS', fileState)
     }
@@ -898,7 +898,7 @@ const actions = {
 
     if (selected) {
       dispatch('UPDATE_CURRENT_FILE', docState)
-      bus.$emit('file-loaded', { id, markdown, cursor })
+      bus.emit('file-loaded', { id, markdown, cursor })
     } else {
       commit('ADD_FILE_TO_TABS', docState)
     }
@@ -1114,7 +1114,7 @@ const actions = {
 
   LINTEN_FOR_PRINT_SERVICE_CLEARUP ({ commit }) {
     ipcRenderer.on('mt::print-service-clearup', e => {
-      bus.$emit('print-service-clearup')
+      bus.emit('print-service-clearup')
     })
   },
 
@@ -1232,7 +1232,7 @@ const actions = {
 
   LISTEN_FOR_RELOAD_IMAGES () {
     ipcRenderer.on('mt::invalidate-image-cache', (e) => {
-      bus.$emit('invalidate-image-cache')
+      bus.emit('invalidate-image-cache')
     })
   }
 }

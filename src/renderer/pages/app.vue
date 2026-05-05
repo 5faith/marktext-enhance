@@ -178,9 +178,9 @@ export default {
             clearTimeout(this.timer)
           }
           this.timer = setTimeout(() => {
-            bus.$emit('importDialog', false)
+            bus.emit('importDialog', false)
           }, 300)
-          bus.$emit('importDialog', true)
+          bus.emit('importDialog', true)
         }
 
         e.dataTransfer.dropEffect = 'copy'

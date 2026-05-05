@@ -46,7 +46,7 @@ const actions = {
       }
     })
 
-    bus.$on('view:toggle-view-layout-entry', entryName => {
+    bus.on('view:toggle-view-layout-entry', entryName => {
       commit('TOGGLE_LAYOUT_ENTRY', entryName)
       const item = {}
       item[entryName] = state[entryName]

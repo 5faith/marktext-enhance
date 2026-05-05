@@ -47,10 +47,10 @@ export default {
     }
   },
   created () {
-    bus.$on('importDialog', this.showDialog)
+    bus.on('importDialog', this.showDialog)
   },
   beforeDestroy () {
-    bus.$off('importDialog', this.showDialog)
+    bus.off('importDialog', this.showDialog)
   },
   methods: {
     showDialog (boolean) {

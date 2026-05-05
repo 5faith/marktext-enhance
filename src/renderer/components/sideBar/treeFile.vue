@@ -68,7 +68,7 @@ export default {
         showContextMenu(event, !!this.clipboard)
       })
 
-      bus.$on('SIDEBAR::show-rename-input', this.focusRenameInput)
+      bus.on('SIDEBAR::show-rename-input', this.focusRenameInput)
     })
   },
   methods: {

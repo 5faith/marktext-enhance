@@ -17,7 +17,7 @@ const actions = {
           showSideBar: true
         })
       }
-      bus.$emit(type, type)
+      bus.emit(type, type)
     })
   },
 
@@ -26,25 +26,25 @@ const actions = {
       commit('SET_MODE', data)
     })
     ipcRenderer.on('mt::show-command-palette', () => {
-      bus.$emit('show-command-palette')
+      bus.emit('show-command-palette')
     })
   },
 
   LISTEN_FOR_SHOW_DIALOG ({ commit }) {
     ipcRenderer.on('mt::about-dialog', e => {
-      bus.$emit('aboutDialog')
+      bus.emit('aboutDialog')
     })
     ipcRenderer.on('mt::show-export-dialog', (e, type) => {
-      bus.$emit('showExportDialog', type)
+      bus.emit('showExportDialog', type)
     })
   },
 
   LISTEN_FOR_PARAGRAPH_INLINE_STYLE () {
     ipcRenderer.on('mt::editor-paragraph-action', (e, { type }) => {
-      bus.$emit('paragraph', type)
+      bus.emit('paragraph', type)
     })
     ipcRenderer.on('mt::editor-format-action', (e, { type }) => {
-      bus.$emit('format', type)
+      bus.emit('format', type)
     })
   }
 }

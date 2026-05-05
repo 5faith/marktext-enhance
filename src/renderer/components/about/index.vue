@@ -47,15 +47,15 @@ export default {
     })
   },
   created () {
-    bus.$on('aboutDialog', this.showDialog)
+    bus.on('aboutDialog', this.showDialog)
   },
   beforeDestroy () {
-    bus.$off('aboutDialog', this.showDialog)
+    bus.off('aboutDialog', this.showDialog)
   },
   methods: {
     showDialog () {
       this.showAboutDialog = true
-      bus.$emit('editor-blur')
+      bus.emit('editor-blur')
     }
   }
 }

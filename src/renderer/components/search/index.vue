@@ -170,19 +170,19 @@ export default {
   },
 
   created () {
-    bus.$on('find', this.listenFind)
-    bus.$on('replace', this.listenReplace)
-    bus.$on('findNext', this.listenFindNext)
-    bus.$on('findPrev', this.listenFindPrev)
+    bus.on('find', this.listenFind)
+    bus.on('replace', this.listenReplace)
+    bus.on('findNext', this.listenFindNext)
+    bus.on('findPrev', this.listenFindPrev)
     document.addEventListener('click', this.docClick)
     document.addEventListener('keyup', this.docKeyup)
   },
 
   beforeDestroy () {
-    bus.$off('find', this.listenFind)
-    bus.$off('replace', this.listenReplace)
-    bus.$off('findNext', this.listenFindNext)
-    bus.$off('findPrev', this.listenFindPrev)
+    bus.off('find', this.listenFind)
+    bus.off('replace', this.listenReplace)
+    bus.off('findNext', this.listenFindNext)
+    bus.off('findPrev', this.listenFindPrev)
     document.removeEventListener('click', this.docClick)
     document.removeEventListener('keyup', this.docKeyup)
   },
@@ -232,7 +232,7 @@ export default {
       this.showSearch = false
       const searchValue = this.searchValue = ''
       this.replaceValue = ''
-      bus.$emit('searchValue', searchValue, { selectHighlight })
+      bus.emit('searchValue', searchValue, { selectHighlight })
     },
 
     toggleSearchType () {
@@ -244,7 +244,7 @@ export default {
      * action: prev or next
      */
     find (action) {
-      bus.$emit('find-action', action)
+      bus.emit('find-action', action)
     },
 
     search (event) {
@@ -278,7 +278,7 @@ export default {
           return
         }
       }
-      bus.$emit('searchValue', searchValue, {
+      bus.emit('searchValue', searchValue, {
         isCaseSensitive,
         isWholeWord,
         isRegexp
@@ -287,7 +287,7 @@ export default {
 
     replace (isSingle = true) {
       const { replaceValue, isCaseSensitive, isWholeWord, isRegexp } = this
-      bus.$emit('replaceValue', replaceValue, {
+      bus.emit('replaceValue', replaceValue, {
         isSingle,
         isCaseSensitive,
         isWholeWord,

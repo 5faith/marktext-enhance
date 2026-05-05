@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
+import { Store } from 'vuex'
 import { ipcRenderer } from 'electron'
 
 import listenForMain from './listenForMain'
@@ -11,8 +10,6 @@ import autoUpdates from './autoUpdates'
 import notification from './notification'
 import tweet from './tweet'
 import commandCenter from './commandCenter'
-
-Vue.use(Vuex)
 
 // global states
 const state = {

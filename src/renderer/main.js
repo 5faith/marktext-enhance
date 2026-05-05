@@ -1,8 +1,8 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import VueElectron from 'vue-electron'
 import sourceMapSupport from 'source-map-support'
 import bootstrapRenderer from './bootstrap'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 import axios from './axios'
@@ -67,48 +67,50 @@ addElementStyle()
 // Configure Vue
 locale.use(lang)
 
-Vue.use(Dialog)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(InputNumber)
-Vue.use(Button)
-Vue.use(Tooltip)
-Vue.use(Upload)
-Vue.use(Slider)
-Vue.use(Checkbox)
-Vue.use(ColorPicker)
-Vue.use(Col)
-Vue.use(Row)
-Vue.use(Tree)
-Vue.use(Autocomplete)
-Vue.use(Switch)
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Radio)
-Vue.use(RadioGroup)
-Vue.use(Table)
-Vue.use(TableColumn)
-Vue.use(Tabs)
-Vue.use(TabPane)
-Vue.use(Input)
-
-Vue.use(VueRouter)
-
-Vue.use(VueElectron)
-Vue.http = Vue.prototype.$http = axios
-Vue.config.productionTip = false
-
-services.forEach(s => {
-  Vue.prototype['$' + s.name] = s[s.name]
-})
-
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: routes(global.marktext.env.type)
 })
 
-/* eslint-disable no-new */
-new Vue({
+const app = createApp({
   store,
   router,
   template: '<router-view class="view"></router-view>'
-}).$mount('#app')
+})
+
+app.use(router)
+app.use(store)
+
+app.use(Dialog)
+app.use(Form)
+app.use(FormItem)
+app.use(InputNumber)
+app.use(Button)
+app.use(Tooltip)
+app.use(Upload)
+app.use(Slider)
+app.use(Checkbox)
+app.use(ColorPicker)
+app.use(Col)
+app.use(Row)
+app.use(Tree)
+app.use(Autocomplete)
+app.use(Switch)
+app.use(Select)
+app.use(Option)
+app.use(Radio)
+app.use(RadioGroup)
+app.use(Table)
+app.use(TableColumn)
+app.use(Tabs)
+app.use(TabPane)
+app.use(Input)
+
+app.use(VueElectron)
+app.config.globalProperties.$http = axios
+
+services.forEach(s => {
+  app.config.globalProperties['$' + s.name] = s[s.name]
+})
+
+app.mount('#app')

@@ -123,7 +123,7 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      bus.$on('SIDEBAR::show-new-input', this.handleInputFocus)
+      bus.on('SIDEBAR::show-new-input', this.handleInputFocus)
       // hide rename or create input if needed
       document.addEventListener('click', event => {
         const target = event.target
@@ -157,7 +157,7 @@ export default {
     },
     createFile () {
       this.$store.dispatch('CHANGE_ACTIVE_ITEM', this.projectTree)
-      bus.$emit('SIDEBAR::new', 'file')
+      bus.emit('SIDEBAR::new', 'file')
     },
     toggleOpenedFiles () {
       this.showOpenedFiles = !this.showOpenedFiles

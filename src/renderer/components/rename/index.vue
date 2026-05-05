@@ -36,11 +36,11 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      bus.$on('rename', this.handleRename)
+      bus.on('rename', this.handleRename)
     })
   },
   beforeDestroy () {
-    bus.$off('rename', this.handleRename)
+    bus.off('rename', this.handleRename)
   },
   computed: {
     ...mapState({

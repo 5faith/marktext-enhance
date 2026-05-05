@@ -134,7 +134,7 @@ export default {
   created () {
     this.$nextTick(() => {
       this.keyword = this.searchMatches.value
-      bus.$on('findInFolder', this.handleFindInFolder)
+      bus.on('findInFolder', this.handleFindInFolder)
       if (this.keyword.length > 0 && this.searcherRunning === false) {
         this.searcherRunning = true
         this.search()
@@ -322,7 +322,7 @@ export default {
     }
   },
   destroyed () {
-    bus.$off('findInFolder', this.handleFindInFolder)
+    bus.off('findInFolder', this.handleFindInFolder)
   }
 }
 </script>
