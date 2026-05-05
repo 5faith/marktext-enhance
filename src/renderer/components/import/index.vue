@@ -1,7 +1,7 @@
 <template>
   <div class="import-dialog">
     <el-dialog
-      :visible.sync="showImport"
+      v-model="showImport"
       :show-close="false"
       :modal="true"
       custom-class="ag-dialog-table"
@@ -33,49 +33,50 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import bus from '@/bus'
 import { ipcRenderer } from 'electron'
 import importIcon from '@/assets/icons/import_file.svg'
 
-export default {
-  data () {
-    this.importIcon = importIcon
-    return {
-      showImport: false,
-      isOver: false
-    }
-  },
-  created () {
-    bus.on('importDialog', this.showDialog)
-  },
-  beforeDestroy () {
-    bus.off('importDialog', this.showDialog)
-  },
-  methods: {
-    showDialog (boolean) {
-      if (boolean !== this.showImport) {
-        this.showImport = boolean
-      }
-    },
-    dragOverHandler (e) {
-      this.isOver = true
-    },
-    dragLeaveHandler (e) {
-      this.isOver = false
-    },
-    dropHandler (e) {
-      e.preventDefault()
-      if (e.dataTransfer.files) {
-        const fileList = []
-        for (const file of e.dataTransfer.files) {
-          fileList.push(file.path)
-        }
-        ipcRenderer.send('mt::window::drop', fileList)
-      }
-    }
+// State
+const showImport = ref(false)
+const isOver = ref(false)
+
+// Methods
+const showDialog = (boolean) => {
+  if (boolean !== showImport.value) {
+    showImport.value = boolean
   }
 }
+
+const dragOverHandler = (e) => {
+  isOver.value = true
+}
+
+const dragLeaveHandler = (e) => {
+  isOver.value = false
+}
+
+const dropHandler = (e) => {
+  e.preventDefault()
+  if (e.dataTransfer.files) {
+    const fileList = []
+    for (const file of e.dataTransfer.files) {
+      fileList.push(file.path)
+    }
+    ipcRenderer.send('mt::window::drop', fileList)
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  bus.on('importDialog', showDialog)
+})
+
+onBeforeUnmount(() => {
+  bus.off('importDialog', showDialog)
+})
 </script>
 
 <style scoped>
