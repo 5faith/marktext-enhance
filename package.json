@@ -35,7 +35,6 @@
     "@hfelix/electron-spellchecker": "^2.0.0",
     "@marktext/file-icons": "file:../marktext-file-icons",
     "@octokit/rest": "^18.12.0",
-    "@vue/compat": "npm:@vue/compat@^3.4",
     "arg": "^5.0.1",
     "axios": "^0.26.0",
     "ced": "^2.0.0",
