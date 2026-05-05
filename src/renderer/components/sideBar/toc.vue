@@ -21,30 +21,25 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import { useEditorStore, usePreferencesStore } from '@/stores'
 import bus from '../../bus'
 import EmptyIcon from '@/assets/icons/undraw_toc_empty.svg'
 
-export default {
-  data () {
-    this.EmptyIcon = EmptyIcon
-    return {
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
-    }
-  },
-  computed: {
-        toc () { return useEditorStore().toc },
-    wordWrapInToc () { return usePreferencesStore().wordWrapInToc }
-  },
-  methods: {
-    handleClick ({ slug }) {
-      bus.emit('scroll-to-header', slug)
-    }
-  }
+// Static data
+const defaultProps = {
+  children: 'children',
+  label: 'label'
+}
+
+// Stores
+const toc = computed(() => useEditorStore().toc)
+const wordWrapInToc = computed(() => usePreferencesStore().wordWrapInToc)
+
+// Methods
+const handleClick = ({ slug }) => {
+  bus.emit('scroll-to-header', slug)
 }
 </script>
 
