@@ -14,20 +14,31 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import { useEditorStore } from '@/stores'
-import { tabsMixins } from '../../mixins'
 
-export default {
-  mixins: [tabsMixins],
-  props: {
-    file: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-    currentFile () { return useEditorStore().currentFile }
+const props = defineProps({
+  file: {
+    type: Object,
+    required: true
+  }
+})
+
+const currentFile = computed(() => useEditorStore().currentFile)
+
+const selectFile = (file) => {
+  if (file.id !== currentFile.value.id) {
+    useEditorStore().updateCurrentFile(file)
+  }
+}
+
+const removeFileInTab = (file) => {
+  const { isSaved } = file
+  if (isSaved) {
+    useEditorStore().forceCloseTab(file)
+  } else {
+    useEditorStore().closeUnsavedTab(file)
   }
 }
 </script>
