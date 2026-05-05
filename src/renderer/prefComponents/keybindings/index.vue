@@ -15,15 +15,15 @@
         <el-table-column prop="accelerator" label="Key Combination" width="220">
         </el-table-column>
         <el-table-column fixed="right" label="Options" width="90">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button @click="handleEditClick(scope.$index, scope.row)" type="text" size="small" title="Edit">
-              <i class="el-icon-edit"></i>
+              <el-icon><Edit /></el-icon>
             </el-button>
             <el-button @click="handleResetClick(scope.$index, scope.row)" type="text" size="small" title="Reset">
-              <i class="el-icon-refresh-right"></i>
+              <el-icon><RefreshRight /></el-icon>
             </el-button>
             <el-button @click="handleUnbindClick(scope.$index, scope.row)" type="text" size="small" title="Unbind">
-              <i class="el-icon-delete"></i>
+              <el-icon><Delete /></el-icon>
             </el-button>
           </template>
         </el-table-column>

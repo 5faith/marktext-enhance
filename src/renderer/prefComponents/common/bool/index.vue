@@ -2,9 +2,9 @@
   <section class="pref-switch-item" :class="{'ag-underdevelop': disable}">
     <div class="description">
       <span>{{description}}:</span>
-      <i class="el-icon-info" v-if="more"
+      <el-icon v-if="more"
         @click="handleMoreClick"
-      ></i>
+      ><Info /></el-icon>
       <el-tooltip
         v-else-if="detailedDescription"
         :content="detailedDescription"
@@ -12,7 +12,7 @@
         effect="dark"
         placement="top-start"
       >
-        <i class="el-icon-info"></i>
+        <el-icon><Info /></el-icon>
       </el-tooltip>
       <span v-if="notes" class="notes">
         {{notes}}

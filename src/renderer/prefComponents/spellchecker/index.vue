@@ -94,7 +94,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button icon="el-icon-document-add" @click="addNewDict"></el-button>
+        <el-button :icon="DocumentAdd" @click="addNewDict"></el-button>
       </div>
       <div v-if="errorMessage" class="description">{{ errorMessage }}</div>
     </div>

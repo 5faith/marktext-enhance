@@ -2,7 +2,7 @@
   <section class="pref-font-input-item" :class="{'ag-underdevelop': disable}">
     <div class="description">
       <span>{{description}}:</span>
-      <i class="el-icon-info" v-if="more" @click="handleMoreClick"></i>
+      <el-icon v-if="more" @click="handleMoreClick"><Info /></el-icon>
     </div>
     <el-autocomplete
       class="font-autocomplete"
@@ -12,8 +12,10 @@
       placeholder="Select font..."
       @select="handleSelect"
     >
-      <i class="el-icon-arrow-down el-input__icon" slot="suffix"></i>
-      <template slot-scope="{ item }">
+      <template #suffix>
+        <el-icon class="el-input__icon"><ArrowDown /></el-icon>
+      </template>
+      <template #default="{ item }">
         <div class="family">{{ item }}</div>
       </template>
     </el-autocomplete>
