@@ -48,220 +48,203 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import bus from '../../bus'
 import loading from '../loading'
 import { useCommandCenterStore } from '@/stores'
 
 const log = require('electron-log')
 
-export default {
-  components: {
-    loading
-  },
-  computed: {
-    rootCommand () { return useCommandCenterStore().rootCommand }
-  },
-  data () {
-    this.currentCommand = null
-    this.defaultPlaceholderText = 'Type a command to execute'
-    return {
-      showCommandPalette: false,
-      placeholderText: this.defaultPlaceholderText,
-      query: '',
-      selectedCommandIndex: -1,
-      availableCommands: [],
-      searcherBusy: false
-    }
-  },
-  created () {
-    this.$nextTick(() => {
-      bus.on('show-command-palette', this.handleShow)
+const currentCommand = ref(null)
+const showCommandPalette = ref(false)
+const defaultPlaceholderText = 'Type a command to execute'
+const placeholderText = ref(defaultPlaceholderText)
+const query = ref('')
+const selectedCommandIndex = ref(-1)
+const availableCommands = ref([])
+const searcherBusy = ref(false)
+const searchRef = ref(null)
+const commandItemsRef = ref([])
+
+const rootCommand = computed(() => useCommandCenterStore().rootCommand)
+
+const handleShow = (command) => {
+  currentCommand.value = command || rootCommand.value
+  currentCommand.value.run()
+    .then(() => {
+      availableCommands.value = currentCommand.value.subcommands
+      selectedCommandIndex.value = currentCommand.value.subcommandSelectedIndex
+      placeholderText.value = currentCommand.value.placeholder || defaultPlaceholderText
+      query.value = ''
+      showCommandPalette.value = true
+      bus.emit('editor-blur')
+      nextTick(() => {
+        if (searchRef.value) {
+          searchRef.value.focus()
+        }
+      })
     })
-  },
-  beforeDestroy () {
-    bus.off('show-command-palette', this.handleShow)
-  },
-  methods: {
-    handleShow (command) {
-      this.currentCommand = command || this.rootCommand
-      this.currentCommand.run()
-        .then(() => {
-          this.availableCommands = this.currentCommand.subcommands
-          this.selectedCommandIndex = this.currentCommand.subcommandSelectedIndex
-          this.placeholderText = this.currentCommand.placeholder || this.defaultPlaceholderText
-          this.query = ''
-          this.showCommandPalette = true
-          bus.emit('editor-blur')
-          this.$nextTick(() => {
-            if (this.$refs.search) {
-              this.$refs.search.focus()
-            }
-          })
-        })
-        .catch(error => {
-          // Allow to throw new Error(null) to indicate an invalid state.
-          if (error && error.message) {
-            log.error('Unable to initialize command:', error)
-          }
-        })
-    },
-    handleDialogClose () {
-      // Reset all settings
-      this.selectedCommandIndex = -1
-      this.query = ''
-      this.availableCommands = []
-      if (this.currentCommand.unload) {
-        this.currentCommand.unload()
+    .catch(error => {
+      if (error && error.message) {
+        log.error('Unable to initialize command:', error)
       }
-      this.currentCommand = null
-    },
-    handleBeforeInput (event) {
-      const { availableCommands, selectedCommandIndex } = this
-      switch (event.key) {
-        case 'ArrowUp': {
-          event.preventDefault()
-          event.stopPropagation()
-          if (selectedCommandIndex <= 0) {
-            this.selectedCommandIndex = availableCommands.length - 1
-          } else {
-            this.selectedCommandIndex--
-          }
+    })
+}
 
-          const items = this.$refs['command-items']
-          if (items && items.length > 0) {
-            this.$refs['command-items'][this.selectedCommandIndex].scrollIntoView({ block: 'end' })
-          }
-          break
-        }
-        case 'ArrowDown': {
-          event.preventDefault()
-          event.stopPropagation()
-          if (selectedCommandIndex + 1 >= availableCommands.length) {
-            this.selectedCommandIndex = 0
-          } else {
-            this.selectedCommandIndex++
-          }
+const handleDialogClose = () => {
+  selectedCommandIndex.value = -1
+  query.value = ''
+  availableCommands.value = []
+  if (currentCommand.value?.unload) {
+    currentCommand.value.unload()
+  }
+  currentCommand.value = null
+}
 
-          const items = this.$refs['command-items']
-          if (items && items.length > 0) {
-            this.$refs['command-items'][this.selectedCommandIndex].scrollIntoView({ block: 'end' })
-          }
-          break
-        }
-      }
-    },
-    handleInput (event) {
-      if (event.isComposing) {
-        return
-      }
-      // NOTE: We're using keyup to catch "enter" key but `ctrlKey`
-      // etc doesn't work here.
-      switch (event.key) {
-        case 'Control':
-        case 'Alt':
-        case 'Meta':
-        case 'Shift':
-        case 'Escape':
-        case 'PageDown':
-        case 'PageUp':
-        case 'ArrowUp':
-        case 'ArrowDown':
-        case 'ArrowLeft':
-        case 'ArrowRight': {
-          // No-op
-          break
-        }
-        case 'Enter': {
-          this.search()
-          break
-        }
-        default: {
-          this.updateCommands()
-          break
-        }
-      }
-    },
-    search (commandId = null) {
-      const { availableCommands, selectedCommandIndex } = this
-      if (commandId) {
-        // Command selected from dropdown.
-        this.executeCommand(commandId)
-        return
-      } else if (selectedCommandIndex >= 0 && selectedCommandIndex < availableCommands.length) {
-        // Pressed enter on selected command.
-        this.executeCommand(availableCommands[selectedCommandIndex].id)
-        return
-      }
-
-      // Otherwise update list
-      this.updateCommands()
-    },
-    updateCommands () {
-      const { currentCommand, query } = this
-      const queryString = query.trim()
-
-      // Allow to handle search result by command (e.g. quick search).
-      if (currentCommand.search) {
-        this.searcherBusy = true
-        currentCommand.search(queryString)
-          .then(result => {
-            this.searcherBusy = false
-            this.availableCommands = result || []
-            this.selectedCommandIndex = this.availableCommands.length ? 0 : -1
-          })
-          .catch(error => {
-            // The query was cancel or restarted if `message` is null.
-            if (error && error.message) {
-              this.searcherBusy = false
-              this.availableCommands = []
-              this.selectedCommandIndex = -1
-              log.error(error)
-            }
-          })
-        return
-      }
-
-      // Default handler
-      if (!queryString) {
-        this.availableCommands = currentCommand.subcommands
+const handleBeforeInput = (event) => {
+  const { availableCommands: availCmds, selectedCommandIndex: selIdx } = { availableCommands: availableCommands.value, selectedCommandIndex: selectedCommandIndex.value }
+  switch (event.key) {
+    case 'ArrowUp': {
+      event.preventDefault()
+      event.stopPropagation()
+      if (selIdx <= 0) {
+        selectedCommandIndex.value = availCmds.length - 1
       } else {
-        this.availableCommands = currentCommand.subcommands
-          .filter(c => c.description.toLowerCase().indexOf(queryString.toLowerCase()) !== -1)
+        selectedCommandIndex.value--
       }
-      this.selectedCommandIndex = this.availableCommands.length ? 0 : -1
-    },
-    executeCommand (commandId) {
-      const { availableCommands, currentCommand } = this
-      const command = availableCommands.find(c => c.id === commandId)
-      if (!command) {
-        log.error(`Cannot find command "${commandId}".`)
-        return
+      
+      const items = commandItemsRef.value
+      if (items && items.length > 0) {
+        items[selectedCommandIndex.value]?.scrollIntoView({ block: 'end' })
       }
-
-      const { executeSubcommand } = currentCommand
-      if (executeSubcommand) {
-        this.showCommandPalette = false
-        executeSubcommand(commandId, command.value)
+      break
+    }
+    case 'ArrowDown': {
+      event.preventDefault()
+      event.stopPropagation()
+      if (selIdx + 1 >= availCmds.length) {
+        selectedCommandIndex.value = 0
       } else {
-        const { execute, subcommands, run } = command
-
-        // Allow to load static commands without reloading command palette.
-        if (execute === undefined && run === undefined && subcommands) {
-          // Load subcommands
-          this.currentCommand = command
-          // NOTE: selected index is always -1 by static state loaded this way.
-          this.selectedCommandIndex = -1
-          this.query = ''
-          this.updateCommands()
-        } else {
-          this.showCommandPalette = false
-          execute()
-        }
+        selectedCommandIndex.value++
       }
+      
+      const items = commandItemsRef.value
+      if (items && items.length > 0) {
+        items[selectedCommandIndex.value]?.scrollIntoView({ block: 'end' })
+      }
+      break
     }
   }
 }
+
+const handleInput = (event) => {
+  if (event.isComposing) {
+    return
+  }
+  switch (event.key) {
+    case 'Control':
+    case 'Alt':
+    case 'Meta':
+    case 'Shift':
+    case 'Escape':
+    case 'PageDown':
+    case 'PageUp':
+    case 'ArrowUp':
+    case 'ArrowDown':
+    case 'ArrowLeft':
+    case 'ArrowRight': {
+      break
+    }
+    case 'Enter': {
+      search()
+      break
+    }
+    default: {
+      updateCommands()
+      break
+    }
+  }
+}
+
+const search = (commandId = null) => {
+  const { availableCommands: availCmds, selectedCommandIndex: selIdx } = { availableCommands: availableCommands.value, selectedCommandIndex: selectedCommandIndex.value }
+  if (commandId) {
+    executeCommand(commandId)
+    return
+  } else if (selIdx >= 0 && selIdx < availCmds.length) {
+    executeCommand(availCmds[selIdx].id)
+    return
+  }
+  
+  updateCommands()
+}
+
+const updateCommands = () => {
+  const { currentCommand: currCmd, query: q } = { currentCommand: currentCommand.value, query: query.value }
+  const queryString = q.trim()
+  
+  if (currCmd?.search) {
+    searcherBusy.value = true
+    currCmd.search(queryString)
+      .then(result => {
+        searcherBusy.value = false
+        availableCommands.value = result || []
+        selectedCommandIndex.value = availableCommands.value.length ? 0 : -1
+      })
+      .catch(error => {
+        if (error && error.message) {
+          searcherBusy.value = false
+          availableCommands.value = []
+          selectedCommandIndex.value = -1
+          log.error(error)
+        }
+      })
+    return
+  }
+  
+  if (!queryString) {
+    availableCommands.value = currCmd?.subcommands || []
+  } else {
+    availableCommands.value = (currCmd?.subcommands || [])
+      .filter(c => c.description.toLowerCase().indexOf(queryString.toLowerCase()) !== -1)
+  }
+  selectedCommandIndex.value = availableCommands.value.length ? 0 : -1
+}
+
+const executeCommand = (commandId) => {
+  const { availableCommands: availCmds, currentCommand: currCmd } = { availableCommands: availableCommands.value, currentCommand: currentCommand.value }
+  const command = availCmds.find(c => c.id === commandId)
+  if (!command) {
+    log.error(`Cannot find command "${commandId}".`)
+    return
+  }
+  
+  const { executeSubcommand } = currCmd || {}
+  if (executeSubcommand) {
+    showCommandPalette.value = false
+    executeSubcommand(commandId, command.value)
+  } else {
+    const { execute, subcommands, run } = command
+    if (execute === undefined && run === undefined && subcommands) {
+      currentCommand.value = command
+      selectedCommandIndex.value = -1
+      query.value = ''
+      updateCommands()
+    } else {
+      showCommandPalette.value = false
+      execute()
+    }
+  }
+}
+
+onMounted(() => {
+  bus.on('show-command-palette', handleShow)
+})
+
+onBeforeUnmount(() => {
+  bus.off('show-command-palette', handleShow)
+})
 </script>
 
 <style scoped>
