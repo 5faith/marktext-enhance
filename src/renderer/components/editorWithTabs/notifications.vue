@@ -30,39 +30,33 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import { useEditorStore, useLayoutStore } from '@/stores'
 
-export default {
-  data () {
-    return {}
-  },
-  computed: {
-        currentFile () { return useEditorStore().currentFile },
-        showSideBar () { return useLayoutStore().showSideBar },
-        sideBarWidth () { return useLayoutStore().sideBarWidth },
-    currentNotification () {
-      const notifications = this.currentFile.notifications
-      if (!notifications || notifications.length === 0) {
-        return null
-      }
-      return notifications[0]
-    }
-  },
-  methods: {
-    handleClick (status) {
-      const notifications = this.currentFile.notifications
-      if (!notifications || notifications.length === 0) {
-        console.error('notifications::handleClick: Cannot find notification on stack.')
-        return
-      }
+const currentFile = computed(() => useEditorStore().currentFile)
+const showSideBar = computed(() => useLayoutStore().showSideBar)
+const sideBarWidth = computed(() => useLayoutStore().sideBarWidth)
 
-      const item = notifications.shift()
-      const action = item.action
-      if (action) {
-        action(status)
-      }
-    }
+const currentNotification = computed(() => {
+  const notifications = currentFile.value?.notifications
+  if (!notifications || notifications.length === 0) {
+    return null
+  }
+  return notifications[0]
+})
+
+const handleClick = (status) => {
+  const notifications = currentFile.value?.notifications
+  if (!notifications || notifications.length === 0) {
+    console.error('notifications::handleClick: Cannot find notification on stack.')
+    return
+  }
+  
+  const item = notifications.shift()
+  const action = item.action
+  if (action) {
+    action(status)
   }
 }
 </script>
