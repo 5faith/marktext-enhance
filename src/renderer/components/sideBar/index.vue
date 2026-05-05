@@ -48,92 +48,93 @@
   </div>
 </template>
 
-<script>
-import { sideBarIcons, sideBarBottomIcons } from './help'
+<script setup>
+import { ref, computed, onMounted, nextTick } from 'vue'
 import Tree from './tree.vue'
 import SideBarSearch from './search.vue'
 import Toc from './toc.vue'
 import { useLayoutStore, useProjectStore, useEditorStore } from '@/stores'
 
-export default {
-  data () {
-    this.sideBarIcons = sideBarIcons
-    this.sideBarBottomIcons = sideBarBottomIcons
-    return {
-      openedFiles: [],
-      sideBarViewWidth: 280
-    }
-  },
-  components: {
-    Tree,
-    SideBarSearch,
-    Toc
-  },
-  computed: {
-        rightColumn () { return useLayoutStore().rightColumn },
-        showSideBar () { return useLayoutStore().showSideBar },
-        projectTree () { return useProjectStore().projectTree },
-        sideBarWidth () { return useLayoutStore().sideBarWidth },
-        tabs () { return useEditorStore().tabs },
-    finalSideBarWidth () {
-      const { showSideBar, rightColumn, sideBarViewWidth } = this
-      if (!showSideBar) return 0
-      if (rightColumn === '') return 45
-      return sideBarViewWidth < 220 ? 220 : sideBarViewWidth
-    }
-  },
-  created () {
-    this.$nextTick(() => {
-      const dragBar = this.$refs.dragBar
-      let startX = 0
-      let sideBarWidth = +this.sideBarWidth
-      let startWidth = sideBarWidth
+const sideBarIcons = [
+  { name: 'folder', icon: 'folder' },
+  { name: 'file', icon: 'file' },
+  { name: 'search', icon: 'search' },
+  { name: 'toc', icon: 'list' }
+]
 
-      this.sideBarViewWidth = sideBarWidth
+const sideBarBottomIcons = [
+  { name: 'settings', icon: 'setting' }
+]
 
-      const mouseUpHandler = event => {
-        document.removeEventListener('mousemove', mouseMoveHandler, false)
-        document.removeEventListener('mouseup', mouseUpHandler, false)
-        useLayoutStore().changeSideBarWidth(sideBarWidth < 220 ? 220 : sideBarWidth)
-      }
+const openedFiles = ref([])
+const sideBarViewWidth = ref(280)
+const dragBar = ref(null)
 
-      const mouseMoveHandler = event => {
-        const offset = event.clientX - startX
-        sideBarWidth = startWidth + offset
-        this.sideBarViewWidth = sideBarWidth
-      }
+const rightColumn = computed(() => useLayoutStore().rightColumn)
+const showSideBar = computed(() => useLayoutStore().showSideBar)
+const projectTree = computed(() => useProjectStore().projectTree)
+const sideBarWidth = computed(() => useLayoutStore().sideBarWidth)
+const tabs = computed(() => useEditorStore().tabs)
 
-      const mouseDownHandler = event => {
-        startX = event.clientX
-        startWidth = +this.sideBarWidth
-        document.addEventListener('mousemove', mouseMoveHandler, false)
-        document.addEventListener('mouseup', mouseUpHandler, false)
-      }
+const finalSideBarWidth = computed(() => {
+  if (!showSideBar.value) return 0
+  if (rightColumn.value === '') return 45
+  return sideBarViewWidth.value < 220 ? 220 : sideBarViewWidth.value
+})
 
-      dragBar.addEventListener('mousedown', mouseDownHandler, false)
-    })
-  },
-  methods: {
-    handleLeftIconClick (name) {
-      if (this.rightColumn === name) {
-        useLayoutStore().setLayout({ rightColumn: '' })
-        useLayoutStore().changeSideBarWidth(this.finalSideBarWidth)
-      } else {
-        const needDispatch = this.rightColumn === ''
-        useLayoutStore().setLayout({ rightColumn: name })
-        this.sideBarViewWidth = +this.sideBarWidth
-        if (needDispatch) {
-          useLayoutStore().changeSideBarWidth(this.finalSideBarWidth)
-        }
-      }
-    },
-    handleLeftBottomClick (name) {
-      if (name === 'settings') {
-        useProjectStore().openSettingWindow()
-      }
+const handleLeftIconClick = (name) => {
+  if (rightColumn.value === name) {
+    useLayoutStore().setLayout({ rightColumn: '' })
+    useLayoutStore().changeSideBarWidth(finalSideBarWidth.value)
+  } else {
+    const needDispatch = rightColumn.value === ''
+    useLayoutStore().setLayout({ rightColumn: name })
+    sideBarViewWidth.value = +sideBarWidth.value
+    if (needDispatch) {
+      useLayoutStore().changeSideBarWidth(finalSideBarWidth.value)
     }
   }
 }
+
+const handleLeftBottomClick = (name) => {
+  if (name === 'settings') {
+    useProjectStore().openSettingWindow()
+  }
+}
+
+onMounted(() => {
+  nextTick(() => {
+    const dragBarEl = dragBar.value
+    if (!dragBarEl) return
+    
+    let startX = 0
+    let sideBarWidthVal = +sideBarWidth.value
+    let startWidth = sideBarWidthVal
+    
+    sideBarViewWidth.value = sideBarWidthVal
+    
+    const mouseUpHandler = (event) => {
+      document.removeEventListener('mousemove', mouseMoveHandler, false)
+      document.removeEventListener('mouseup', mouseUpHandler, false)
+      useLayoutStore().changeSideBarWidth(sideBarWidthVal < 220 ? 220 : sideBarWidthVal)
+    }
+    
+    const mouseMoveHandler = (event) => {
+      const offset = event.clientX - startX
+      sideBarWidthVal = startWidth + offset
+      sideBarViewWidth.value = sideBarWidthVal
+    }
+    
+    const mouseDownHandler = (event) => {
+      startX = event.clientX
+      startWidth = +sideBarWidth.value
+      document.addEventListener('mousemove', mouseMoveHandler, false)
+      document.addEventListener('mouseup', mouseUpHandler, false)
+    }
+    
+    dragBarEl.addEventListener('mousedown', mouseDownHandler, false)
+  })
+})
 </script>
 
 <style scoped>
