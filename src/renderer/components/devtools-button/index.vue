@@ -4,16 +4,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ipcRenderer } from 'electron'
 
-export default {
-  name: 'DevtoolsButton',
-  methods: {
-    openDevTools () {
-      ipcRenderer.send('mt::open-devtools')
-    }
-  }
+const openDevTools = () => {
+  ipcRenderer.send('mt::open-devtools')
 }
 </script>
 
