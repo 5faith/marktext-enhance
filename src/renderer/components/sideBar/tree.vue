@@ -80,7 +80,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, useTemplateRef } from 'vue'
 import Folder from './treeFolder.vue'
 import File from './treeFile.vue'
 import OpenedFile from './treeOpenedTab.vue'
@@ -89,82 +90,107 @@ import bus from '../../bus'
 import { createFileOrDirectoryMixins } from '../../mixins'
 import FolderIcon from '@/assets/icons/undraw_folder.svg'
 
-export default {
-  mixins: [createFileOrDirectoryMixins],
-  data () {
-    this.depth = 0
-    this.FolderIcon = FolderIcon
-    return {
-      showDirectories: true,
-      showNewInput: false,
-      showOpenedFiles: true,
-      createName: ''
+// State
+const depth = ref(0)
+const showDirectories = ref(true)
+const showNewInput = ref(false)
+const showOpenedFiles = ref(true)
+const createName = ref('')
+
+// Template refs
+const inputRef = useTemplateRef('input')
+
+// Props
+const props = defineProps({
+  projectTree: {
+    validator: function (value) {
+      return typeof value === 'object'
+    },
+    required: true
+  },
+  openedFiles: Array,
+  tabs: Array
+})
+
+// Stores
+const createCache = computed(() => useProjectStore().createCache)
+
+// Methods
+const openFolder = () => {
+  useProjectStore().askForOpenProject()
+}
+
+const saveAll = (isClose) => {
+  useEditorStore().askForSaveAll(isClose)
+}
+
+const createFile = () => {
+  useProjectStore().changeActiveItem(props.projectTree)
+  bus.emit('SIDEBAR::new', 'file')
+}
+
+const toggleOpenedFiles = () => {
+  showOpenedFiles.value = !showOpenedFiles.value
+}
+
+const toggleDirectories = () => {
+  showDirectories.value = !showDirectories.value
+}
+
+const handleInputEnter = () => {
+  // Handle input enter logic
+  console.log('Input enter:', createName.value)
+}
+
+const handleInputFocus = () => {
+  nextTick(() => {
+    if (inputRef.value) {
+      inputRef.value.focus()
     }
-  },
-  props: {
-    projectTree: {
-      validator: function (value) {
-        return typeof value === 'object'
-      },
-      required: true
-    },
-    openedFiles: Array,
-    tabs: Array
-  },
-  components: {
-    Folder,
-    File,
-    OpenedFile
-  },
-  computed: {
-    createCache () { return useProjectStore().createCache }
-  },
-  created () {
-    this.$nextTick(() => {
-      bus.on('SIDEBAR::show-new-input', this.handleInputFocus)
-      // hide rename or create input if needed
-      document.addEventListener('click', event => {
-        const target = event.target
-        if (target.tagName !== 'INPUT') {
-          useProjectStore().changeActiveItem({})
-          useProjectStore().setCreateCache({})
-          useProjectStore().setRenameCache(null)
-        }
-      })
-      document.addEventListener('contextmenu', event => {
-        const target = event.target
-        if (target.tagName !== 'INPUT') {
-          useProjectStore().setCreateCache({})
-          useProjectStore().setRenameCache(null)
-        }
-      })
-      document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          useProjectStore().setCreateCache({})
-          useProjectStore().setRenameCache(null)
-        }
-      })
-    })
-  },
-  methods: {
-    openFolder () {
-      useProjectStore().askForOpenProject()
-    },
-    saveAll (isClose) {
-      useEditorStore().askForSaveAll(isClose)
-    },
-    createFile () {
-      useProjectStore().changeActiveItem(this.projectTree)
-      bus.emit('SIDEBAR::new', 'file')
-    },
-    toggleOpenedFiles () {
-      this.showOpenedFiles = !this.showOpenedFiles
-    },
-    toggleDirectories () {
-      this.showDirectories = !this.showDirectories
-    }
+  })
+}
+
+// Event handlers
+const handleDocumentClick = (event) => {
+  const target = event.target
+  if (target.tagName !== 'INPUT') {
+    useProjectStore().changeActiveItem({})
+    useProjectStore().setCreateCache({})
+    useProjectStore().setRenameCache(null)
   }
 }
+
+const handleDocumentContextMenu = (event) => {
+  const target = event.target
+  if (target.tagName !== 'INPUT') {
+    useProjectStore().setCreateCache({})
+    useProjectStore().setRenameCache(null)
+  }
+}
+
+const handleDocumentKeyDown = (event) => {
+  if (event.key === 'Escape') {
+    useProjectStore().setCreateCache({})
+    useProjectStore().setRenameCache(null)
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  nextTick(() => {
+    bus.on('SIDEBAR::show-new-input', handleInputFocus)
+    
+    document.addEventListener('click', handleDocumentClick)
+    document.addEventListener('contextmenu', handleDocumentContextMenu)
+    document.addEventListener('keydown', handleDocumentKeyDown)
+  })
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick)
+  document.removeEventListener('contextmenu', handleDocumentContextMenu)
+  document.removeEventListener('keydown', handleDocumentKeyDown)
+})
 </script>
 
 <style scoped>
