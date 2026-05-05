@@ -115,187 +115,183 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import bus from '../../bus'
 import { useEditorStore } from '@/stores'
 import FindCaseIcon from '@/assets/icons/searchIcons/iconCase.svg'
 import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
 
-export default {
-  data () {
-    this.FindCaseIcon = FindCaseIcon
-    this.FindWordIcon = FindWordIcon
-    this.FindRegexIcon = FindRegexIcon
-    return {
-      showSearch: false,
-      isCaseSensitive: false,
-      isWholeWord: false,
-      isRegexp: false,
-      type: 'search',
-      searchValue: '',
-      replaceValue: '',
-      searchErrorMsg: ''
+const showSearch = ref(false)
+const isCaseSensitive = ref(false)
+const isWholeWord = ref(false)
+const isRegexp = ref(false)
+const type = ref('search')
+const searchValue = ref('')
+const replaceValue = ref('')
+const searchErrorMsg = ref('')
+const searchRef = ref(null)
+
+const searchMatches = computed(() => useEditorStore().currentFile?.searchMatches)
+const highlightIndex = computed(() => {
+  if (searchMatches.value) {
+    return searchMatches.value.index
+  } else {
+    return -1
+  }
+})
+const highlightCount = computed(() => {
+  if (searchMatches.value) {
+    return searchMatches.value.matches.length
+  } else {
+    return 0
+  }
+})
+
+watch(searchMatches, (newValue, oldValue) => {
+  if (!newValue || !oldValue) return
+  const { value } = newValue
+  if (value && value !== oldValue.value) {
+    searchValue.value = value
+  }
+})
+
+const toggleCtrl = (ctrl) => {
+  if (ctrl === 'isCaseSensitive') isCaseSensitive.value = !isCaseSensitive.value
+  if (ctrl === 'isWholeWord') isWholeWord.value = !isWholeWord.value
+  if (ctrl === 'isRegexp') isRegexp.value = !isRegexp.value
+  search()
+}
+
+const listenFind = () => {
+  showSearch.value = true
+  type.value = 'search'
+  nextTick(() => {
+    if (searchRef.value) {
+      searchRef.value.focus()
     }
-  },
-
-  watch: {
-    searchMatches: function (newValue, oldValue) {
-      if (!newValue || !oldValue) return
-      const { value } = newValue
-      if (value && value !== oldValue.value) {
-        this.searchValue = value
-      }
+    if (searchValue.value) {
+      search()
     }
-  },
+  })
+}
 
-  computed: {
-    searchMatches () { return useEditorStore().currentFile.searchMatches },
-    highlightIndex () {
-      if (this.searchMatches) {
-        return this.searchMatches.index
-      } else {
-        return -1
-      }
-    },
-    highlightCount () {
-      if (this.searchMatches) {
-        return this.searchMatches.matches.length
-      } else {
-        return 0
-      }
-    }
-  },
+const listenReplace = () => {
+  showSearch.value = true
+  type.value = 'replace'
+}
 
-  created () {
-    bus.on('find', this.listenFind)
-    bus.on('replace', this.listenReplace)
-    bus.on('findNext', this.listenFindNext)
-    bus.on('findPrev', this.listenFindPrev)
-    document.addEventListener('click', this.docClick)
-    document.addEventListener('keyup', this.docKeyup)
-  },
+const listenFindNext = () => {
+  find('next')
+}
 
-  beforeDestroy () {
-    bus.off('find', this.listenFind)
-    bus.off('replace', this.listenReplace)
-    bus.off('findNext', this.listenFindNext)
-    bus.off('findPrev', this.listenFindPrev)
-    document.removeEventListener('click', this.docClick)
-    document.removeEventListener('keyup', this.docKeyup)
-  },
+const listenFindPrev = () => {
+  find('prev')
+}
 
-  methods: {
-    toggleCtrl (ctrl) {
-      this[ctrl] = !this[ctrl]
-      this.search()
-    },
-
-    listenFind () {
-      this.showSearch = true
-      this.type = 'search'
-      this.$nextTick(() => {
-        this.$refs.search.focus()
-        if (this.searchValue) {
-          this.search()
-        }
-      })
-    },
-
-    listenReplace () {
-      this.showSearch = true
-      this.type = 'replace'
-    },
-
-    listenFindNext () {
-      this.find('next')
-    },
-
-    listenFindPrev () {
-      this.find('prev')
-    },
-
-    docKeyup (event) {
-      if (event.key === 'Escape') {
-        this.emptySearch(true)
-      }
-    },
-
-    docClick () {
-      if (!this.showSearch) return
-      this.emptySearch(true)
-    },
-
-    emptySearch (selectHighlight = false) {
-      this.showSearch = false
-      const searchValue = this.searchValue = ''
-      this.replaceValue = ''
-      bus.emit('searchValue', searchValue, { selectHighlight })
-    },
-
-    toggleSearchType () {
-      this.type = this.type === 'search' ? 'replace' : 'search'
-    },
-
-    /**
-     * Find the previous or next search result.
-     * action: prev or next
-     */
-    find (action) {
-      bus.emit('find-action', action)
-    },
-
-    search (event) {
-      if (event && event.key === 'Escape') {
-        return
-      }
-
-      if (event && event.key === 'Enter') {
-        return this.find('next')
-      }
-
-      const { searchValue, isCaseSensitive, isWholeWord, isRegexp } = this
-      if (isRegexp) {
-        // Handle invalid regexp.
-        try {
-          new RegExp(searchValue)
-          this.searchErrorMsg = ''
-        } catch (err) {
-          this.searchErrorMsg = `Invalid regular expression: /${searchValue}/.`
-          return
-        }
-        // Handle match empty string, no need to search.
-        try {
-          const SEARCH_REG = new RegExp(searchValue)
-          if (searchValue && SEARCH_REG.test('')) {
-            throw new Error()
-          }
-          this.searchErrorMsg = ''
-        } catch (err) {
-          this.searchErrorMsg = `RegExp: /${searchValue}/ match empty string.`
-          return
-        }
-      }
-      bus.emit('searchValue', searchValue, {
-        isCaseSensitive,
-        isWholeWord,
-        isRegexp
-      })
-    },
-
-    replace (isSingle = true) {
-      const { replaceValue, isCaseSensitive, isWholeWord, isRegexp } = this
-      bus.emit('replaceValue', replaceValue, {
-        isSingle,
-        isCaseSensitive,
-        isWholeWord,
-        isRegexp
-      })
-    },
-
-    noop () {}
+const docKeyup = (event) => {
+  if (event.key === 'Escape') {
+    emptySearch(true)
   }
 }
+
+const docClick = () => {
+  if (!showSearch.value) return
+  emptySearch(true)
+}
+
+const emptySearch = (selectHighlight = false) => {
+  showSearch.value = false
+  const val = searchValue.value = ''
+  replaceValue.value = ''
+  bus.emit('searchValue', val, { selectHighlight })
+}
+
+const toggleSearchType = () => {
+  type.value = type.value === 'search' ? 'replace' : 'search'
+}
+
+const find = (action) => {
+  bus.emit('find-action', action)
+}
+
+const search = (event) => {
+  if (event && event.key === 'Escape') {
+    return
+  }
+  
+  if (event && event.key === 'Enter') {
+    return find('next')
+  }
+  
+  const { searchValue: val, isCaseSensitive: isCS, isWholeWord: isWW, isRegexp: isRG } = { 
+    searchValue: searchValue.value, 
+    isCaseSensitive: isCaseSensitive.value, 
+    isWholeWord: isWholeWord.value, 
+    isRegexp: isRegexp.value 
+  }
+  
+  if (isRG) {
+    try {
+      new RegExp(val)
+      searchErrorMsg.value = ''
+    } catch (err) {
+      searchErrorMsg.value = `Invalid regular expression: /${val}/`
+      return
+    }
+    try {
+      const SEARCH_REG = new RegExp(val)
+      if (SEARCH_REG.test('')) {
+        throw new Error()
+      }
+      searchErrorMsg.value = ''
+    } catch (err) {
+      searchErrorMsg.value = `RegExp: /${val}/ match empty string.`
+      return
+    }
+  }
+  bus.emit('searchValue', val, {
+    isCaseSensitive: isCS,
+    isWholeWord: isWW,
+    isRegexp: isRG
+  })
+}
+
+const replace = (isSingle = true) => {
+  const { replaceValue: repVal, isCaseSensitive: isCS, isWholeWord: isWW, isRegexp: isRG } = {
+    replaceValue: replaceValue.value,
+    isCaseSensitive: isCaseSensitive.value,
+    isWholeWord: isWholeWord.value,
+    isRegexp: isRegexp.value
+  }
+  bus.emit('replaceValue', repVal, {
+    isSingle,
+    isCaseSensitive: isCS,
+    isWholeWord: isWW,
+    isRegexp: isRG
+  })
+}
+
+const noop = () => {}
+
+onMounted(() => {
+  bus.on('find', listenFind)
+  bus.on('replace', listenReplace)
+  bus.on('findNext', listenFindNext)
+  bus.on('findPrev', listenFindPrev)
+  document.addEventListener('click', docClick)
+  document.addEventListener('keyup', docKeyup)
+})
+
+onBeforeUnmount(() => {
+  bus.off('find', listenFind)
+  bus.off('replace', listenReplace)
+  bus.off('findNext', listenFindNext)
+  bus.off('findPrev', listenFindPrev)
+  document.removeEventListener('click', docClick)
+  document.removeEventListener('keyup', docKeyup)
+})
 </script>
 
 <style scoped>
