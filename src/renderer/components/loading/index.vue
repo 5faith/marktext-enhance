@@ -6,25 +6,23 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    size: {
-      type: Number,
-      default: 14
-    }
-  },
+<script setup>
+import { computed, defineProps } from 'vue'
 
-  computed: {
-    dotSize () {
-      const size = `${this.size}px`
-      return {
-        width: size,
-        height: size
-      }
-    }
+const props = defineProps({
+  size: {
+    type: Number,
+    default: 14
   }
-}
+})
+
+const dotSize = computed(() => {
+  const size = `${props.size}px`
+  return {
+    width: size,
+    height: size
+  }
+})
 </script>
 
 <style scoped>

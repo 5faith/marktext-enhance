@@ -1,7 +1,7 @@
 <template>
   <div class="about-dialog">
     <el-dialog
-      :visible.sync="showAboutDialog"
+      v-model="showAboutDialog"
       :show-close="false"
       :modal="true"
       custom-class="ag-dialog-table"
@@ -26,37 +26,32 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import bus from '../../bus'
 import MarkTextLogo from '../../assets/images/logo.png'
 import { useRootStore } from '@/stores'
 
-export default {
-  data () {
-    this.name = 'MarkText'
-    this.copyright = `Copyright © 2017-${new Date().getFullYear()} Luo Ran`
-    this.copyrightContributors = `Copyright © 2018-${new Date().getFullYear()} MarkText Contributors`
-    this.logo = MarkTextLogo
-    return {
-      showAboutDialog: false
-    }
-  },
-  computed: {
-    appVersion () { return useRootStore().appVersion }
-  },
-  created () {
-    bus.on('aboutDialog', this.showDialog)
-  },
-  beforeDestroy () {
-    bus.off('aboutDialog', this.showDialog)
-  },
-  methods: {
-    showDialog () {
-      this.showAboutDialog = true
-      bus.emit('editor-blur')
-    }
-  }
+const name = 'MarkText'
+const copyright = `Copyright © 2017-${new Date().getFullYear()} Luo Ran`
+const copyrightContributors = `Copyright © 2018-${new Date().getFullYear()} MarkText Contributors`
+const logo = MarkTextLogo
+
+const showAboutDialog = ref(false)
+const appVersion = computed(() => useRootStore().appVersion)
+
+const showDialog = () => {
+  showAboutDialog.value = true
+  bus.emit('editor-blur')
 }
+
+onMounted(() => {
+  bus.on('aboutDialog', showDialog)
+})
+
+onBeforeUnmount(() => {
+  bus.off('aboutDialog', showDialog)
+})
 </script>
 
 <style>

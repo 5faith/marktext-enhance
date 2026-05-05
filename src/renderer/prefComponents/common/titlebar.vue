@@ -10,20 +10,14 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { getCurrentWindow } from '@electron/remote'
 import { closePath } from '../../assets/window-controls.js'
 
-export default {
-  data () {
-    this.windowIconClose = closePath
-    return {}
-  },
-  methods: {
-    handleCloseClick () {
-      getCurrentWindow().close()
-    }
-  }
+const windowIconClose = closePath
+
+const handleCloseClick = () => {
+  getCurrentWindow().close()
 }
 </script>
 
