@@ -12,7 +12,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, watch, onMounted, nextTick } from 'vue'
 import TitleBar from '@/prefComponents/common/titlebar'
 import SideBar from '@/prefComponents/sideBar'
 import { loadingPageMixins } from '@/mixins'
@@ -21,40 +22,29 @@ import { DEFAULT_STYLE } from '@/config'
 import { isOsx } from '@/util'
 import { usePreferencesStore } from '@/stores'
 
-export default {
-  data () {
-    this.isOsx = isOsx
-    return {}
-  },
-  mixins: [loadingPageMixins],
-  components: {
-    TitleBar,
-    SideBar
-  },
-  computed: {
-        theme () { return usePreferencesStore().theme },
-        titleBarStyle () { return usePreferencesStore().titleBarStyle },
-    showCustomTitleBar () {
-      return this.titleBarStyle === 'custom' && !this.isOsx
-    }
-  },
-  watch: {
-    theme: function (value, oldValue) {
-      if (value !== oldValue) {
-        addThemeStyle(value)
-      }
-    }
-  },
-  created () {
-    this.$nextTick(() => {
-      const state = global.marktext.initialState || DEFAULT_STYLE
-      addThemeStyle(state.theme)
+const { hideLoadingPage } = loadingPageMixins
 
-      usePreferencesStore().askForUserPreference()
-      this.hideLoadingPage()
-    })
+const theme = computed(() => usePreferencesStore().theme)
+const titleBarStyle = computed(() => usePreferencesStore().titleBarStyle)
+const showCustomTitleBar = computed(() => {
+  return titleBarStyle.value === 'custom' && !isOsx
+})
+
+watch(theme, (value, oldValue) => {
+  if (value !== oldValue) {
+    addThemeStyle(value)
   }
-}
+})
+
+onMounted(() => {
+  nextTick(() => {
+    const state = global.marktext.initialState || DEFAULT_STYLE
+    addThemeStyle(state.theme)
+    
+    usePreferencesStore().askForUserPreference()
+    hideLoadingPage()
+  })
+})
 </script>
 
 <style>
