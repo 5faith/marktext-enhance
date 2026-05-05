@@ -6,7 +6,7 @@
         <el-tooltip class='item' effect='dark'
           content='Clipboard handling is only fully supported on macOS and Windows.'
           placement='top-start'>
-          <i class="el-icon-info"></i>
+          <el-icon><Info /></el-icon>
         </el-tooltip>
       </div>
       <CurSelect :value="imageInsertAction" :options="imageActions"

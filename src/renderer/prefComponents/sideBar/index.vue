@@ -9,14 +9,12 @@
         placeholder="Search preferences"
         :trigger-on-focus="false"
         @select="handleSelect">
-        <i
-          class="el-icon-search el-input__icon"
-          slot="suffix"
-        >
-        </i>
-        <template slot-scope="{ item }">
+        <template #suffix>
+          <el-icon class="el-input__icon"><Search /></el-icon>
+        </template>
+        <template #default="{ item }">
           <div class="name">{{ item.category }}</div>
-          <span class="addr">{{ item.preference }}</span>
+          <span class="addr">{{ item.reference }}</span>
         </template>
       </el-autocomplete>
     </section>

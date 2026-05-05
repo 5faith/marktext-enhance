@@ -2,9 +2,7 @@
   <section class="pref-range-item" :class="{'ag-underdevelop': disable}">
     <div class="description">
       <span>{{description}}:</span> <span class="value" v-if="selectValue">{{selectValue}} <span v-if="unit">{{unit}}</span></span>
-      <i class="el-icon-info" v-if="more"
-        @click="handleMoreClick"
-      ></i>
+      <el-icon v-if="more" @click="handleMoreClick"><Info /></el-icon>
     </div>
     <el-slider
       v-model="selectValue"

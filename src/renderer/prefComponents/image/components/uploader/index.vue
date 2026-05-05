@@ -25,7 +25,7 @@
             <el-tooltip class="item" effect="dark"
               content="The token is saved by Keychain on macOS, Secret Service API/libsecret on Linux and Credential Vault on Windows"
               placement="top-start">
-              <i class="el-icon-info"></i>
+              <el-icon><Info /></el-icon>
             </el-tooltip>
           </div>
           <el-input v-model="githubToken" placeholder="Input token" size="mini"></el-input>
