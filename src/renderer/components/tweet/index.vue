@@ -1,12 +1,12 @@
 <template>
   <div class="tweet-dialog">
-    <el-dialog
-      :visible.sync="showTweetDialog"
-      :show-close="false"
-      :modal="true"
-      custom-class="ag-dialog-table"
-      width="450px"
-    >
+  <el-dialog
+    v-model="showTweetDialog"
+    :show-close="false"
+    :modal="true"
+    custom-class="ag-dialog-table"
+    width="450px"
+  >
       <div slot="title" class="title">
         <span>Send us feedback via tweet</span>
       </div>
@@ -66,57 +66,65 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, nextTick, useTemplateRef, onMounted, onBeforeUnmount } from 'vue'
 import { shell } from 'electron'
 import bus from '../../bus'
 
-export default {
-  data () {
-    return {
-      showTweetDialog: false,
-      value: '',
-      selectedFace: 'smile'
+// State
+const showTweetDialog = ref(false)
+const value = ref('')
+const selectedFace = ref('smile')
+
+// Template refs
+const textarea = useTemplateRef('textarea')
+
+// Methods
+const showDialog = () => {
+  showTweetDialog.value = true
+  value.value = ''
+  bus.emit('editor-blur')
+  nextTick(() => {
+    if (textarea.value) {
+      textarea.value.focus()
     }
-  },
-  created () {
-    bus.on('tweetDialog', this.showDialog)
-  },
-  beforeDestroy () {
-    bus.off('tweetDialog', this.showDialog)
-  },
-  methods: {
-    showDialog () {
-      this.showTweetDialog = true
-      this.value = ''
-      bus.emit('editor-blur')
-      this.$nextTick(() => {
-        this.$refs.textarea.focus()
-      })
-    },
-    faceClick (name) {
-      this.selectedFace = name
-    },
-    reportViaGithub () {
-      shell.openExternal('https://github.com/marktext/marktext/issues/new')
-    },
-    reportViaTwitter () {
-      const { value, selectedFace } = this
-      if (!value) return
-      const origin = 'https://twitter.com/intent/tweet'
-
-      const params = {
-        via: 'marktextme',
-        url: encodeURI('https://github.com/marktext/marktext/'),
-        text: value
-      }
-
-      if (selectedFace === 'smile') params.hashtags = 'happyMarkText'
-
-      shell.openExternal(`${origin}?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`)
-      this.showTweetDialog = false
-    }
-  }
+  })
 }
+
+const faceClick = (name) => {
+  selectedFace.value = name
+}
+
+const reportViaGithub = () => {
+  shell.openExternal('https://github.com/marktext/marktext/issues/new')
+}
+
+const reportViaTwitter = () => {
+  const currentValue = value.value
+  const currentFace = selectedFace.value
+  if (!currentValue) return
+  const origin = 'https://twitter.com/intent/tweet'
+  
+  const params = {
+    via: 'marktextme',
+    url: encodeURI('https://github.com/marktext/marktext/'),
+    text: currentValue
+  }
+  
+  if (currentFace === 'smile') params.hashtags = 'happyMarkText'
+  
+  shell.openExternal(`${origin}?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`)
+  showTweetDialog.value = false
+}
+
+// Lifecycle
+onMounted(() => {
+  bus.on('tweetDialog', showDialog)
+})
+
+onBeforeUnmount(() => {
+  bus.off('tweetDialog', showDialog)
+})
 </script>
 
 <style>
