@@ -2,6 +2,9 @@
 
 <h1 align="center">MarkText</h1>
 
+> **Technology Stack**: Vue 3 + Vite + Pinia + Element Plus (migrated from Vue 2 + Webpack + Vuex + Element UI)
+> See [Vue 3 Migration Guide](docs/dev/VUE3_MIGRATION.md) for details.
+
 <div align="center">
   <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
