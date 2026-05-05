@@ -23,7 +23,8 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import { useLayoutStore } from '@/stores'
 import Tabs from './tabs.vue'
 import Editor from './editor.vue'
@@ -31,47 +32,35 @@ import SourceCode from './sourceCode.vue'
 import TabNotifications from './notifications.vue'
 import DevtoolsButton from '@/components/devtools-button'
 
-export default {
-  props: {
-    markdown: {
-      type: String,
-      required: true
-    },
-    cursor: {
-      validator (value) {
-        return typeof value === 'object'
-      },
-      required: true
-    },
-    sourceCode: {
-      type: Boolean,
-      required: true
-    },
-    showTabBar: {
-      type: Boolean,
-      required: true
-    },
-    textDirection: {
-      type: String,
-      required: true
-    },
-    platform: {
-      type: String,
-      required: true
-    }
+const props = defineProps({
+  markdown: {
+    type: String,
+    required: true
   },
-  components: {
-    Tabs,
-    Editor,
-    SourceCode,
-    TabNotifications,
-    DevtoolsButton
+  cursor: {
+    validator: (value) => typeof value === 'object',
+    required: true
   },
-    computed: {
-        showSideBar () { return useLayoutStore().showSideBar },
-    sideBarWidth () { return useLayoutStore().sideBarWidth }
+  sourceCode: {
+    type: Boolean,
+    required: true
+  },
+  showTabBar: {
+    type: Boolean,
+    required: true
+  },
+  textDirection: {
+    type: String,
+    required: true
+  },
+  platform: {
+    type: String,
+    required: true
   }
-}
+})
+
+const showSideBar = computed(() => useLayoutStore().showSideBar)
+const sideBarWidth = computed(() => useLayoutStore().sideBarWidth)
 </script>
 
 <style scoped>
