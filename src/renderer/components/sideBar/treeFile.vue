@@ -23,70 +23,74 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, nextTick, useTemplateRef } from 'vue'
 import FileIcon from './icon.vue'
 import { useProjectStore, useEditorStore } from '@/stores'
 import { fileMixins } from '../../mixins'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
 
-export default {
-  mixins: [fileMixins],
-  name: 'file',
-  data () {
-    return {
-      newName: ''
-    }
+// Props
+const props = defineProps({
+  file: {
+    type: Object,
+    required: true
   },
-  props: {
-    file: {
-      type: Object,
-      required: true
-    },
-    depth: {
-      type: Number,
-      required: true
-    }
-  },
-  components: {
-    FileIcon
-  },
-  computed: {
-        renameCache () { return useProjectStore().renameCache },
-        activeItem () { return useProjectStore().activeItem },
-        clipboard () { return useProjectStore().clipboard },
-        currentFile () { return useEditorStore().currentFile },
-    tabs () { return useEditorStore().tabs }
-  },
-  created () {
-    this.$nextTick(() => {
-      this.$refs.file.addEventListener('contextmenu', event => {
-        event.preventDefault()
-        useProjectStore().changeActiveItem(this.file)
-        showContextMenu(event, !!this.clipboard)
-      })
+  depth: {
+    type: Number,
+    required: true
+  }
+})
 
-      bus.on('SIDEBAR::show-rename-input', this.focusRenameInput)
-    })
-  },
-  methods: {
-    noop () {},
-    focusRenameInput () {
-      this.$nextTick(() => {
-        if (this.$refs.renameInput) {
-          this.$refs.renameInput.focus()
-          this.newName = this.file.name
-        }
-      })
-    },
-    rename () {
-      const { newName } = this
-      if (newName) {
-        useProjectStore().renameInSidebar(newName)
-      }
+// Template refs
+const fileRef = useTemplateRef('file')
+const renameInput = useTemplateRef('renameInput')
+const newName = ref('')
+
+// Stores
+const renameCache = computed(() => useProjectStore().renameCache)
+const activeItem = computed(() => useProjectStore().activeItem)
+const clipboard = computed(() => useProjectStore().clipboard)
+const currentFile = computed(() => useEditorStore().currentFile)
+const tabs = computed(() => useEditorStore().tabs)
+
+// Methods
+const noop = () => {}
+
+const focusRenameInput = () => {
+  nextTick(() => {
+    if (renameInput.value) {
+      renameInput.value.focus()
+      newName.value = props.file.name
     }
+  })
+}
+
+const rename = () => {
+  const name = newName.value
+  if (name) {
+    useProjectStore().renameInSidebar(name)
   }
 }
+
+const handleFileClick = () => {
+  // Handle file click logic
+  console.log('File clicked:', props.file)
+}
+
+// Lifecycle
+onMounted(() => {
+  if (fileRef.value) {
+    fileRef.value.addEventListener('contextmenu', event => {
+      event.preventDefault()
+      useProjectStore().changeActiveItem(props.file)
+      showContextMenu(event, !!clipboard.value)
+    })
+  }
+  
+  bus.on('SIDEBAR::show-rename-input', focusRenameInput)
+})
 </script>
 
 <style scoped>
