@@ -36,7 +36,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, watch, onMounted, nextTick, ref } from 'vue'
 import { addStyles, addThemeStyle } from '@/util/theme'
 import Recent from '@/components/recent'
 import EditorWithTabs from '@/components/editorWithTabs'
@@ -54,94 +55,75 @@ import { DEFAULT_STYLE } from '@/config'
 import { ipcRenderer } from 'electron'
 import { useRootStore, useLayoutStore, usePreferencesStore, useProjectStore, useEditorStore } from '@/stores'
 
-export default {
-  name: 'marktext',
-  components: {
-    Recent,
-    EditorWithTabs,
-    TitleBar,
-    SideBar,
-    AboutDialog,
-    ExportSettingDialog,
-    Rename,
-    Tweet,
-    ImportModal,
-    CommandPalette
-  },
-  mixins: [loadingPageMixins],
-  data () {
-    return {
-    }
-  },
-  computed: {
-    showTabBar () { return useLayoutStore().showTabBar },
-    sourceCode () { return usePreferencesStore().sourceCode },
-    theme () { return usePreferencesStore().theme },
-    textDirection () { return usePreferencesStore().textDirection },
-    zoom () { return usePreferencesStore().zoom },
-    projectTree () { return useProjectStore().projectTree },
-    pathname () { return useEditorStore().currentFile.pathname },
-    filename () { return useEditorStore().currentFile.filename },
-    isSaved () { return useEditorStore().currentFile.isSaved },
-    markdown () { return useEditorStore().currentFile.markdown },
-    cursor () { return useEditorStore().currentFile.cursor },
-    wordCount () { return useEditorStore().currentFile.wordCount },
-    windowActive () { return useRootStore().windowActive },
-    platform () { return useRootStore().platform },
-    init () { return useRootStore().init },
-    hasCurrentFile () {
-      return this.markdown !== undefined
-    }
-  },
-  watch: {
-    theme: function (value, oldValue) {
-      if (value !== oldValue) {
-        addThemeStyle(value)
-      }
-    },
-    zoom: function (zoom) {
-      ipcRenderer.emit('mt::window-zoom', null, zoom)
-    }
-  },
-  created () {
-    // Apply initial state (theme and titleBarStyle) and delay load other values.
-    if (global.marktext.initialState) {
-      usePreferencesStore().setUserPreference(global.marktext.initialState)
-    }
+// mixin: loadingPageMixins
+const { hideLoadingPage } = loadingPageMixins
 
-    // prevent Chromium's default behavior and try to open the first file
-    window.addEventListener('dragover', e => {
-      // Cancel to allow tab drag&drop.
-      if (!e.dataTransfer.types.length) return
+const timer = ref(null)
 
-      if (e.dataTransfer.types.indexOf('Files') >= 0) {
-        if (e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type.indexOf('image') > -1) {
-          // Do nothing, because we already drag/drop image in muya.
-        } else {
-          e.preventDefault()
-          if (this.timer) {
-            clearTimeout(this.timer)
-          }
-          this.timer = setTimeout(() => {
-            bus.emit('importDialog', false)
-          }, 300)
-          bus.emit('importDialog', true)
-        }
+const showTabBar = computed(() => useLayoutStore().showTabBar)
+const sourceCode = computed(() => usePreferencesStore().sourceCode)
+const theme = computed(() => usePreferencesStore().theme)
+const textDirection = computed(() => usePreferencesStore().textDirection)
+const zoom = computed(() => usePreferencesStore().zoom)
+const projectTree = computed(() => useProjectStore().projectTree)
+const pathname = computed(() => useEditorStore().currentFile?.pathname)
+const filename = computed(() => useEditorStore().currentFile?.filename)
+const isSaved = computed(() => useEditorStore().currentFile?.isSaved)
+const markdown = computed(() => useEditorStore().currentFile?.markdown)
+const cursor = computed(() => useEditorStore().currentFile?.cursor)
+const wordCount = computed(() => useEditorStore().currentFile?.wordCount)
+const windowActive = computed(() => useRootStore().windowActive)
+const platform = computed(() => useRootStore().platform)
+const init = computed(() => useRootStore().init)
+const hasCurrentFile = computed(() => markdown.value !== undefined)
 
-        e.dataTransfer.dropEffect = 'copy'
-      } else {
-        e.stopPropagation()
-        e.dataTransfer.dropEffect = 'none'
-      }
-    }, false)
-
-    this.$nextTick(() => {
-      const style = global.marktext.initialState || DEFAULT_STYLE
-      addStyles(style)
-      this.hideLoadingPage()
-    })
+watch(theme, (value, oldValue) => {
+  if (value !== oldValue) {
+    addThemeStyle(value)
   }
-}
+})
+
+watch(zoom, (zoom) => {
+  ipcRenderer.emit('mt::window-zoom', null, zoom)
+})
+
+onMounted(() => {
+  // Apply initial state
+  if (global.marktext.initialState) {
+    usePreferencesStore().setUserPreference(global.marktext.initialState)
+  }
+
+  // prevent Chromium's default behavior and try to open the first file
+  window.addEventListener('dragover', e => {
+    if (!e.dataTransfer.types.length) return
+
+    if (e.dataTransfer.types.indexOf('Files') >= 0) {
+      if (e.dataTransfer.items.length === 1 && e.dataTransfer.items[0].type.indexOf('image') > -1) {
+        // Do nothing, because we already drag/drop image in muya.
+      } else {
+        e.preventDefault()
+        if (timer.value) {
+          clearTimeout(timer.value)
+        }
+        timer.value = setTimeout(() => {
+          bus.emit('importDialog', false)
+        }, 300)
+        bus.emit('importDialog', true)
+      }
+
+      e.dataTransfer.dropEffect = 'copy'
+    } else {
+      e.stopPropagation()
+      e.dataTransfer.dropEffect = 'none'
+    }
+  }, false)
+
+  nextTick(() => {
+    const style = global.marktext.initialState || DEFAULT_STYLE
+    addStyles(style)
+    hideLoadingPage()
+  })
+})
 </script>
 
 <style scoped>
