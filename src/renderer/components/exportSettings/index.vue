@@ -1,12 +1,12 @@
 <template>
   <div class="print-settings-dialog">
-    <el-dialog
-      :visible.sync="showExportSettingsDialog"
-      :show-close="false"
-      :modal="true"
-      custom-class="ag-dialog-table"
-      width="500px"
-    >
+  <el-dialog
+    v-model="showExportSettingsDialog"
+    :show-close="false"
+    :modal="true"
+    custom-class="ag-dialog-table"
+    width="500px"
+  >
       <h3>Export Options</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane label="Info" name="info">
@@ -218,7 +218,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 import path from 'path'
@@ -236,213 +237,210 @@ import {
   exportThemeList
 } from './exportOptions'
 
-export default {
-  components: {
-    Bool,
-    CurSelect,
-    FontTextBox,
-    Range,
-    TextBox
-  },
-  data () {
-    this.exportType = ''
-    this.themesLoaded = false
-    this.pageSizeList = pageSizeList
-    this.headerFooterTypes = headerFooterTypes
-    this.headerFooterStyles = headerFooterStyles
-    return {
-      isPrintable: true,
-      showExportSettingsDialog: false,
-      activeName: 'info',
-      htmlTitle: '',
-      pageSize: 'A4',
-      pageSizeWidth: 210,
-      pageSizeHeight: 297,
-      isLandscape: false,
-      pageMarginTop: 20,
-      pageMarginRight: 15,
-      pageMarginBottom: 20,
-      pageMarginLeft: 15,
-      fontSettingsOverwrite: false,
-      fontFamily: 'Default',
-      fontSize: 14,
-      lineHeight: 1.5,
-      autoNumberingHeadings: false,
-      showFrontMatter: false,
-      theme: 'default',
-      themeList: exportThemeList,
-      headerType: 0,
-      headerTextLeft: '',
-      headerTextCenter: '',
-      headerTextRight: '',
-      footerType: 0,
-      footerTextLeft: '',
-      footerTextCenter: '',
-      footerTextRight: '',
-      headerFooterCustomize: false,
-      headerFooterStyled: true,
-      headerFooterFontSize: 12,
-      tocTitle: '',
-      tocIncludeTopHeading: true
-    }
-  },
-  computed: {
-  },
-  created () {
-    bus.on('showExportDialog', this.showDialog)
-  },
-  beforeDestroy () {
-    bus.off('showExportDialog', this.showDialog)
-  },
-  methods: {
-    showDialog (type) {
-      this.exportType = type
-      this.isPrintable = type !== 'styledHtml'
-      if (!this.isPrintable && (this.activeName === 'header' || this.activeName === 'page')) {
-        this.activeName = 'info'
-      }
+// State
+const exportType = ref('')
+const themesLoaded = ref(false)
+const pageSizeListRef = ref(pageSizeList)
+const headerFooterTypesRef = ref(headerFooterTypes)
+const headerFooterStylesRef = ref(headerFooterStyles)
 
-      this.showExportSettingsDialog = true
-      bus.emit('editor-blur')
+const isPrintable = ref(true)
+const showExportSettingsDialog = ref(false)
+const activeName = ref('info')
+const htmlTitle = ref('')
+const pageSize = ref('A4')
+const pageSizeWidth = ref(210)
+const pageSizeHeight = ref(297)
+const isLandscape = ref(false)
+const pageMarginTop = ref(20)
+const pageMarginRight = ref(15)
+const pageMarginBottom = ref(20)
+const pageMarginLeft = ref(15)
+const fontSettingsOverwrite = ref(false)
+const fontFamily = ref('Default')
+const fontSize = ref(14)
+const lineHeight = ref(1.5)
+const autoNumberingHeadings = ref(false)
+const showFrontMatter = ref(false)
+const theme = ref('default')
+const themeList = ref([...exportThemeList])
+const headerType = ref(0)
+const headerTextLeft = ref('')
+const headerTextCenter = ref('')
+const headerTextRight = ref('')
+const footerType = ref(0)
+const footerTextLeft = ref('')
+const footerTextCenter = ref('')
+const footerTextRight = ref('')
+const headerFooterCustomize = ref(false)
+const headerFooterStyled = ref(true)
+const headerFooterFontSize = ref(12)
+const tocTitle = ref('')
+const tocIncludeTopHeading = ref(true)
 
-      if (!this.themesLoaded) {
-        this.themesLoaded = true
-        this.loadThemesFromDisk()
-      }
-    },
-    handleClicked () {
-      const {
-        exportType,
-        isPrintable,
-        htmlTitle,
-        pageSize,
-        pageSizeWidth,
-        pageSizeHeight,
-        isLandscape,
-        pageMarginTop,
-        pageMarginRight,
-        pageMarginBottom,
-        pageMarginLeft,
-        fontSettingsOverwrite,
-        fontFamily,
-        fontSize,
-        lineHeight,
-        autoNumberingHeadings,
-        showFrontMatter,
-        theme,
-        headerType,
-        headerTextLeft,
-        headerTextCenter,
-        headerTextRight,
-        footerType,
-        footerTextLeft,
-        footerTextCenter,
-        footerTextRight,
-        headerFooterCustomize,
-        headerFooterStyled,
-        headerFooterFontSize,
-        tocTitle,
-        tocIncludeTopHeading
-      } = this
-      const options = {
-        type: exportType,
-        pageSize,
-        pageSizeWidth,
-        pageSizeHeight,
-        isLandscape,
-        pageMarginTop,
-        pageMarginRight,
-        pageMarginBottom,
-        pageMarginLeft,
-        autoNumberingHeadings,
-        showFrontMatter,
-        theme: theme === 'default' ? null : theme,
-        tocTitle,
-        tocIncludeTopHeading
-      }
+// Methods
+const showDialog = (type) => {
+  exportType.value = type
+  isPrintable.value = type !== 'styledHtml'
+  if (!isPrintable.value && (activeName.value === 'header' || activeName.value === 'page')) {
+    activeName.value = 'info'
+  }
 
-      if (!isPrintable) {
-        options.htmlTitle = htmlTitle
-      }
+  showExportSettingsDialog.value = true
+  bus.emit('editor-blur')
 
-      if (fontSettingsOverwrite) {
-        Object.assign(options, {
-          fontSize,
-          lineHeight,
-          fontFamily: fontFamily === 'Default' ? null : fontFamily
-        })
-      }
-
-      if (headerType !== 0) {
-        Object.assign(options, {
-          header: {
-            type: headerType,
-            left: headerTextLeft,
-            center: headerTextCenter,
-            right: headerTextRight
-          }
-        })
-      }
-
-      if (footerType !== 0) {
-        Object.assign(options, {
-          footer: {
-            type: footerType,
-            left: footerTextLeft,
-            center: footerTextCenter,
-            right: footerTextRight
-          }
-        })
-      }
-
-      if (headerFooterCustomize) {
-        Object.assign(options, {
-          headerFooterStyled,
-          headerFooterFontSize
-        })
-      }
-
-      this.showExportSettingsDialog = false
-      bus.emit('export', options)
-    },
-    onSelectChange (key, value) {
-      this[key] = value
-    },
-    loadThemesFromDisk () {
-      const { userDataPath } = global.marktext.paths
-      const themeDir = path.join(userDataPath, 'themes/export')
-
-      // Search for dictionaries on filesystem.
-      if (isDirectory(themeDir)) {
-        fs.readdirSync(themeDir).forEach(async filename => {
-          const fullname = path.join(themeDir, filename)
-          if (/.+\.css$/i.test(filename) && isFile(fullname)) {
-            try {
-              const content = await fsPromises.readFile(fullname, 'utf8')
-
-              // Match comment with theme name in first line only.
-              const match = content.match(/^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/)
-
-              let label
-              if (match && match[1]) {
-                label = match[1]
-              } else {
-                label = filename
-              }
-
-              this.themeList.push({
-                value: filename,
-                label
-              })
-            } catch (e) {
-              console.error('loadThemesFromDisk failed:', e)
-            }
-          }
-        })
-      }
-    }
+  if (!themesLoaded.value) {
+    themesLoaded.value = true
+    loadThemesFromDisk()
   }
 }
+
+const handleClicked = () => {
+  const options = {
+    type: exportType.value,
+    pageSize: pageSize.value,
+    pageSizeWidth: pageSizeWidth.value,
+    pageSizeHeight: pageSizeHeight.value,
+    isLandscape: isLandscape.value,
+    pageMarginTop: pageMarginTop.value,
+    pageMarginRight: pageMarginRight.value,
+    pageMarginBottom: pageMarginBottom.value,
+    pageMarginLeft: pageMarginLeft.value,
+    autoNumberingHeadings: autoNumberingHeadings.value,
+    showFrontMatter: showFrontMatter.value,
+    theme: theme.value === 'default' ? null : theme.value,
+    tocTitle: tocTitle.value,
+    tocIncludeTopHeading: tocIncludeTopHeading.value
+  }
+
+  if (!isPrintable.value) {
+    options.htmlTitle = htmlTitle.value
+  }
+
+  if (fontSettingsOverwrite.value) {
+    Object.assign(options, {
+      fontSize: fontSize.value,
+      lineHeight: lineHeight.value,
+      fontFamily: fontFamily.value === 'Default' ? null : fontFamily.value
+    })
+  }
+
+  if (headerType.value !== 0) {
+    Object.assign(options, {
+      header: {
+        type: headerType.value,
+        left: headerTextLeft.value,
+        center: headerTextCenter.value,
+        right: headerTextRight.value
+      }
+    })
+  }
+
+  if (footerType.value !== 0) {
+    Object.assign(options, {
+      footer: {
+        type: footerType.value,
+        left: footerTextLeft.value,
+        center: footerTextCenter.value,
+        right: footerTextRight.value
+      }
+    })
+  }
+
+  if (headerFooterCustomize.value) {
+    Object.assign(options, {
+      headerFooterStyled: headerFooterStyled.value,
+      headerFooterFontSize: headerFooterFontSize.value
+    })
+  }
+
+  showExportSettingsDialog.value = false
+  bus.emit('export', options)
+}
+
+const onSelectChange = (key, value) => {
+  // Dynamically update ref values
+  const refs = {
+    isPrintable,
+    showExportSettingsDialog,
+    activeName,
+    htmlTitle,
+    pageSize,
+    pageSizeWidth,
+    pageSizeHeight,
+    isLandscape,
+    pageMarginTop,
+    pageMarginRight,
+    pageMarginBottom,
+    pageMarginLeft,
+    fontSettingsOverwrite,
+    fontFamily,
+    fontSize,
+    lineHeight,
+    autoNumberingHeadings,
+    showFrontMatter,
+    theme,
+    headerType,
+    headerTextLeft,
+    headerTextCenter,
+    headerTextRight,
+    footerType,
+    footerTextLeft,
+    footerTextCenter,
+    footerTextRight,
+    headerFooterCustomize,
+    headerFooterStyled,
+    headerFooterFontSize,
+    tocTitle,
+    tocIncludeTopHeading
+  }
+  if (refs[key]) {
+    refs[key].value = value
+  }
+}
+
+const loadThemesFromDisk = () => {
+  const { userDataPath } = global.marktext.paths
+  const themeDir = path.join(userDataPath, 'themes/export')
+
+  // Search for dictionaries on filesystem.
+  if (isDirectory(themeDir)) {
+    fs.readdirSync(themeDir).forEach(async filename => {
+      const fullname = path.join(themeDir, filename)
+      if (/.+\.css$/i.test(filename) && isFile(fullname)) {
+        try {
+          const content = await fsPromises.readFile(fullname, 'utf8')
+
+          // Match comment with theme name in first line only.
+          const match = content.match(/^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/)
+
+          let label
+          if (match && match[1]) {
+            label = match[1]
+          } else {
+            label = filename
+          }
+
+          themeList.value.push({
+            value: filename,
+            label
+          })
+        } catch (e) {
+          console.error('loadThemesFromDisk failed:', e)
+        }
+      }
+    })
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  bus.on('showExportDialog', showDialog)
+})
+
+onBeforeUnmount(() => {
+  bus.off('showExportDialog', showDialog)
+})
 </script>
 
 <style scoped>
