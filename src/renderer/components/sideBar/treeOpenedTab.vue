@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useEditorStore } from '@/stores'
 import { tabsMixins } from '../../mixins'
 
 export default {
@@ -27,9 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      currentFile: state => state.editor.currentFile
-    })
+    currentFile () { return useEditorStore().currentFile }
   }
 }
 </script>

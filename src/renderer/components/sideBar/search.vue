@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useLayoutStore, useEditorStore, useProjectStore, usePreferencesStore } from '@/stores'
 import bus from '../../bus'
 import SearchResultItem from './searchResultItem.vue'
 import RipgrepDirectorySearcher from '../../node/ripgrepSearcher'
@@ -142,17 +142,15 @@ export default {
     })
   },
   computed: {
-    ...mapState({
-      rightColumn: state => state.layout.rightColumn,
-      showSideBar: state => state.layout.showSideBar,
-      searchMatches: state => state.editor.currentFile.searchMatches,
-      projectTree: state => state.project.projectTree,
-      searchExclusions: state => state.preferences.searchExclusions,
-      searchMaxFileSize: state => state.preferences.searchMaxFileSize,
-      searchIncludeHidden: state => state.preferences.searchIncludeHidden,
-      searchNoIgnore: state => state.preferences.searchNoIgnore,
-      searchFollowSymlinks: state => state.preferences.searchFollowSymlinks
-    }),
+        rightColumn () { return useLayoutStore().rightColumn },
+        showSideBar () { return useLayoutStore().showSideBar },
+    searchMatches () { return useEditorStore().currentFile.searchMatches },
+        projectTree () { return useProjectStore().projectTree },
+        searchExclusions () { return usePreferencesStore().searchExclusions },
+        searchMaxFileSize () { return usePreferencesStore().searchMaxFileSize },
+        searchIncludeHidden () { return usePreferencesStore().searchIncludeHidden },
+        searchNoIgnore () { return usePreferencesStore().searchNoIgnore },
+        searchFollowSymlinks () { return usePreferencesStore().searchFollowSymlinks },
     searchResultInfo () {
       const fileCount = this.searchResult.length
       const matchCount = this.searchResult.reduce((acc, item) => {
@@ -315,7 +313,7 @@ export default {
       this.search()
     },
     openFolder () {
-      this.$store.dispatch('ASK_FOR_OPEN_PROJECT')
+      useProjectStore().askForOpenProject()
     },
     handleFindInFolder () {
       this.keyword = this.searchMatches.value

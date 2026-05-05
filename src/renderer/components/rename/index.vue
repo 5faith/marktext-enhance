@@ -25,7 +25,7 @@
 
 <script>
 import bus from '../../bus'
-import { mapState } from 'vuex'
+import { useEditorStore } from '@/stores'
 
 export default {
   data () {
@@ -43,9 +43,7 @@ export default {
     bus.off('rename', this.handleRename)
   },
   computed: {
-    ...mapState({
-      filename: state => state.editor.currentFile.filename
-    })
+    filename () { return useEditorStore().currentFile.filename }
   },
   methods: {
     handleRename () {
@@ -54,7 +52,7 @@ export default {
       this.$refs.search.focus()
     },
     confirm () {
-      this.$store.dispatch('RENAME', this.tempName)
+      useEditorStore().rename(this.tempName)
       this.showRename = false
     }
   }

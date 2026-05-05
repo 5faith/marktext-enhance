@@ -75,7 +75,7 @@
 <script>
 import { shell } from 'electron'
 import path from 'path'
-import { mapState } from 'vuex'
+import { usePreferencesStore, useProjectStore, useEditorStore } from '@/stores'
 // import ViewImage from 'view-image'
 import { isChildOfDirectory } from 'common/filesystem/paths'
 import Muya from 'muya/lib'
@@ -130,53 +130,51 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      preferences: state => state.preferences,
-      preferLooseListItem: state => state.preferences.preferLooseListItem,
-      autoPairBracket: state => state.preferences.autoPairBracket,
-      autoPairMarkdownSyntax: state => state.preferences.autoPairMarkdownSyntax,
-      autoPairQuote: state => state.preferences.autoPairQuote,
-      bulletListMarker: state => state.preferences.bulletListMarker,
-      orderListDelimiter: state => state.preferences.orderListDelimiter,
-      tabSize: state => state.preferences.tabSize,
-      listIndentation: state => state.preferences.listIndentation,
-      frontmatterType: state => state.preferences.frontmatterType,
-      superSubScript: state => state.preferences.superSubScript,
-      footnote: state => state.preferences.footnote,
-      isHtmlEnabled: state => state.preferences.isHtmlEnabled,
-      isGitlabCompatibilityEnabled: state => state.preferences.isGitlabCompatibilityEnabled,
-      lineHeight: state => state.preferences.lineHeight,
-      fontSize: state => state.preferences.fontSize,
-      codeFontSize: state => state.preferences.codeFontSize,
-      codeFontFamily: state => state.preferences.codeFontFamily,
-      codeBlockLineNumbers: state => state.preferences.codeBlockLineNumbers,
-      trimUnnecessaryCodeBlockEmptyLines: state => state.preferences.trimUnnecessaryCodeBlockEmptyLines,
-      editorFontFamily: state => state.preferences.editorFontFamily,
-      hideQuickInsertHint: state => state.preferences.hideQuickInsertHint,
-      hideLinkPopup: state => state.preferences.hideLinkPopup,
-      autoCheck: state => state.preferences.autoCheck,
-      editorLineWidth: state => state.preferences.editorLineWidth,
-      imageInsertAction: state => state.preferences.imageInsertAction,
-      imagePreferRelativeDirectory: state => state.preferences.imagePreferRelativeDirectory,
-      imageRelativeDirectoryName: state => state.preferences.imageRelativeDirectoryName,
-      imageFolderPath: state => state.preferences.imageFolderPath,
-      theme: state => state.preferences.theme,
-      sequenceTheme: state => state.preferences.sequenceTheme,
-      hideScrollbar: state => state.preferences.hideScrollbar,
-      spellcheckerEnabled: state => state.preferences.spellcheckerEnabled,
-      spellcheckerIsHunspell: state => state.preferences.spellcheckerIsHunspell,
-      spellcheckerNoUnderline: state => state.preferences.spellcheckerNoUnderline,
-      spellcheckerAutoDetectLanguage: state => state.preferences.spellcheckerAutoDetectLanguage,
-      spellcheckerLanguage: state => state.preferences.spellcheckerLanguage,
+        preferences () { return usePreferencesStore().$3 },
+        preferLooseListItem () { return usePreferencesStore().preferLooseListItem },
+        autoPairBracket () { return usePreferencesStore().autoPairBracket },
+        autoPairMarkdownSyntax () { return usePreferencesStore().autoPairMarkdownSyntax },
+        autoPairQuote () { return usePreferencesStore().autoPairQuote },
+        bulletListMarker () { return usePreferencesStore().bulletListMarker },
+        orderListDelimiter () { return usePreferencesStore().orderListDelimiter },
+        tabSize () { return usePreferencesStore().tabSize },
+        listIndentation () { return usePreferencesStore().listIndentation },
+        frontmatterType () { return usePreferencesStore().frontmatterType },
+        superSubScript () { return usePreferencesStore().superSubScript },
+        footnote () { return usePreferencesStore().footnote },
+        isHtmlEnabled () { return usePreferencesStore().isHtmlEnabled },
+        isGitlabCompatibilityEnabled () { return usePreferencesStore().isGitlabCompatibilityEnabled },
+        lineHeight () { return usePreferencesStore().lineHeight },
+        fontSize () { return usePreferencesStore().fontSize },
+        codeFontSize () { return usePreferencesStore().codeFontSize },
+        codeFontFamily () { return usePreferencesStore().codeFontFamily },
+        codeBlockLineNumbers () { return usePreferencesStore().codeBlockLineNumbers },
+        trimUnnecessaryCodeBlockEmptyLines () { return usePreferencesStore().trimUnnecessaryCodeBlockEmptyLines },
+        editorFontFamily () { return usePreferencesStore().editorFontFamily },
+        hideQuickInsertHint () { return usePreferencesStore().hideQuickInsertHint },
+        hideLinkPopup () { return usePreferencesStore().hideLinkPopup },
+        autoCheck () { return usePreferencesStore().autoCheck },
+        editorLineWidth () { return usePreferencesStore().editorLineWidth },
+        imageInsertAction () { return usePreferencesStore().imageInsertAction },
+        imagePreferRelativeDirectory () { return usePreferencesStore().imagePreferRelativeDirectory },
+        imageRelativeDirectoryName () { return usePreferencesStore().imageRelativeDirectoryName },
+        imageFolderPath () { return usePreferencesStore().imageFolderPath },
+        theme () { return usePreferencesStore().theme },
+        sequenceTheme () { return usePreferencesStore().sequenceTheme },
+        hideScrollbar () { return usePreferencesStore().hideScrollbar },
+        spellcheckerEnabled () { return usePreferencesStore().spellcheckerEnabled },
+        spellcheckerIsHunspell () { return usePreferencesStore().spellcheckerIsHunspell },
+        spellcheckerNoUnderline () { return usePreferencesStore().spellcheckerNoUnderline },
+        spellcheckerAutoDetectLanguage () { return usePreferencesStore().spellcheckerAutoDetectLanguage },
+        spellcheckerLanguage () { return usePreferencesStore().spellcheckerLanguage },
 
-      currentFile: state => state.editor.currentFile,
-      projectTree: state => state.project.projectTree,
+        currentFile () { return useEditorStore().currentFile },
+        projectTree () { return useProjectStore().projectTree },
 
-      // edit modes
-      typewriter: state => state.preferences.typewriter,
-      focus: state => state.preferences.focus,
-      sourceCode: state => state.preferences.sourceCode
-    })
+    // edit modes
+        typewriter () { return usePreferencesStore().typewriter },
+        focus () { return usePreferencesStore().focus },
+    sourceCode () { return usePreferencesStore().sourceCode }
   },
 
   data () {
@@ -656,13 +654,13 @@ export default {
 
       this.editor.on('change', changes => {
         // WORKAROUND: "id: 'muya'"
-        this.$store.dispatch('LISTEN_FOR_CONTENT_CHANGE', Object.assign(changes, { id: 'muya' }))
+        useEditorStore().listenForContentChange(Object.assign(changes, { id: 'muya' }))
       })
 
       this.editor.on('format-click', ({ event, formatType, data }) => {
         const ctrlOrMeta = (isOsx && event.metaKey) || (!isOsx && event.ctrlKey)
         if (formatType === 'link' && ctrlOrMeta) {
-          this.$store.dispatch('FORMAT_LINK_CLICK', { data, dirname: window.DIRNAME })
+          useEditorStore().formatLinkClick({ data, dirname: window.DIRNAME })
         } else if (formatType === 'image' && ctrlOrMeta) {
           if (this.imageViewer) {
             this.imageViewer.destroy()
@@ -712,11 +710,11 @@ export default {
         }
 
         this.selectionChange = changes
-        this.$store.dispatch('SELECTION_CHANGE', changes)
+        useEditorStore().selectionChange(changes)
       })
 
       this.editor.on('selectionFormats', formats => {
-        this.$store.dispatch('SELECTION_FORMATS', formats)
+        useEditorStore().selectionFormats(formats)
       })
 
       this.editor.on('contextmenu', (event, selection) => {
@@ -769,11 +767,11 @@ export default {
 
     jumpClick (linkInfo) {
       const { href } = linkInfo
-      this.$store.dispatch('FORMAT_LINK_CLICK', { data: { href }, dirname: window.DIRNAME })
+      useEditorStore().formatLinkClick({ data: { href }, dirname: window.DIRNAME })
     },
 
     async imagePathAutoComplete (src) {
-      const files = await this.$store.dispatch('ASK_FOR_IMAGE_AUTO_PATH', src)
+      const files = await useEditorStore().askForImageAutoPath(src)
       return files.map(f => {
         const iconClass = f.type === 'directory' ? 'icon-folder' : 'icon-image'
         return Object.assign(f, { iconClass, text: f.file + (f.type === 'directory' ? '/' : '') })
@@ -871,7 +869,7 @@ export default {
     },
 
     imagePathPicker () {
-      return this.$store.dispatch('ASK_FOR_IMAGE_PATH')
+      return useEditorStore().askForImagePath()
     },
 
     keyup (event) {
@@ -1036,18 +1034,18 @@ export default {
 
     handleSearch (value, opt) {
       const searchMatches = this.editor.search(value, opt)
-      this.$store.dispatch('SEARCH', searchMatches)
+      useEditorStore().search(searchMatches)
       this.scrollToHighlight()
     },
 
     handReplace (value, opt) {
       const searchMatches = this.editor.replace(value, opt)
-      this.$store.dispatch('SEARCH', searchMatches)
+      useEditorStore().search(searchMatches)
     },
 
     handleUploadedImage (url, deletionUrl) {
       this.insertImage(url)
-      this.$store.dispatch('SHOW_IMAGE_DELETION_URL', deletionUrl)
+      useEditorStore().showImageDeletionUrl(deletionUrl)
     },
 
     scrollToCursor (duration = 300) {
@@ -1079,7 +1077,7 @@ export default {
 
     handleFindAction (action) {
       const searchMatches = this.editor.find(action)
-      this.$store.dispatch('SEARCH', searchMatches)
+      useEditorStore().search(searchMatches)
       this.scrollToHighlight()
     },
 
@@ -1108,7 +1106,7 @@ export default {
               extraCss,
               toc: htmlToc
             })
-            this.$store.dispatch('EXPORT', { type, content })
+            useEditorStore().exportToFile({ type, content })
           } catch (err) {
             log.error('Failed to export document:', err)
             notice.notify({
@@ -1137,7 +1135,7 @@ export default {
               headerFooterStyled
             })
             this.printer.renderMarkdown(html, true)
-            this.$store.dispatch('EXPORT', { type, pageOptions })
+            useEditorStore().exportToFile({ type, pageOptions })
           } catch (err) {
             log.error('Failed to export document:', err)
             notice.notify({
@@ -1162,7 +1160,7 @@ export default {
               headerFooterStyled
             })
             this.printer.renderMarkdown(html, true)
-            this.$store.dispatch('PRINT_RESPONSE')
+            useEditorStore().printResponse()
           } catch (err) {
             log.error('Failed to export document:', err)
             notice.notify({

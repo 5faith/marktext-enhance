@@ -219,7 +219,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 import path from 'path'
@@ -288,8 +287,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-    })
   },
   created () {
     bus.on('showExportDialog', this.showDialog)

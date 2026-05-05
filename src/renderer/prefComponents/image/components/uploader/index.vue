@@ -70,6 +70,7 @@
 
 <script>
 import { shell } from 'electron'
+import { usePreferencesStore } from '@/stores'
 import services, { isValidService } from './services.js'
 import legalNoticesCheckbox from './legalNoticesCheckbox'
 import { isFileExecutableSync } from '@/util/fileSystem'
@@ -108,22 +109,22 @@ export default {
   computed: {
     currentUploader: {
       get: function () {
-        return this.$store.state.preferences.currentUploader
+        return usePreferencesStore().currentUploader
       }
     },
     imageBed: {
       get: function () {
-        return this.$store.state.preferences.imageBed
+        return usePreferencesStore().imageBed
       }
     },
     prefGithubToken: {
       get: function () {
-        return this.$store.state.preferences.githubToken
+        return usePreferencesStore().githubToken
       }
     },
     prefCliScript: {
       get: function () {
-        return this.$store.state.preferences.cliScript
+        return usePreferencesStore().cliScript
       }
     },
     githubDisable () {
@@ -174,18 +175,18 @@ export default {
         return
       }
       const newImageBedConfig = Object.assign({}, this.imageBed, { [type]: this[type] })
-      this.$store.dispatch('SET_USER_DATA', {
+      usePreferencesStore().setUserData({
         type: 'imageBed',
         value: newImageBedConfig
       })
       if (type === 'github') {
-        this.$store.dispatch('SET_USER_DATA', {
+        usePreferencesStore().setUserData({
           type: 'githubToken',
           value: this.githubToken
         })
       }
       if (type === 'cliScript') {
-        this.$store.dispatch('SET_USER_DATA', {
+        usePreferencesStore().setUserData({
           type: 'cliScript',
           value: this.cliScript
         })
@@ -198,8 +199,7 @@ export default {
     },
 
     setCurrentUploader (value) {
-      const type = 'currentUploader'
-      this.$store.dispatch('SET_USER_DATA', { type, value })
+      usePreferencesStore().setUserData({ type: 'currentUploader', value })
     },
 
     testPicgo () {

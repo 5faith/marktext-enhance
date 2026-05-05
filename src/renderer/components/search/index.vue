@@ -51,7 +51,7 @@
               </svg>
             </span>
             <span
-              title="Use query as RegEx"
+              title="Use query as RegEX"
               class="is-regex"
               :class="{'active': isRegexp}"
               @click.stop="toggleCtrl('isRegexp')"
@@ -117,7 +117,7 @@
 
 <script>
 import bus from '../../bus'
-import { mapState } from 'vuex'
+import { useEditorStore } from '@/stores'
 import FindCaseIcon from '@/assets/icons/searchIcons/iconCase.svg'
 import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
@@ -150,9 +150,7 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      searchMatches: state => state.editor.currentFile.searchMatches
-    }),
+    searchMatches () { return useEditorStore().currentFile.searchMatches },
     highlightIndex () {
       if (this.searchMatches) {
         return this.searchMatches.index

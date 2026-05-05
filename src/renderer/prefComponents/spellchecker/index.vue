@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { usePreferencesStore } from '@/stores'
 import Compound from '../common/compound'
 import CurSelect from '../common/select'
 import Bool from '../common/bool'
@@ -133,16 +133,14 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      spellcheckerEnabled: state => state.preferences.spellcheckerEnabled,
-      spellcheckerIsHunspell: state => state.preferences.spellcheckerIsHunspell,
-      spellcheckerNoUnderline: state => state.preferences.spellcheckerNoUnderline,
-      spellcheckerAutoDetectLanguage: state => state.preferences.spellcheckerAutoDetectLanguage,
-      spellcheckerLanguage: state => state.preferences.spellcheckerLanguage,
-      isHunspellSelected: state => {
-        return !isOsSpellcheckerSupported() || state.preferences.spellcheckerIsHunspell
-      }
-    })
+        spellcheckerEnabled () { return usePreferencesStore().spellcheckerEnabled },
+        spellcheckerIsHunspell () { return usePreferencesStore().spellcheckerIsHunspell },
+        spellcheckerNoUnderline () { return usePreferencesStore().spellcheckerNoUnderline },
+        spellcheckerAutoDetectLanguage () { return usePreferencesStore().spellcheckerAutoDetectLanguage },
+        spellcheckerLanguage () { return usePreferencesStore().spellcheckerLanguage },
+    isHunspellSelected () {
+      return !isOsSpellcheckerSupported() || usePreferencesStore().spellcheckerIsHunspell
+    }
   },
   watch: {
     spellcheckerIsHunspell: function (value, oldValue) {
@@ -231,7 +229,7 @@ export default {
       this.onSelectChange('spellcheckerEnabled', value)
     },
     onSelectChange (type, value) {
-      this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+      usePreferencesStore().setSinglePreference({ type, value })
     },
 
     // --- Hunspell only ------------------------------------------------------

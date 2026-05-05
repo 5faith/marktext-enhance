@@ -49,9 +49,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import bus from '../../bus'
 import loading from '../loading'
+import { useCommandCenterStore } from '@/stores'
 
 const log = require('electron-log')
 
@@ -60,9 +60,7 @@ export default {
     loading
   },
   computed: {
-    ...mapState({
-      rootCommand: state => state.commandCenter.rootCommand
-    })
+    rootCommand () { return useCommandCenterStore().rootCommand }
   },
   data () {
     this.currentCommand = null

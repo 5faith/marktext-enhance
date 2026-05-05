@@ -53,7 +53,7 @@ import { sideBarIcons, sideBarBottomIcons } from './help'
 import Tree from './tree.vue'
 import SideBarSearch from './search.vue'
 import Toc from './toc.vue'
-import { mapState } from 'vuex'
+import { useLayoutStore, useProjectStore, useEditorStore } from '@/stores'
 
 export default {
   data () {
@@ -70,13 +70,11 @@ export default {
     Toc
   },
   computed: {
-    ...mapState({
-      rightColumn: state => state.layout.rightColumn,
-      showSideBar: state => state.layout.showSideBar,
-      projectTree: state => state.project.projectTree,
-      sideBarWidth: state => state.layout.sideBarWidth,
-      tabs: state => state.editor.tabs
-    }),
+        rightColumn () { return useLayoutStore().rightColumn },
+        showSideBar () { return useLayoutStore().showSideBar },
+        projectTree () { return useProjectStore().projectTree },
+        sideBarWidth () { return useLayoutStore().sideBarWidth },
+        tabs () { return useEditorStore().tabs },
     finalSideBarWidth () {
       const { showSideBar, rightColumn, sideBarViewWidth } = this
       if (!showSideBar) return 0
@@ -96,7 +94,7 @@ export default {
       const mouseUpHandler = event => {
         document.removeEventListener('mousemove', mouseMoveHandler, false)
         document.removeEventListener('mouseup', mouseUpHandler, false)
-        this.$store.dispatch('CHANGE_SIDE_BAR_WIDTH', sideBarWidth < 220 ? 220 : sideBarWidth)
+        useLayoutStore().changeSideBarWidth(sideBarWidth < 220 ? 220 : sideBarWidth)
       }
 
       const mouseMoveHandler = event => {
@@ -118,20 +116,20 @@ export default {
   methods: {
     handleLeftIconClick (name) {
       if (this.rightColumn === name) {
-        this.$store.commit('SET_LAYOUT', { rightColumn: '' })
-        this.$store.dispatch('CHANGE_SIDE_BAR_WIDTH', this.finalSideBarWidth)
+        useLayoutStore().setLayout({ rightColumn: '' })
+        useLayoutStore().changeSideBarWidth(this.finalSideBarWidth)
       } else {
         const needDispatch = this.rightColumn === ''
-        this.$store.commit('SET_LAYOUT', { rightColumn: name })
+        useLayoutStore().setLayout({ rightColumn: name })
         this.sideBarViewWidth = +this.sideBarWidth
         if (needDispatch) {
-          this.$store.dispatch('CHANGE_SIDE_BAR_WIDTH', this.finalSideBarWidth)
+          useLayoutStore().changeSideBarWidth(this.finalSideBarWidth)
         }
       }
     },
     handleLeftBottomClick (name) {
       if (name === 'settings') {
-        this.$store.dispatch('OPEN_SETTING_WINDOW')
+        useProjectStore().openSettingWindow()
       }
     }
   }

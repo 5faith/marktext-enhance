@@ -31,18 +31,16 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useEditorStore, useLayoutStore } from '@/stores'
 
 export default {
   data () {
     return {}
   },
   computed: {
-    ...mapState({
-      currentFile: state => state.editor.currentFile,
-      showSideBar: state => state.layout.showSideBar,
-      sideBarWidth: state => state.layout.sideBarWidth
-    }),
+        currentFile () { return useEditorStore().currentFile },
+        showSideBar () { return useLayoutStore().showSideBar },
+        sideBarWidth () { return useLayoutStore().sideBarWidth },
     currentNotification () {
       const notifications = this.currentFile.notifications
       if (!notifications || notifications.length === 0) {

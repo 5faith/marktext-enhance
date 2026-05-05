@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { usePreferencesStore } from '@/stores'
 import themeMd from './theme.md'
 import { autoSwitchThemeOptions, themes } from './config'
 import markdownToHtml from '@/util/markdownToHtml'
@@ -51,10 +51,8 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      autoSwitchTheme: state => state.preferences.autoSwitchTheme,
-      theme: state => state.preferences.theme
-    })
+        autoSwitchTheme () { return usePreferencesStore().autoSwitchTheme },
+    theme () { return usePreferencesStore().theme }
   },
   created () {
     this.$nextTick(async () => {
@@ -72,7 +70,7 @@ export default {
   },
   methods: {
     onSelectChange (type, value) {
-      this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+      usePreferencesStore().setSinglePreference({ type, value })
     }
   }
 }

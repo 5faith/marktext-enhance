@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { usePreferencesStore } from '@/stores'
 import Separator from '../common/separator'
 import Uploader from './components/uploader'
 import CurSelect from '@/prefComponents/common/select'
@@ -40,13 +41,13 @@ export default {
   computed: {
     imageInsertAction: {
       get: function () {
-        return this.$store.state.preferences.imageInsertAction
+        return usePreferencesStore().imageInsertAction
       }
     }
   },
   methods: {
     onSelectChange (type, value) {
-      this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+      usePreferencesStore().setSinglePreference({ type, value })
     }
   }
 }

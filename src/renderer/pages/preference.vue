@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import TitleBar from '@/prefComponents/common/titlebar'
 import SideBar from '@/prefComponents/sideBar'
 import { loadingPageMixins } from '@/mixins'
 import { addThemeStyle } from '@/util/theme'
 import { DEFAULT_STYLE } from '@/config'
 import { isOsx } from '@/util'
+import { usePreferencesStore } from '@/stores'
 
 export default {
   data () {
@@ -32,10 +32,8 @@ export default {
     SideBar
   },
   computed: {
-    ...mapState({
-      theme: state => state.preferences.theme,
-      titleBarStyle: state => state.preferences.titleBarStyle
-    }),
+        theme () { return usePreferencesStore().theme },
+        titleBarStyle () { return usePreferencesStore().titleBarStyle },
     showCustomTitleBar () {
       return this.titleBarStyle === 'custom' && !this.isOsx
     }
@@ -52,7 +50,7 @@ export default {
       const state = global.marktext.initialState || DEFAULT_STYLE
       addThemeStyle(state.theme)
 
-      this.$store.dispatch('ASK_FOR_USER_PREFERENCE')
+      usePreferencesStore().askForUserPreference()
       this.hideLoadingPage()
     })
   }

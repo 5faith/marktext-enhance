@@ -15,6 +15,7 @@
 
 <script>
 import ContentIcon from '@/assets/icons/undraw_content.svg'
+import { useEditorStore } from '@/stores'
 
 export default {
   data () {
@@ -23,7 +24,7 @@ export default {
   },
   methods: {
     newFile () {
-      this.$store.dispatch('NEW_UNTITLED_TAB', {})
+      useEditorStore().newUntitledTab({})
     }
   }
 }

@@ -4,6 +4,9 @@ import vue from '@vitejs/plugin-vue'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
@@ -17,7 +20,7 @@ export default defineConfig(({ command }) => {
         'common': resolve(__dirname, 'src/common'),
         'muya': resolve(__dirname, 'src/muya'),
         'snapsvg': resolve(__dirname, 'src/muya/lib/assets/libs/snap.svg-min.js'),
-        'vue$': '@vue/compat',
+        'vue': '@vue/compat',
         'eve': resolve(__dirname, 'node_modules/eve-raphael'),
         'fs-extra': resolve(__dirname, 'src/renderer/shims/fs-extra.js'),
         'fs/promises': resolve(__dirname, 'src/renderer/shims/fs-promises.js'),
@@ -36,7 +39,8 @@ export default defineConfig(({ command }) => {
       dedupe: ['vue', '@vue/compat']
     },
     define: {
-      __static: JSON.stringify(resolve(__dirname, 'static'))
+      __static: JSON.stringify(resolve(__dirname, 'static')),
+      'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production')
     },
     plugins: [
       vue({
@@ -58,81 +62,94 @@ export default defineConfig(({ command }) => {
         symbolId: 'icon-[dir]-[name]',
         svgoOptions: true
       }),
-      electron({
-        entry: 'src/main/index.js',
-        vite: {
-          build: {
-            outDir: resolve(__dirname, 'dist/electron'),
-            lib: {
-              entry: resolve(__dirname, 'src/main/index.js'),
-              formats: ['cjs'],
-              fileName: () => 'main.js'
+      Components({
+        resolvers: [ElementPlusResolver()],
+        dts: false
+      }),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+        dts: false
+      }),
+      electron([
+        {
+          entry: 'src/main/index.js',
+          onstart(args) {
+            args.startup()
+          },
+          vite: {
+            build: {
+              outDir: resolve(__dirname, 'dist/electron'),
+              lib: {
+                entry: resolve(__dirname, 'src/main/index.js'),
+                formats: ['cjs'],
+                fileName: () => 'main.js'
+              },
+              rollupOptions: {
+                external: [
+                  'electron',
+                  '@electron/remote',
+                  'electron-log',
+                  'electron-store',
+                  'electron-window-state',
+                  'chokidar',
+                  'vscode-ripgrep',
+                  'keytar',
+                  'fontmanager-redux',
+                  'native-keymap',
+                  'ced',
+                  'cld',
+                  '@hfelix/spellchecker',
+                  '@hfelix/electron-localshortcut',
+                  '@hfelix/electron-spellchecker',
+                  'command-exists',
+                  'iconv-lite',
+                  'minizlib',
+                  'plist',
+                  'webfontloader',
+                  'element-resize-detector',
+                  'unsplash-js',
+                  '@octokit/rest',
+                  'arg',
+                  'dayjs',
+                  'deep-equal',
+                  'fuzzaldrin',
+                  'iso-639-1',
+                  'turndown',
+                  'joplin-turndown-plugin-gfm',
+                  'dompurify',
+                  'dom-autoscroller',
+                  'dragula',
+                  'codemirror',
+                  'katex',
+                  'mermaid',
+                  'prismjs',
+                  'vega',
+                  'vega-embed',
+                  'vega-lite',
+                  'flowchart.js',
+                  'snabbdom',
+                  'snabbdom-to-html',
+                  'marked',
+                  'axios',
+                  'github-markdown-css',
+                  'html-tags',
+                  'execall',
+                  'keyboard-layout'
+                ]
+              }
             },
-            rollupOptions: {
-              external: [
-                'electron',
-                '@electron/remote',
-                'electron-log',
-                'electron-store',
-                'electron-window-state',
-                'chokidar',
-                'vscode-ripgrep',
-                'keytar',
-                'fontmanager-redux',
-                'native-keymap',
-                'ced',
-                'cld',
-                '@hfelix/spellchecker',
-                '@hfelix/electron-localshortcut',
-                '@hfelix/electron-spellchecker',
-                'command-exists',
-                'iconv-lite',
-                'minizlib',
-                'plist',
-                'webfontloader',
-                'element-resize-detector',
-                'unsplash-js',
-                '@octokit/rest',
-                'arg',
-                'dayjs',
-                'deep-equal',
-                'fuzzaldrin',
-                'iso-639-1',
-                'turndown',
-                'joplin-turndown-plugin-gfm',
-                'dompurify',
-                'dom-autoscroller',
-                'dragula',
-                'codemirror',
-                'katex',
-                'mermaid',
-                'prismjs',
-                'vega',
-                'vega-embed',
-                'vega-lite',
-                'flowchart.js',
-                'snabbdom',
-                'snabbdom-to-html',
-                'marked',
-                'axios',
-                'github-markdown-css',
-                'html-tags',
-                'execall',
-                'keyboard-layout'
-              ]
+            resolve: {
+              alias: {
+                'common': resolve(__dirname, 'src/common'),
+                'main': resolve(__dirname, 'src/main')
+              }
+            },
+            define: {
+              __static: JSON.stringify(resolve(__dirname, 'static'))
             }
-          },
-          resolve: {
-            alias: {
-              'common': resolve(__dirname, 'src/common'),
-              'main': resolve(__dirname, 'src/main')
-            }
-          },
-          define: {
-            __static: JSON.stringify(resolve(__dirname, 'static'))
           }
         }
-      }),
+      ]),
       renderer()
     ],
     css: {},
@@ -175,7 +192,7 @@ export default defineConfig(({ command }) => {
     },
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
-      include: ['snapsvg', 'path-browserify'],
+      include: ['snapsvg', 'path-browserify', 'element-ui'],
       exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep']
     },
     ssr: {

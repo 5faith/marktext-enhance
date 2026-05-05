@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { usePreferencesStore } from '@/stores'
 import { shell } from 'electron'
 import Bool from '@/prefComponents/common/bool'
 import Compound from '@/prefComponents/common/compound'
@@ -46,24 +46,22 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      imageFolderPath: state => state.preferences.imageFolderPath,
-      imagePreferRelativeDirectory: state => state.preferences.imagePreferRelativeDirectory,
-      imageRelativeDirectoryName: state => state.preferences.imageRelativeDirectoryName
-    }),
+        imageFolderPath () { return usePreferencesStore().imageFolderPath },
+        imagePreferRelativeDirectory () { return usePreferencesStore().imagePreferRelativeDirectory },
+        imageRelativeDirectoryName () { return usePreferencesStore().imageRelativeDirectoryName },
     imageInsertAction: {
       get: function () {
-        return this.$store.state.preferences.imageInsertAction
+        return usePreferencesStore().imageInsertAction
       }
     },
     folderPathPlaceholder: {
       get: function () {
-        return this.$store.state.preferences.imageFolderPath || ''
+        return usePreferencesStore().imageFolderPath || ''
       }
     },
     relativeDirectoryNamePlaceholder: {
       get: function () {
-        return this.$store.state.preferences.imageRelativeDirectoryName || 'assets'
+        return usePreferencesStore().imageRelativeDirectoryName || 'assets'
       }
     }
   },
@@ -72,10 +70,10 @@ export default {
       shell.openPath(this.imageFolderPath)
     },
     modifyImageFolderPath (value) {
-      return this.$store.dispatch('SET_IMAGE_FOLDER_PATH', value)
+      usePreferencesStore().setImageFolderPath(value)
     },
     onSelectChange (type, value) {
-      this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+      usePreferencesStore().setSinglePreference({ type, value })
     }
   }
 }

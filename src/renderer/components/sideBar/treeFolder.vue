@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useProjectStore } from '@/stores'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
 import { createFileOrDirectoryMixins } from '../../mixins'
@@ -78,18 +78,16 @@ export default {
     File: () => import('./treeFile.vue')
   },
   computed: {
-    ...mapState({
-      renameCache: state => state.project.renameCache,
-      createCache: state => state.project.createCache,
-      activeItem: state => state.project.activeItem,
-      clipboard: state => state.project.clipboard
-    })
+        renameCache () { return useProjectStore().renameCache },
+        createCache () { return useProjectStore().createCache },
+        activeItem () { return useProjectStore().activeItem },
+    clipboard () { return useProjectStore().clipboard }
   },
   created () {
     this.$nextTick(() => {
       this.$refs.folder.addEventListener('contextmenu', event => {
         event.preventDefault()
-        this.$store.dispatch('CHANGE_ACTIVE_ITEM', this.folder)
+        useProjectStore().changeActiveItem(this.folder)
         showContextMenu(event, !!this.clipboard)
       })
       bus.on('SIDEBAR::show-new-input', this.handleInputFocus)
@@ -112,7 +110,7 @@ export default {
     rename () {
       const { newName } = this
       if (newName) {
-        this.$store.dispatch('RENAME_IN_SIDEBAR', newName)
+        useProjectStore().renameInSidebar(newName)
       }
     }
   }

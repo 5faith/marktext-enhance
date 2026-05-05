@@ -84,7 +84,7 @@
 import Folder from './treeFolder.vue'
 import File from './treeFile.vue'
 import OpenedFile from './treeOpenedTab.vue'
-import { mapState } from 'vuex'
+import { useProjectStore, useEditorStore } from '@/stores'
 import bus from '../../bus'
 import { createFileOrDirectoryMixins } from '../../mixins'
 import FolderIcon from '@/assets/icons/undraw_folder.svg'
@@ -117,9 +117,7 @@ export default {
     OpenedFile
   },
   computed: {
-    ...mapState({
-      createCache: state => state.project.createCache
-    })
+    createCache () { return useProjectStore().createCache }
   },
   created () {
     this.$nextTick(() => {
@@ -128,35 +126,35 @@ export default {
       document.addEventListener('click', event => {
         const target = event.target
         if (target.tagName !== 'INPUT') {
-          this.$store.dispatch('CHANGE_ACTIVE_ITEM', {})
-          this.$store.commit('CREATE_PATH', {})
-          this.$store.commit('SET_RENAME_CACHE', null)
+          useProjectStore().changeActiveItem({})
+          useProjectStore().setCreateCache({})
+          useProjectStore().setRenameCache(null)
         }
       })
       document.addEventListener('contextmenu', event => {
         const target = event.target
         if (target.tagName !== 'INPUT') {
-          this.$store.commit('CREATE_PATH', {})
-          this.$store.commit('SET_RENAME_CACHE', null)
+          useProjectStore().setCreateCache({})
+          useProjectStore().setRenameCache(null)
         }
       })
       document.addEventListener('keydown', event => {
         if (event.key === 'Escape') {
-          this.$store.commit('CREATE_PATH', {})
-          this.$store.commit('SET_RENAME_CACHE', null)
+          useProjectStore().setCreateCache({})
+          useProjectStore().setRenameCache(null)
         }
       })
     })
   },
   methods: {
     openFolder () {
-      this.$store.dispatch('ASK_FOR_OPEN_PROJECT')
+      useProjectStore().askForOpenProject()
     },
     saveAll (isClose) {
-      this.$store.dispatch('ASK_FOR_SAVE_ALL', isClose)
+      useEditorStore().askForSaveAll(isClose)
     },
     createFile () {
-      this.$store.dispatch('CHANGE_ACTIVE_ITEM', this.projectTree)
+      useProjectStore().changeActiveItem(this.projectTree)
       bus.emit('SIDEBAR::new', 'file')
     },
     toggleOpenedFiles () {

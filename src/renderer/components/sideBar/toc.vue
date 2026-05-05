@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useEditorStore, usePreferencesStore } from '@/stores'
 import bus from '../../bus'
 import EmptyIcon from '@/assets/icons/undraw_toc_empty.svg'
 
@@ -37,10 +37,8 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      toc: state => state.editor.toc,
-      wordWrapInToc: state => state.preferences.wordWrapInToc
-    })
+        toc () { return useEditorStore().toc },
+    wordWrapInToc () { return usePreferencesStore().wordWrapInToc }
   },
   methods: {
     handleClick ({ slug }) {

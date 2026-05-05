@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { useLayoutStore } from '@/stores'
 import Tabs from './tabs.vue'
 import Editor from './editor.vue'
 import SourceCode from './sourceCode.vue'
@@ -68,10 +68,8 @@ export default {
     DevtoolsButton
   },
     computed: {
-    ...mapState({
-      showSideBar: state => state.layout.showSideBar,
-      sideBarWidth: state => state.layout.sideBarWidth
-    })
+        showSideBar () { return useLayoutStore().showSideBar },
+    sideBarWidth () { return useLayoutStore().sideBarWidth }
   }
 }
 </script>

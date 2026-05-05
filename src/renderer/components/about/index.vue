@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import bus from '../../bus'
 import MarkTextLogo from '../../assets/images/logo.png'
+import { useRootStore } from '@/stores'
 
 export default {
   data () {
@@ -42,9 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      appVersion: state => state.appVersion
-    })
+    appVersion () { return useRootStore().appVersion }
   },
   created () {
     bus.on('aboutDialog', this.showDialog)

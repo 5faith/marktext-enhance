@@ -25,7 +25,7 @@
 
 <script>
 import FileIcon from './icon.vue'
-import { mapState } from 'vuex'
+import { useProjectStore, useEditorStore } from '@/stores'
 import { fileMixins } from '../../mixins'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
@@ -52,19 +52,17 @@ export default {
     FileIcon
   },
   computed: {
-    ...mapState({
-      renameCache: state => state.project.renameCache,
-      activeItem: state => state.project.activeItem,
-      clipboard: state => state.project.clipboard,
-      currentFile: state => state.editor.currentFile,
-      tabs: state => state.editor.tabs
-    })
+        renameCache () { return useProjectStore().renameCache },
+        activeItem () { return useProjectStore().activeItem },
+        clipboard () { return useProjectStore().clipboard },
+        currentFile () { return useEditorStore().currentFile },
+    tabs () { return useEditorStore().tabs }
   },
   created () {
     this.$nextTick(() => {
       this.$refs.file.addEventListener('contextmenu', event => {
         event.preventDefault()
-        this.$store.dispatch('CHANGE_ACTIVE_ITEM', this.file)
+        useProjectStore().changeActiveItem(this.file)
         showContextMenu(event, !!this.clipboard)
       })
 
@@ -84,7 +82,7 @@ export default {
     rename () {
       const { newName } = this
       if (newName) {
-        this.$store.dispatch('RENAME_IN_SIDEBAR', newName)
+        useProjectStore().renameInSidebar(newName)
       }
     }
   }

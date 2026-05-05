@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { usePreferencesStore } from '@/stores'
 import Compound from '../common/compound'
 import Range from '../common/range'
 import CurSelect from '../common/select'
@@ -151,35 +151,32 @@ export default {
     return {}
   },
   computed: {
-    ...mapState({
-      autoSave: state => state.preferences.autoSave,
-      autoSaveDelay: state => state.preferences.autoSaveDelay,
-      titleBarStyle: state => state.preferences.titleBarStyle,
-      defaultDirectoryToOpen: state => state.preferences.defaultDirectoryToOpen,
-      openFilesInNewWindow: state => state.preferences.openFilesInNewWindow,
-      openFolderInNewWindow: state => state.preferences.openFolderInNewWindow,
-      zoom: state => state.preferences.zoom,
-      hideScrollbar: state => state.preferences.hideScrollbar,
-      wordWrapInToc: state => state.preferences.wordWrapInToc,
-      fileSortBy: state => state.preferences.fileSortBy,
-      language: state => state.preferences.language
-    }),
+        autoSave () { return usePreferencesStore().autoSave },
+        autoSaveDelay () { return usePreferencesStore().autoSaveDelay },
+        titleBarStyle () { return usePreferencesStore().titleBarStyle },
+        defaultDirectoryToOpen () { return usePreferencesStore().defaultDirectoryToOpen },
+        openFilesInNewWindow () { return usePreferencesStore().openFilesInNewWindow },
+        openFolderInNewWindow () { return usePreferencesStore().openFolderInNewWindow },
+        zoom () { return usePreferencesStore().zoom },
+        hideScrollbar () { return usePreferencesStore().hideScrollbar },
+        wordWrapInToc () { return usePreferencesStore().wordWrapInToc },
+        fileSortBy () { return usePreferencesStore().fileSortBy },
+        language () { return usePreferencesStore().language },
     startUpAction: {
       get: function () {
-        return this.$store.state.preferences.startUpAction
+        return usePreferencesStore().startUpAction
       },
       set: function (value) {
-        const type = 'startUpAction'
-        this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+        usePreferencesStore().setSinglePreference({ type: 'startUpAction', value })
       }
     }
   },
   methods: {
     onSelectChange (type, value) {
-      this.$store.dispatch('SET_SINGLE_PREFERENCE', { type, value })
+      usePreferencesStore().setSinglePreference({ type, value })
     },
     selectDefaultDirectoryToOpen () {
-      this.$store.dispatch('SELECT_DEFAULT_DIRECTORY_TO_OPEN')
+      usePreferencesStore().selectDefaultDirectoryToOpen()
     }
   }
 }

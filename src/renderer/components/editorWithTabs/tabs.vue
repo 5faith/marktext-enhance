@@ -42,7 +42,7 @@
 
 <script>
 import { shell, clipboard } from 'electron'
-import { mapState } from 'vuex'
+import { useEditorStore } from '@/stores'
 import autoScroll from 'dom-autoscroller'
 import dragula from 'dragula'
 import { tabsMixins } from '../../mixins'
@@ -57,14 +57,12 @@ export default {
   },
   mixins: [tabsMixins],
   computed: {
-    ...mapState({
-      currentFile: state => state.editor.currentFile,
-      tabs: state => state.editor.tabs
-    })
+        currentFile () { return useEditorStore().currentFile },
+    tabs () { return useEditorStore().tabs }
   },
   methods: {
     newFile () {
-      this.$store.dispatch('NEW_UNTITLED_TAB', {})
+      useEditorStore().newUntitledTab({})
     },
     handleTabScroll (event) {
       // Use mouse wheel value first but prioritize X value more (e.g. touchpad input).
@@ -80,25 +78,25 @@ export default {
     closeTab (tabId) {
       const tab = this.tabs.find(f => f.id === tabId)
       if (tab) {
-        this.$store.dispatch('CLOSE_TAB', tab)
+        useEditorStore().closeTab(tab)
       }
     },
     closeOthers (tabId) {
       const tab = this.tabs.find(f => f.id === tabId)
       if (tab) {
-        this.$store.dispatch('CLOSE_OTHER_TABS', tab)
+        useEditorStore().closeOtherTabs(tab)
       }
     },
     closeSaved () {
-      this.$store.dispatch('CLOSE_SAVED_TABS')
+      useEditorStore().closeSavedTabs()
     },
     closeAll () {
-      this.$store.dispatch('CLOSE_ALL_TABS')
+      useEditorStore().closeAllTabs()
     },
     rename (tabId) {
       const tab = this.tabs.find(f => f.id === tabId)
       if (tab && tab.pathname) {
-        this.$store.dispatch('RENAME_FILE', tab)
+        useEditorStore().renameFile(tab)
       }
     },
     copyPath (tabId) {
@@ -155,7 +153,7 @@ export default {
           throw new Error('Cannot reorder tabs: invalid tab id.')
         }
 
-        this.$store.dispatch('EXCHANGE_TABS_BY_ID', {
+        useEditorStore().exchangeTabsById({
           fromId: droppedId,
           toId: isLastTab ? null : nextTabId
         })

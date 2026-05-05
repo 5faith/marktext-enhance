@@ -1,42 +1,35 @@
 import { createApp } from 'vue'
-import VueElectron from 'vue-electron'
 import sourceMapSupport from 'source-map-support'
 import bootstrapRenderer from './bootstrap'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
+import { createPinia } from 'pinia'
 import axios from './axios'
-import store from './store'
 import './assets/symbolIcon'
+import { ipcRenderer } from 'electron'
+
+// Pinia stores
+import {
+  useRootStore,
+  useEditorStore,
+  usePreferencesStore,
+  useLayoutStore,
+  useProjectStore,
+  useCommandCenterStore,
+  useTweetStore,
+  useNotificationStore,
+  useAutoUpdatesStore,
+  useListenForMainStore
+} from './stores'
+import bus from './bus'
+import {
+  FileEncodingCommand,
+  LineEndingCommand,
+  QuickOpenCommand,
+  TrailingNewlineCommand
+} from './commands'
 
 // Load eve before snap.svg (which depends on eve being a global variable)
 import eve from 'eve-raphael'
-import {
-  Dialog,
-  Form,
-  FormItem,
-  InputNumber,
-  Button,
-  Tooltip,
-  Upload,
-  Slider,
-  Checkbox,
-  ColorPicker,
-  Col,
-  Row,
-  Tree,
-  Autocomplete,
-  Switch,
-  Select,
-  Option,
-  Radio,
-  RadioGroup,
-  Table,
-  TableColumn,
-  Tabs,
-  TabPane,
-  Input
-} from 'element-ui'
 import services from './services'
 import routes from './router'
 import { addElementStyle } from '@/util/theme'
@@ -72,41 +65,16 @@ const router = createRouter({
   routes: routes(global.marktext.env.type)
 })
 
+const pinia = createPinia()
+
 const app = createApp({
-  store,
   router,
   template: '<router-view class="view"></router-view>'
 })
 
+app.use(pinia)
 app.use(router)
-app.use(store)
 
-app.use(Dialog)
-app.use(Form)
-app.use(FormItem)
-app.use(InputNumber)
-app.use(Button)
-app.use(Tooltip)
-app.use(Upload)
-app.use(Slider)
-app.use(Checkbox)
-app.use(ColorPicker)
-app.use(Col)
-app.use(Row)
-app.use(Tree)
-app.use(Autocomplete)
-app.use(Switch)
-app.use(Select)
-app.use(Option)
-app.use(Radio)
-app.use(RadioGroup)
-app.use(Table)
-app.use(TableColumn)
-app.use(Tabs)
-app.use(TabPane)
-app.use(Input)
-
-app.use(VueElectron)
 app.config.globalProperties.$http = axios
 
 services.forEach(s => {
@@ -114,3 +82,123 @@ services.forEach(s => {
 })
 
 app.mount('#app')
+
+// Initialize Pinia stores and dispatch all IPC listener actions
+const rootStore = useRootStore()
+const editorStore = useEditorStore()
+const preferencesStore = usePreferencesStore()
+const layoutStore = useLayoutStore()
+const projectStore = useProjectStore()
+const commandCenterStore = useCommandCenterStore()
+const tweetStore = useTweetStore()
+const notificationStore = useNotificationStore()
+const autoUpdatesStore = useAutoUpdatesStore()
+const listenForMainStore = useListenForMainStore()
+
+// Root store listeners
+rootStore.listenForWinStatus()
+
+// Editor store listeners (exclude bootstrap - handled below)
+editorStore.listenForSave()
+editorStore.listenForSaveAs()
+editorStore.listenForSetPathname()
+editorStore.listenForClose()
+editorStore.listenForSaveClose()
+editorStore.listenForMoveTo()
+editorStore.listenForRename()
+editorStore.listenForNewTab()
+editorStore.listenForCloseTab()
+editorStore.listenForTabCycle()
+editorStore.listenForSwitchTabs()
+editorStore.lintenForSetLineEnding()
+editorStore.lintenForSetEncoding()
+editorStore.lintenForSetFinalNewline()
+editorStore.listenForFileChange()
+editorStore.listenWindowZoom()
+editorStore.listenForReloadImages()
+editorStore.lintenForExportSuccess()
+editorStore.lintenForPrintServiceClearup()
+editorStore.listenScreenShot()
+
+// Bootstrap editor (moved from editor store to avoid circular dependencies)
+setTimeout(() => {
+  const editorState = {
+    currentFile: editorStore.currentFile,
+    tabs: editorStore.tabs,
+    listToc: editorStore.listToc,
+    toc: editorStore.toc
+  }
+  const rootState = {
+    platform: rootStore.platform,
+    appVersion: rootStore.appVersion,
+    windowActive: rootStore.windowActive,
+    init: rootStore.init,
+    editor: editorState
+  }
+  bus.emit('cmd::register-command', new FileEncodingCommand(editorState))
+  bus.emit('cmd::register-command', new QuickOpenCommand(rootState))
+  bus.emit('cmd::register-command', new LineEndingCommand(editorState))
+  bus.emit('cmd::register-command', new TrailingNewlineCommand(editorState))
+
+  setTimeout(() => {
+    ipcRenderer.send('mt::request-keybindings')
+    bus.emit('cmd::sort-commands')
+  }, 100)
+}, 400)
+
+ipcRenderer.on('mt::bootstrap-editor', (e, config) => {
+  const { addBlankTab, markdownList, lineEnding, sideBarVisibility, tabBarVisibility, sourceCodeModeEnabled } = config
+
+  rootStore.setInitialized()
+
+  preferencesStore.setUserPreference({ endOfLine: lineEnding })
+
+  layoutStore.setLayout({
+    rightColumn: 'files',
+    showSideBar: !!sideBarVisibility,
+    showTabBar: !!tabBarVisibility
+  })
+  layoutStore.setLayoutMenuItem()
+
+  preferencesStore.setMode({
+    type: 'sourceCode',
+    checked: !!sourceCodeModeEnabled
+  })
+
+  if (addBlankTab) {
+    editorStore.newUntitledTab({})
+  } else if (markdownList && markdownList.length) {
+    let isFirst = true
+    for (const markdown of markdownList) {
+      editorStore.newUntitledTab({ markdown, selected: isFirst })
+      isFirst = false
+    }
+  }
+})
+
+// Layout store listeners
+layoutStore.listenForLayout()
+layoutStore.listenForRequestLayout()
+
+// Preferences store listeners
+preferencesStore.askForUserPreference()
+preferencesStore.listenToggleView()
+
+// Project store listeners
+projectStore.listenForLoadProject()
+projectStore.listenForUpdateProject()
+projectStore.listenForSidebarContextMenu()
+
+// Command center store listener
+commandCenterStore.listenCommandCenterBus()
+
+// Simple IPC listener stores
+tweetStore.listenForTweet()
+notificationStore.listenForNotification()
+autoUpdatesStore.listenForUpdate()
+
+// Listen for main process messages
+listenForMainStore.listenForEdit()
+listenForMainStore.listenForView()
+listenForMainStore.listenForShowDialog()
+listenForMainStore.listenForParagraphInlineStyle()

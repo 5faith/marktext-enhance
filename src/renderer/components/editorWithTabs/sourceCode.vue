@@ -9,7 +9,7 @@
 <script>
 import codeMirror, { setMode, setCursorAtLastLine, setTextDirection } from '../../codeMirror'
 import { wordCount as getWordCount } from 'muya/lib/utils'
-import { mapState } from 'vuex'
+import { usePreferencesStore, useEditorStore } from '@/stores'
 import { adjustCursor } from '../../util'
 import bus from '../../bus'
 import { oneDarkThemes, railscastsThemes } from '@/config'
@@ -25,11 +25,9 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      theme: state => state.preferences.theme,
-      sourceCode: state => state.preferences.sourceCode,
-      currentTab: state => state.editor.currentFile
-    })
+        theme () { return usePreferencesStore().theme },
+        sourceCode () { return usePreferencesStore().sourceCode },
+    currentTab () { return useEditorStore().currentFile }
   },
 
   data () {
@@ -185,7 +183,7 @@ export default {
           // See "beforeDestroy" note
           if (!this.viewDestroyed) {
             if (this.tabId) {
-              this.$store.dispatch('LISTEN_FOR_CONTENT_CHANGE', { id: this.tabId, markdown, wordCount, cursor })
+              useEditorStore().listenForContentChange({ id: this.tabId, markdown, wordCount, cursor })
             } else {
               // This may occur during tab switching but should not occur otherwise.
               console.warn('LISTEN_FOR_CONTENT_CHANGE: Cannot commit changes because not tab id was set!')
@@ -241,7 +239,7 @@ export default {
       if (this.tabId) {
         const { editor } = this
         const { cursor, markdown } = this.getMarkdownAndCursor(editor)
-        this.$store.dispatch('LISTEN_FOR_CONTENT_CHANGE', { id: this.tabId, markdown, cursor })
+        useEditorStore().listenForContentChange({ id: this.tabId, markdown, cursor })
         this.tabId = null // invalidate tab id
       }
     },

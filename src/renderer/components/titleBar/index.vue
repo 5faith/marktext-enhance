@@ -38,32 +38,39 @@
         >
           <span class="text-center-vertical">&#9776;</span>
         </div>
-        <el-tooltip
+        <div
           v-if="wordCount"
-          class="item"
-          :content="`${wordCount[show]} ${HASH[show].full + (wordCount[show] > 1 ? 's' : '')}`"
-          placement="bottom-end"
+          class="word-count-wrapper"
+          :class="[{ 'title-no-drag': platform !== 'darwin' }]"
+          @mouseenter="handleWordCountMouseEnter"
+          @mouseleave="handleWordCountMouseLeave"
         >
-          <div slot="content">
-            <div class="title-item">
-              <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
-            </div>
-            <div class="title-item">
-              <span class="front">Characters:</span><span class="text">{{wordCount['character']}}</span>
-            </div>
-            <div class="title-item">
-              <span class="front">Paragraphs:</span><span class="text">{{wordCount['paragraph']}}</span>
-            </div>
-          </div>
           <div
-            v-if="wordCount"
             class="word-count"
-            :class="[{ 'title-no-drag': platform !== 'darwin' }]"
+            ref="wordCountBtn"
             @click.stop="handleWordClick"
           >
             <span class="text-center-vertical">{{ `${HASH[show].short} ${wordCount[show]}` }}</span>
           </div>
-        </el-tooltip>
+          <transition name="popup-fade">
+            <div
+              v-show="showPopup"
+              class="word-count-popup"
+              :class="{ 'popup-align-left': popupAlignLeft }"
+              ref="wordCountPopup"
+            >
+              <div class="title-item">
+                <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
+              </div>
+              <div class="title-item">
+                <span class="front">Characters:</span><span class="text">{{wordCount['character']}}</span>
+              </div>
+              <div class="title-item">
+                <span class="front">Paragraphs:</span><span class="text">{{wordCount['paragraph']}}</span>
+              </div>
+            </div>
+          </transition>
+        </div>
       </div>
       <div
         v-if="titleBarStyle === 'custom' && !isFullScreen && !isOsx"
@@ -100,10 +107,10 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { getCurrentWindow, Menu as RemoteMenu } from '@electron/remote'
-import { mapState } from 'vuex'
 import { minimizePath, restorePath, maximizePath, closePath } from '../../assets/window-controls.js'
 import { PATH_SEPARATOR } from '../../config'
 import { isOsx } from '@/util'
+import { usePreferencesStore, useLayoutStore, useEditorStore } from '@/stores'
 
 export default {
   data () {
@@ -152,10 +159,8 @@ export default {
     isSaved: Boolean
   },
   computed: {
-    ...mapState({
-      titleBarStyle: state => state.preferences.titleBarStyle,
-      showTabBar: state => state.layout.showTabBar
-    }),
+        titleBarStyle () { return usePreferencesStore().titleBarStyle },
+        showTabBar () { return useLayoutStore().showTabBar },
     paths () {
       if (!this.pathname) return []
       const pathnameToken = this.pathname.split(PATH_SEPARATOR).filter(i => i)
@@ -221,7 +226,7 @@ export default {
 
     rename () {
       if (this.platform === 'darwin') {
-        this.$store.dispatch('RESPONSE_FOR_RENAME')
+        useEditorStore().responseForRename()
       }
     },
 

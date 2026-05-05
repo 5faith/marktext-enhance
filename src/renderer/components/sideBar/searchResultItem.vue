@@ -60,7 +60,7 @@
 
 <script>
 import path from 'path'
-import { mapState } from 'vuex'
+import { useEditorStore } from '@/stores'
 import { fileMixins } from '../../mixins'
 import { PATH_SEPARATOR } from '../../config'
 
@@ -80,10 +80,8 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      tabs: state => state.editor.tabs,
-      currentFile: state => state.editor.currentFile
-    }),
+        tabs () { return useEditorStore().tabs },
+        currentFile () { return useEditorStore().currentFile },
 
     getMatches () {
       if (this.searchResult.matches.length === 0 || this.allMatchesShown) {
