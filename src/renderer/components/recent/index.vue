@@ -13,20 +13,12 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import ContentIcon from '@/assets/icons/undraw_content.svg'
 import { useEditorStore } from '@/stores'
 
-export default {
-  data () {
-    this.ContentIcon = ContentIcon
-    return {}
-  },
-  methods: {
-    newFile () {
-      useEditorStore().newUntitledTab({})
-    }
-  }
+const newFile = () => {
+  useEditorStore().newUntitledTab({})
 }
 </script>
 
