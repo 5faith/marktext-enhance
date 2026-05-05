@@ -326,7 +326,7 @@ export default {
     visibility: visible;
   }
   .title:hover {
-    color: var(sideBarTitleColor);
+    color: var(--sideBarTitleColor);
   }
 
   .left-toolbar {
