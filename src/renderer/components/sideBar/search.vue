@@ -91,12 +91,12 @@ import bus from '../../bus'
 import SearchResultItem from './searchResultItem.vue'
 import RipgrepDirectorySearcher from '../../node/ripgrepSearcher'
 import EmptyIcon from '@/assets/icons/undraw_empty.svg'
-
-const log = require('electron-log')
 import FindCaseIcon from '@/assets/icons/searchIcons/iconCase.svg'
 import FindWordIcon from '@/assets/icons/searchIcons/iconWord.svg'
 import FindRegexIcon from '@/assets/icons/searchIcons/iconRegex.svg'
 import { MARKDOWN_INCLUSIONS } from '../../../common/filesystem/paths'
+
+const log = require('electron-log')
 
 export default {
   data () {

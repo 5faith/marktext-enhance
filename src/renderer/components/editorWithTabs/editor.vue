@@ -76,8 +76,6 @@
 import { shell } from 'electron'
 import path from 'path'
 import { mapState } from 'vuex'
-
-const log = require('electron-log')
 // import ViewImage from 'view-image'
 import { isChildOfDirectory } from 'common/filesystem/paths'
 import Muya from 'muya/lib'
@@ -111,6 +109,8 @@ import 'muya/themes/default.css'
 import '@/assets/themes/codemirror/one-dark.css'
 // import 'view-image/lib/imgViewer.css'
 import CloseIcon from '@/assets/icons/close.svg'
+
+const log = require('electron-log')
 
 const STANDAR_Y = 320
 

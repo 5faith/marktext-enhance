@@ -11,9 +11,6 @@ import './assets/symbolIcon'
 
 // Load eve before snap.svg (which depends on eve being a global variable)
 import eve from 'eve-raphael'
-if (typeof window !== 'undefined') {
-  window.eve = eve
-}
 import {
   Dialog,
   Form,
@@ -46,6 +43,9 @@ import { addElementStyle } from '@/util/theme'
 
 import './assets/styles/index.css'
 import './assets/styles/printService.css'
+if (typeof window !== 'undefined') {
+  window.eve = eve
+}
 
 // -----------------------------------------------
 
