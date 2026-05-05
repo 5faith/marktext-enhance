@@ -58,76 +58,79 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
 import path from 'path'
 import { useEditorStore } from '@/stores'
 import { fileMixins } from '../../mixins'
 import { PATH_SEPARATOR } from '../../config'
 
-export default {
-  mixins: [fileMixins],
-  data () {
-    return {
-      showSearchMatches: this.searchResult.matches.length <= 20,
-      allMatchesShown: this.searchResult.matches.length <= 10,
-      shownMatches: 10
-    }
-  },
-  props: {
-    searchResult: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-        tabs () { return useEditorStore().tabs },
-        currentFile () { return useEditorStore().currentFile },
-
-    getMatches () {
-      if (this.searchResult.matches.length === 0 || this.allMatchesShown) {
-        return this.searchResult.matches
-      }
-      return this.searchResult.matches.slice(0, this.shownMatches)
-    },
-
-    // Return filename without extension.
-    filename () {
-      return path.basename(this.searchResult.filePath, path.extname(this.searchResult.filePath))
-    },
-
-    matchCount () {
-      return this.searchResult.matches.length
-    },
-
-    // Return the filename extension or null.
-    extension () {
-      return path.extname(this.searchResult.filePath)
-    },
-
-    // Return the parent directory with trailing path separator.
-    dirname () {
-      return path.join(path.dirname(this.searchResult.filePath), PATH_SEPARATOR)
-    }
-  },
-  methods: {
-    toggleSearchMatches () {
-      this.showSearchMatches = !this.showSearchMatches
-    },
-
-    handleShowMoreMatches (event) {
-      this.shownMatches += 15
-      if (event.ctrlKey || event.metaKey ||
-          this.shownMatches >= this.searchResult.matches.length) {
-        this.allMatchesShown = true
-      }
-    },
-
-    ellipsisText (text) {
-      const len = text.length
-      const MAX_PRETEXT_LEN = 6
-      return len > MAX_PRETEXT_LEN ? `...${text.substring(len - MAX_PRETEXT_LEN)}` : text
-    }
+// State
+const props = defineProps({
+  searchResult: {
+    type: Object,
+    required: true
   }
+})
+
+const showSearchMatches = ref(props.searchResult.matches.length <= 20)
+const allMatchesShown = ref(props.searchResult.matches.length <= 10)
+const shownMatches = ref(10)
+
+// Stores
+const tabs = computed(() => useEditorStore().tabs)
+const currentFile = computed(() => useEditorStore().currentFile)
+
+// Computed
+const getMatches = computed(() => {
+  if (props.searchResult.matches.length === 0 || allMatchesShown.value) {
+    return props.searchResult.matches
+  }
+  return props.searchResult.matches.slice(0, shownMatches.value)
+})
+
+// Return filename without extension.
+const filename = computed(() => {
+  return path.basename(props.searchResult.filePath, path.extname(props.searchResult.filePath))
+})
+
+const matchCount = computed(() => {
+  return props.searchResult.matches.length
+})
+
+// Return the filename extension or null.
+const extension = computed(() => {
+  return path.extname(props.searchResult.filePath)
+})
+
+// Return the parent directory with trailing path separator.
+const dirname = computed(() => {
+  return path.join(path.dirname(props.searchResult.filePath), PATH_SEPARATOR)
+})
+
+// Methods
+const toggleSearchMatches = () => {
+  showSearchMatches.value = !showSearchMatches.value
+}
+
+const handleShowMoreMatches = (event) => {
+  shownMatches.value += 15
+  if (event.ctrlKey || event.metaKey ||
+      shownMatches.value >= props.searchResult.matches.length) {
+    allMatchesShown.value = true
+  }
+}
+
+const ellipsisText = (text) => {
+  const len = text.length
+  const MAX_PRETEXT_LEN = 6
+  return len > MAX_PRETEXT_LEN ? `...${text.substring(len - MAX_PRETEXT_LEN)}` : text
+}
+
+const handleSearchResultClick = (searchMatch) => {
+  // Implement search result click logic
+  // This might need to emit an event or call a store action
+  console.log('Search result clicked:', searchMatch)
 }
 </script>
 
