@@ -23,40 +23,39 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import bus from '../../bus'
 import { useEditorStore } from '@/stores'
 
-export default {
-  data () {
-    return {
-      showRename: false,
-      tempName: ''
+const showRename = ref(false)
+const tempName = ref('')
+const searchRef = ref(null)
+
+const filename = computed(() => useEditorStore().currentFile?.filename)
+
+const handleRename = () => {
+  showRename.value = true
+  tempName.value = filename.value || ''
+  nextTick(() => {
+    if (searchRef.value) {
+      searchRef.value.focus()
     }
-  },
-  created () {
-    this.$nextTick(() => {
-      bus.on('rename', this.handleRename)
-    })
-  },
-  beforeDestroy () {
-    bus.off('rename', this.handleRename)
-  },
-  computed: {
-    filename () { return useEditorStore().currentFile.filename }
-  },
-  methods: {
-    handleRename () {
-      this.showRename = true
-      this.tempName = this.filename
-      this.$refs.search.focus()
-    },
-    confirm () {
-      useEditorStore().rename(this.tempName)
-      this.showRename = false
-    }
-  }
+  })
 }
+
+const confirm = () => {
+  useEditorStore().rename(tempName.value)
+  showRename.value = false
+}
+
+onMounted(() => {
+  bus.on('rename', handleRename)
+})
+
+onBeforeUnmount(() => {
+  bus.off('rename', handleRename)
+})
 </script>
 
 <style>
