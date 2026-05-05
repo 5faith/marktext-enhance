@@ -1,8 +1,20 @@
-const spellchecker = window.require('@hfelix/electron-spellchecker')
+// Mock @hfelix/electron-spellchecker to avoid native module issues
+const mockSpellChecker = {
+  SpellCheckHandler: class {},
+  SpellChecker: class {
+    constructor() { this.enabled = false }
+    setLanguage() {}
+    isMisspelled() { return false }
+    getAvailableDictionaries() { return [] }
+  },
+  setGlobalLogger() {},
+  fallbackLocales: [],
+  normalizeLanguageCode: (code) => code
+}
 
-export const SpellCheckHandler = spellchecker.SpellCheckHandler
-export const SpellChecker = spellchecker.SpellChecker
-export const setGlobalLogger = spellchecker.setGlobalLogger
-export const fallbackLocales = spellchecker.fallbackLocales
-export const normalizeLanguageCode = spellchecker.normalizeLanguageCode
-export default spellchecker
+export const SpellCheckHandler = mockSpellChecker.SpellCheckHandler
+export const SpellChecker = mockSpellChecker.SpellChecker
+export const setGlobalLogger = mockSpellChecker.setGlobalLogger
+export const fallbackLocales = mockSpellChecker.fallbackLocales
+export const normalizeLanguageCode = mockSpellChecker.normalizeLanguageCode
+export default mockSpellChecker
