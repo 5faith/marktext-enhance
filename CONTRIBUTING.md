@@ -1,5 +1,7 @@
 # MarkText Contributing Guide
 
+> **Note**: MarkText has migrated to Vue 3 + Vite + Pinia + Element Plus. See [Vue 3 Migration Guide](docs/dev/VUE3_MIGRATION.md) for details.
+
 We are really excited that you are interested in contributing to MarkText :tada:. Before submitting your contribution, please make sure to take a moment and read through the following guidelines.
 
 - [Code of Conduct](.github/CODE_OF_CONDUCT.md)
