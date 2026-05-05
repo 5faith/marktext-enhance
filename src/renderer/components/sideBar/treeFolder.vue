@@ -49,72 +49,92 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, nextTick, useTemplateRef, defineAsyncComponent } from 'vue'
 import { useProjectStore } from '@/stores'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
 import { createFileOrDirectoryMixins } from '../../mixins'
 
-export default {
-  mixins: [createFileOrDirectoryMixins],
-  name: 'folder',
-  data () {
-    return {
-      createName: '',
-      newName: ''
+// Props
+const props = defineProps({
+  folder: {
+    type: Object,
+    required: true
+  },
+  depth: {
+    type: Number,
+    required: true
+  }
+})
+
+// Async component
+const File = defineAsyncComponent(() => import('./treeFile.vue'))
+
+// Template refs
+const folderRef = useTemplateRef('folder')
+const renameInput = useTemplateRef('renameInput')
+const inputRef = useTemplateRef('input')
+
+// State
+const createName = ref('')
+const newName = ref('')
+
+// Stores
+const renameCache = computed(() => useProjectStore().renameCache)
+const createCache = computed(() => useProjectStore().createCache)
+const activeItem = computed(() => useProjectStore().activeItem)
+const clipboard = computed(() => useProjectStore().clipboard)
+
+// Methods
+const folderNameClick = () => {
+  props.folder.isCollapsed = !props.folder.isCollapsed
+}
+
+const noop = () => {}
+
+const focusRenameInput = () => {
+  nextTick(() => {
+    if (renameInput.value) {
+      renameInput.value.focus()
+      newName.value = props.folder.name
     }
-  },
-  props: {
-    folder: {
-      type: Object,
-      required: true
-    },
-    depth: {
-      type: Number,
-      required: true
-    }
-  },
-  components: {
-    File: () => import('./treeFile.vue')
-  },
-  computed: {
-        renameCache () { return useProjectStore().renameCache },
-        createCache () { return useProjectStore().createCache },
-        activeItem () { return useProjectStore().activeItem },
-    clipboard () { return useProjectStore().clipboard }
-  },
-  created () {
-    this.$nextTick(() => {
-      this.$refs.folder.addEventListener('contextmenu', event => {
-        event.preventDefault()
-        useProjectStore().changeActiveItem(this.folder)
-        showContextMenu(event, !!this.clipboard)
-      })
-      bus.on('SIDEBAR::show-new-input', this.handleInputFocus)
-      bus.on('SIDEBAR::show-rename-input', this.focusRenameInput)
-    })
-  },
-  methods: {
-    folderNameClick () {
-      this.folder.isCollapsed = !this.folder.isCollapsed
-    },
-    noop () {},
-    focusRenameInput () {
-      this.$nextTick(() => {
-        if (this.$refs.renameInput) {
-          this.$refs.renameInput.focus()
-          this.newName = this.folder.name
-        }
-      })
-    },
-    rename () {
-      const { newName } = this
-      if (newName) {
-        useProjectStore().renameInSidebar(newName)
-      }
-    }
+  })
+}
+
+const rename = () => {
+  const name = newName.value
+  if (name) {
+    useProjectStore().renameInSidebar(name)
   }
 }
+
+const handleInputEnter = () => {
+  // Handle input enter logic
+  console.log('Input enter:', createName.value)
+}
+
+const handleInputFocus = () => {
+  nextTick(() => {
+    if (inputRef.value) {
+      inputRef.value.focus()
+    }
+  })
+}
+
+// Lifecycle
+onMounted(() => {
+  if (folderRef.value) {
+    folderRef.value.addEventListener('contextmenu', event => {
+      event.preventDefault()
+      useProjectStore().changeActiveItem(props.folder)
+      showContextMenu(event, !!clipboard.value)
+    })
+  }
+  
+  bus.on('SIDEBAR::show-new-input', handleInputFocus)
+  bus.on('SIDEBAR::show-rename-input', focusRenameInput)
+})
 </script>
 
 <style scoped>
