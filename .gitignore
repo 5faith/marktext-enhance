@@ -42,3 +42,5 @@ pnpm-debug.log*
 graphify-out/cache
 .superpower/*
 dev.log
+
+.worktrees/
