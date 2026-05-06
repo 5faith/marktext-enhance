@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { ipcRenderer } from 'electron'
 import { getCurrentWindow, Menu as RemoteMenu } from '@electron/remote'
 import { minimizePath, restorePath, maximizePath, closePath } from '../../assets/window-controls.js'
@@ -143,6 +143,8 @@ const isOsxRef = ref(isOsx)
 const isFullScreen = ref(getCurrentWindow().isFullScreen())
 const isMaximized = ref(getCurrentWindow().isMaximized())
 const show = ref('word')
+const showPopup = ref(false)
+const popupAlignLeftOverride = ref(false)
 
 // Refs
 const wordCountBtn = ref(null)
@@ -235,22 +237,25 @@ const rename = () => {
 }
 
 const handleWordCountMouseEnter = () => {
-  // Handle mouse enter
+  showPopup.value = true
+  nextTick(() => {
+    if (wordCountPopup.value) {
+      const popupRect = wordCountPopup.value.getBoundingClientRect()
+      if (popupRect.right > window.innerWidth) {
+        popupAlignLeftOverride.value = true
+      } else {
+        popupAlignLeftOverride.value = false
+      }
+    }
+  })
 }
 
 const handleWordCountMouseLeave = () => {
-  // Handle mouse leave
+  showPopup.value = false
+  popupAlignLeftOverride.value = false
 }
 
-const showPopup = computed(() => {
-  // Logic to show popup
-  return false
-})
-
-const popupAlignLeft = computed(() => {
-  // Logic to align popup left
-  return false
-})
+const popupAlignLeft = computed(() => popupAlignLeftOverride.value)
 
 // IPC handlers
 const onMaximize = () => {
@@ -391,6 +396,12 @@ onBeforeUnmount(() => {
     }
   }
 
+  .word-count-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
   .word-count {
     cursor: pointer;
     font-size: 14px;
@@ -408,6 +419,38 @@ onBeforeUnmount(() => {
       background: var(--sideBarBgColor);
       color: var(--sideBarTitleColor);
     }
+  }
+
+  .word-count-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    padding: 6px 10px;
+    background: var(--floatBgColor);
+    color: var(--floatFontColor);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .word-count-popup.popup-align-left {
+    right: auto;
+    left: 0;
+  }
+
+  .popup-fade-enter-active,
+  .popup-fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .popup-fade-enter-from,
+  .popup-fade-leave-to {
+    opacity: 0;
   }
 
   .title-no-drag {
