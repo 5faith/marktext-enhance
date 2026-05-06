@@ -53,12 +53,11 @@
             <span class="text-center-vertical">{{ `${HASH[show].short} ${wordCount[show]}` }}</span>
           </div>
           <transition name="popup-fade">
-            <div
-              v-show="showPopup"
-              class="word-count-popup"
-              :class="{ 'popup-align-left': popupAlignLeft }"
-              ref="wordCountPopup"
-            >
+<div
+  v-show="showPopup"
+  class="word-count-popup"
+  ref="wordCountPopup"
+>
               <div class="title-item">
                 <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
               </div>
@@ -144,7 +143,6 @@ const isFullScreen = ref(getCurrentWindow().isFullScreen())
 const isMaximized = ref(getCurrentWindow().isMaximized())
 const show = ref('word')
 const showPopup = ref(false)
-const popupAlignLeftOverride = ref(false)
 
 // Refs
 const wordCountBtn = ref(null)
@@ -239,23 +237,36 @@ const rename = () => {
 const handleWordCountMouseEnter = () => {
   showPopup.value = true
   nextTick(() => {
-    if (wordCountPopup.value) {
-      const popupRect = wordCountPopup.value.getBoundingClientRect()
-      if (popupRect.right > window.innerWidth) {
-        popupAlignLeftOverride.value = true
-      } else {
-        popupAlignLeftOverride.value = false
+    if (wordCountPopup.value && wordCountBtn.value) {
+      const popup = wordCountPopup.value
+      const btnRect = wordCountBtn.value.getBoundingClientRect()
+      const popupRect = popup.getBoundingClientRect()
+
+      // 计算初始位置（在按钮下方，右对齐）
+      let left = btnRect.right - popupRect.width
+      let top = btnRect.bottom + 4
+
+      // 确保不超出右边界
+      if (left + popupRect.width > window.innerWidth) {
+        left = window.innerWidth - popupRect.width - 4
       }
+
+      // 确保不超出左边界
+      if (left < 0) {
+        left = 4
+      }
+
+      // 使用 fixed 定位，相对于视口
+      popup.style.position = 'fixed'
+      popup.style.left = `${left}px`
+      popup.style.top = `${top}px`
     }
   })
 }
 
 const handleWordCountMouseLeave = () => {
   showPopup.value = false
-  popupAlignLeftOverride.value = false
 }
-
-const popupAlignLeft = computed(() => popupAlignLeftOverride.value)
 
 // IPC handlers
 const onMaximize = () => {
@@ -422,10 +433,7 @@ onBeforeUnmount(() => {
   }
 
   .word-count-popup {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 4px;
+    position: fixed;
     padding: 6px 10px;
     background: var(--floatBgColor);
     color: var(--floatFontColor);
@@ -436,11 +444,6 @@ onBeforeUnmount(() => {
     white-space: nowrap;
     z-index: 100;
     pointer-events: none;
-  }
-
-  .word-count-popup.popup-align-left {
-    right: auto;
-    left: 0;
   }
 
   .popup-fade-enter-active,
