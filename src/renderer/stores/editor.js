@@ -1294,6 +1294,11 @@ const createApplicationMenuState = ({ start, end, affiliation }) => {
  * @returns A object that represents the formats menu state.
  */
 const createSelectionFormatState = formats => {
+  // Guard against non-iterable formats
+  if (!formats || typeof formats[Symbol.iterator] !== 'function') {
+    console.warn('[Editor Store] createSelectionFormatState received non-iterable formats:', formats)
+    return {}
+  }
   const state = {}
   for (const item of formats) {
     state[item.type] = true

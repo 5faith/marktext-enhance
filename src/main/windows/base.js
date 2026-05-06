@@ -80,9 +80,9 @@ class BaseWindow extends EventEmitter {
     } = userPreference.getAll()
 
     /* eslint-disable */
-    const baseUrl = process.env.NODE_ENV === 'development'
-      ? 'http://localhost:9091'
-      : `file://${__dirname}/index.html`
+    // Force development mode for debugging - TODO: revert this later
+    const baseUrl = 'http://localhost:9091'
+    console.log('DEBUG: baseUrl:', baseUrl)
     /* eslint-enable */
 
     const url = new URL(baseUrl)
@@ -97,6 +97,9 @@ class BaseWindow extends EventEmitter {
     url.searchParams.set('hsb', hideScrollbar ? '1' : '0')
     url.searchParams.set('theme', theme)
     url.searchParams.set('tbs', titleBarStyle)
+
+    console.log('DEBUG: Full URL:', url.toString())
+    return url
 
     return url
   }

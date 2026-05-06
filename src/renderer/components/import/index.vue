@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import bus from '@/bus'
 import { ipcRenderer } from 'electron'
 import importIcon from '@/assets/icons/import_file.svg'

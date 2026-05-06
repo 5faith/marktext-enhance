@@ -79,25 +79,24 @@ class EditorWindow extends BaseWindow {
       this.lifecycle = WindowLifecycle.READY
       this.emit('window-ready')
 
-      // 开发模式自动打开 DevTools
-      if (process.env.NODE_ENV === 'development') {
-        win.webContents.openDevTools()
-      }
+      // Force open DevTools for debugging
+      win.webContents.openDevTools()
 
-      // Restore and focus window
-      this.bringToFront()
+      // Delay sending bootstrap to ensure renderer is ready
+      setTimeout(() => {
+        const lineEnding = preferences.getPreferredEol()
+        console.log('[Main] Sending mt::bootstrap-editor with:', { addBlankTab, markdownList: this._markdownToOpen?.length })
+        appMenu.updateLineEndingMenu(this.id, lineEnding)
 
-      const lineEnding = preferences.getPreferredEol()
-      appMenu.updateLineEndingMenu(this.id, lineEnding)
-
-      win.webContents.send('mt::bootstrap-editor', {
-        addBlankTab,
-        markdownList: this._markdownToOpen,
-        lineEnding,
-        sideBarVisibility,
-        tabBarVisibility,
-        sourceCodeModeEnabled
-      })
+        win.webContents.send('mt::bootstrap-editor', {
+          addBlankTab,
+          markdownList: this._markdownToOpen,
+          lineEnding,
+          sideBarVisibility,
+          tabBarVisibility,
+          sourceCodeModeEnabled
+        })
+      }, 1000) // 1 second delay
 
       this._doOpenFilesToOpen()
       this._markdownToOpen.length = 0

@@ -15,6 +15,7 @@ export default defineConfig(({ command }) => {
     root: resolve(__dirname),
     resolve: {
       alias: {
+        'vue': 'vue/dist/vue.esm-bundler.js',
         'main': resolve(__dirname, 'src/main'),
         '@': resolve(__dirname, 'src/renderer'),
         'common': resolve(__dirname, 'src/common'),
@@ -179,7 +180,7 @@ export default defineConfig(({ command }) => {
     },
     server: {
       port: 9091,
-      strictPort: false
+      strictPort: true
     },
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {

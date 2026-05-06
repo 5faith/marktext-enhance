@@ -1,13 +1,24 @@
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
+import { createRouter, createWebHashHistory, RouterView } from 'vue-router'
+import { createPinia } from 'pinia'
 import sourceMapSupport from 'source-map-support'
 import bootstrapRenderer from './bootstrap'
-import { createRouter, createWebHashHistory } from 'vue-router'
-import { createPinia } from 'pinia'
 import axios from './axios'
 import './assets/symbolIcon'
 import { ipcRenderer } from 'electron'
 
-// Pinia stores
+// Global error handler
+window.addEventListener('error', (event) => {
+  console.error('[Renderer Error]:', event.error?.stack || event.error)
+})
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[Renderer Rejection]:', event.reason?.stack || event.reason)
+})
+
+console.log('[Renderer] Starting...')
+console.log('[Renderer] URL:', window.location.href)
+
+// Import stores and other modules
 import {
   useRootStore,
   useEditorStore,
@@ -28,7 +39,6 @@ import {
   TrailingNewlineCommand
 } from './commands'
 
-// Load eve before snap.svg (which depends on eve being a global variable)
 import eve from 'eve-raphael'
 import services from './services'
 import routes from './router'
@@ -41,8 +51,6 @@ if (typeof window !== 'undefined') {
 }
 
 // -----------------------------------------------
-
-// Decode source map in production - must be registered first
 sourceMapSupport.install({
   environment: 'node',
   handleUncaughtExceptions: false,
@@ -51,30 +59,22 @@ sourceMapSupport.install({
 
 global.marktext = {}
 bootstrapRenderer()
-
 addElementStyle()
 
 // -----------------------------------------------
-// Be careful when changing code before this line!
-
-// Configure Vue
-locale.use(lang)
-
+console.log('[Renderer] Creating router with type:', global.marktext?.env?.type)
 const router = createRouter({
   history: createWebHashHistory(),
-  routes: routes(global.marktext.env.type)
+  routes: routes(global.marktext?.env?.type)
 })
 
 const pinia = createPinia()
-
 const app = createApp({
-  router,
-  template: '<router-view class="view"></router-view>'
+  render: () => h(RouterView, { class: 'view' })
 })
 
 app.use(pinia)
 app.use(router)
-
 app.config.globalProperties.$http = axios
 
 services.forEach(s => {
@@ -83,7 +83,20 @@ services.forEach(s => {
 
 app.mount('#app')
 
-// Initialize Pinia stores and dispatch all IPC listener actions
+console.log('[Renderer] App mounted!')
+
+// Test: Directly manipulate DOM to see if page can display anything
+const appEl = document.querySelector('#app')
+if (appEl) {
+  console.log('[Renderer] #app element found, innerHTML length:', appEl.innerHTML.length)
+  // Don't override if Vue is working
+  // appEl.innerHTML = '<h1 style="color: red;">Hello from raw DOM!</h1>'
+} else {
+  console.error('[Renderer] #app element NOT found!')
+}
+
+// Initialize Pinia stores
+console.log('[Renderer] Initializing stores...')
 const rootStore = useRootStore()
 const editorStore = useEditorStore()
 const preferencesStore = usePreferencesStore()
@@ -95,32 +108,17 @@ const notificationStore = useNotificationStore()
 const autoUpdatesStore = useAutoUpdatesStore()
 const listenForMainStore = useListenForMainStore()
 
-// Root store listeners
-rootStore.listenForWinStatus()
+// Initialize directly from URL params (no IPC needed)
+const urlParams = new URLSearchParams(window.location.search)
+const addBlankTab = urlParams.get('addBlankTab') === 'true' || true // default true for editor
+console.log('[Renderer] Initializing directly (no IPC)...')
+rootStore.setInitialized()
 
-// Editor store listeners (exclude bootstrap - handled below)
-editorStore.listenForSave()
-editorStore.listenForSaveAs()
-editorStore.listenForSetPathname()
-editorStore.listenForClose()
-editorStore.listenForSaveClose()
-editorStore.listenForMoveTo()
-editorStore.listenForRename()
-editorStore.listenForNewTab()
-editorStore.listenForCloseTab()
-editorStore.listenForTabCycle()
-editorStore.listenForSwitchTabs()
-editorStore.lintenForSetLineEnding()
-editorStore.lintenForSetEncoding()
-editorStore.lintenForSetFinalNewline()
-editorStore.listenForFileChange()
-editorStore.listenWindowZoom()
-editorStore.listenForReloadImages()
-editorStore.lintenForExportSuccess()
-editorStore.lintenForPrintServiceClearup()
-editorStore.listenScreenShot()
+// Default initialization
+editorStore.newUntitledTab({})
+console.log('[Renderer] Direct initialization done!')
 
-// Bootstrap editor (moved from editor store to avoid circular dependencies)
+// Bootstrap editor (register commands)
 setTimeout(() => {
   const editorState = {
     currentFile: editorStore.currentFile,
@@ -146,35 +144,30 @@ setTimeout(() => {
   }, 100)
 }, 400)
 
-ipcRenderer.on('mt::bootstrap-editor', (e, config) => {
-  const { addBlankTab, markdownList, lineEnding, sideBarVisibility, tabBarVisibility, sourceCodeModeEnabled } = config
+// Root store listeners
+rootStore.listenForWinStatus()
 
-  rootStore.setInitialized()
-
-  preferencesStore.setUserPreference({ endOfLine: lineEnding })
-
-  layoutStore.setLayout({
-    rightColumn: 'files',
-    showSideBar: !!sideBarVisibility,
-    showTabBar: !!tabBarVisibility
-  })
-  layoutStore.setLayoutMenuItem()
-
-  preferencesStore.setMode({
-    type: 'sourceCode',
-    checked: !!sourceCodeModeEnabled
-  })
-
-  if (addBlankTab) {
-    editorStore.newUntitledTab({})
-  } else if (markdownList && markdownList.length) {
-    let isFirst = true
-    for (const markdown of markdownList) {
-      editorStore.newUntitledTab({ markdown, selected: isFirst })
-      isFirst = false
-    }
-  }
-})
+// Editor store listeners
+editorStore.listenForSave()
+editorStore.listenForSaveAs()
+editorStore.listenForSetPathname()
+editorStore.listenForClose()
+editorStore.listenForSaveClose()
+editorStore.listenForMoveTo()
+editorStore.listenForRename()
+editorStore.listenForNewTab()
+editorStore.listenForCloseTab()
+editorStore.listenForTabCycle()
+editorStore.listenForSwitchTabs()
+editorStore.lintenForSetLineEnding()
+editorStore.lintenForSetEncoding()
+editorStore.lintenForSetFinalNewline()
+editorStore.listenForFileChange()
+editorStore.listenWindowZoom()
+editorStore.listenForReloadImages()
+editorStore.lintenForExportSuccess()
+editorStore.lintenForPrintServiceClearup()
+editorStore.listenScreenShot()
 
 // Layout store listeners
 layoutStore.listenForLayout()
