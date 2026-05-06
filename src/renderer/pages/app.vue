@@ -56,7 +56,7 @@ import { ipcRenderer } from 'electron'
 import { useRootStore, useLayoutStore, usePreferencesStore, useProjectStore, useEditorStore } from '@/stores'
 
 // mixin: loadingPageMixins
-const { hideLoadingPage } = loadingPageMixins
+const { hideLoadingPage } = loadingPageMixins.methods
 
 const timer = ref(null)
 
