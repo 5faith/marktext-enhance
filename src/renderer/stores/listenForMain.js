@@ -9,7 +9,7 @@ export const useListenForMainStore = defineStore('listenForMain', {
   actions: {
     listenForEdit () {
       const layoutStore = useLayoutStore()
-      const preferencesStore = usePreferencesStore()
+      const _preferencesStore = usePreferencesStore()
 
       ipcRenderer.on('mt::editor-edit-action', (e, type) => {
         if (type === 'findInFolder') {

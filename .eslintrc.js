@@ -21,7 +21,8 @@ module.exports = {
     'plugin:import/warnings'
   ],
   globals: {
-    __static: true
+    __static: true,
+    defineProps: 'readonly'
   },
   plugins: ['html', 'vue'],
   rules: {
@@ -47,7 +48,16 @@ module.exports = {
     'accessor-pairs': 'off',
     // Workaround #2422.
     'template-curly-spacing': 'off',
-    indent: 'off'
+    indent: 'off',
+    // Allow Vite-specific import queries (?inline, ?raw)
+    'import/no-unresolved': ['error', {
+      ignore: ['\\?inline$', '\\?raw$']
+    }],
+    // Allow unused vars that start with underscore
+    'no-unused-vars': ['error', { 
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_'
+    }]
   },
   settings: {
     'import/resolver': {

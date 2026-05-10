@@ -598,8 +598,8 @@ export const useEditorStore = defineStore('editor', {
 
     bootstrap (config) {
       const {
-        addBlankTab,
-        markdownList,
+        _addBlankTab,
+        _markdownList,
         lineEnding,
         sideBarVisibility,
         tabBarVisibility,

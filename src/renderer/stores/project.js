@@ -93,7 +93,7 @@ export const useProjectStore = defineStore('project', {
             const { pathname, data, isMarkdown } = change
             this.addFileToTree(change)
             if (isMarkdown && this.newFileNameCache && pathname === this.newFileNameCache) {
-              const fileState = getFileStateFromData(data)
+              const _fileState = getFileStateFromData(data)
               // TODO: migrate to editor store after editor store is created
               // dispatch('UPDATE_CURRENT_FILE', fileState)
               this.setNewFileName('')

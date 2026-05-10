@@ -100,8 +100,6 @@ class BaseWindow extends EventEmitter {
 
     console.log('DEBUG: Full URL:', url.toString())
     return url
-
-    return url
   }
 
   _buildUrlString (windowId, env, userPreference) {

@@ -7,17 +7,6 @@ import axios from './axios'
 import './assets/symbolIcon'
 import { ipcRenderer } from 'electron'
 
-// Global error handler
-window.addEventListener('error', (event) => {
-  console.error('[Renderer Error]:', event.error?.stack || event.error)
-})
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('[Renderer Rejection]:', event.reason?.stack || event.reason)
-})
-
-console.log('[Renderer] Starting...')
-console.log('[Renderer] URL:', window.location.href)
-
 // Import stores and other modules
 import {
   useRootStore,
@@ -46,6 +35,17 @@ import { addElementStyle } from '@/util/theme'
 
 import './assets/styles/index.css'
 import './assets/styles/printService.css'
+
+// Global error handler
+window.addEventListener('error', (event) => {
+  console.error('[Renderer Error]:', event.error?.stack || event.error)
+})
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[Renderer Rejection]:', event.reason?.stack || event.reason)
+})
+
+console.log('[Renderer] Starting...')
+console.log('[Renderer] URL:', window.location.href)
 if (typeof window !== 'undefined') {
   window.eve = eve
 }
@@ -110,7 +110,7 @@ const listenForMainStore = useListenForMainStore()
 
 // Initialize directly from URL params (no IPC needed)
 const urlParams = new URLSearchParams(window.location.search)
-const addBlankTab = urlParams.get('addBlankTab') === 'true' || true // default true for editor
+const _addBlankTab = urlParams.get('addBlankTab') === 'true' || true // default true for editor
 console.log('[Renderer] Initializing directly (no IPC)...')
 rootStore.setInitialized()
 
