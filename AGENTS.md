@@ -65,11 +65,10 @@ src/
 - `asar: true` — native `.node` files are unpacked
 - `cross-env` required for Windows env vars
 
-## State Management (Mid-Migration)
+## State Management
 
-- `src/renderer/stores/` — **Pinia** (new, preferred)
-- `src/renderer/store/` — **Vuex** (legacy, still active)
-- Both coexist; new code should use Pinia
+- `src/renderer/stores/` — **Pinia** (primary state management)
+- Vuex has been fully migrated to Pinia
 
 ## Muya Sub-package
 
