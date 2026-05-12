@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
-import { SpellCheckHandler, fallbackLocales, normalizeLanguageCode } from '@hfelix/electron-spellchecker'
 import { isDirectory, isFile } from 'common/filesystem'
 import { cloneObj, isOsx, isLinux, isWindows } from '@/util'
 
@@ -91,30 +90,16 @@ export const getAvailableHunspellDictionaries = () => {
 }
 
 export const isOsSpellcheckerSupported = () => {
-  let envOverwrite = !!process.env['SPELLCHECKER_PREFER_HUNSPELL'] // eslint-disable-line dot-notation
-  if (isLinux || envOverwrite) {
-    return false
-  } else if (isOsx) {
-    return true
-  } else if (isWindows) {
-    // NOTE: Normally we need to initialize the spellchecker and check the result.
-    const windowsVersion = os.release().match(/^(\d+)\./)
-    if (windowsVersion && windowsVersion[1]) {
-      const windowsMajor = Number(windowsVersion[1])
-      if (windowsMajor >= 10) {
-        return true
-      }
-    }
-  }
-  return false
+  // Electron built-in spellchecker is supported on all platforms
+  // when using Electron 28+
+  return true
 }
 
 /**
- * High level spell checker API.
+ * High level spell checker API using Electron built-in spell checker.
  *
  * Language providers:
- *  - macOS: NSSpellChecker (default) or Hunspell
- *  - Linux and Windows: Hunspell
+ *  - All platforms: Electron built-in spell checker (Chromium)
  */
 export class SpellChecker {
   /**
@@ -123,18 +108,20 @@ export class SpellChecker {
    * @param {boolean} enabled Whether spell checking is enabled.
    */
   constructor (enabled = true) {
-    // Hunspell is used on Linux and Windows but macOS can use Hunspell if preferred.
-    this.isHunspell = !isOsSpellcheckerSupported() || !!process.env['SPELLCHECKER_PREFER_HUNSPELL'] // eslint-disable-line dot-notation
+    // Always use built-in spell checker (no more Hunspell vs OS distinction)
+    this.isHunspell = false
+    this.isEnabled = false
+    this.isInitialized = false
+    this.fallbackLang = null
+    this.webContents = null
+    this.currentLanguage = 'en-US'
+    this._automaticallyIdentifyLanguages = false
+    this._isPassiveMode = false
 
     // Initialize spell check provider. If spell check is not enabled don't
-    // initialize the handler to not load the native module.
+    // initialize the handler.
     if (enabled) {
       this._initHandler()
-    } else {
-      this.provider = null
-      this.fallbackLang = null
-      this.isEnabled = false
-      this.isInitialized = false
     }
   }
 
@@ -143,8 +130,15 @@ export class SpellChecker {
       throw new Error('Invalid state.')
     }
 
-    this.provider = new SpellCheckHandler(getDictionaryPath())
-    this.isHunspell = this.provider.isHunspell
+    // Get webContents from current window using @electron/remote
+    try {
+      const { getCurrentWindow } = require('@electron/remote')
+      const win = getCurrentWindow()
+      this.webContents = win.webContents
+    } catch (error) {
+      console.error('Failed to get webContents:', error)
+      this.webContents = null
+    }
 
     // The spell checker is now initialized but not yet enabled. You need to call `init`.
     this.isEnabled = false
@@ -163,7 +157,7 @@ export class SpellChecker {
    */
   async init (lang = '', automaticallyIdentifyLanguages = false, isPassiveMode = false, container = null) {
     if (this.isEnabled) {
-      return
+      return this.currentLanguage
     } else if (!this.isInitialized) {
       this._initHandler()
     }
@@ -172,47 +166,26 @@ export class SpellChecker {
       throw new Error('Init: Either language or automatic language detection must be set.')
     }
 
-    // TODO(spell): Language detection is currently unavailable when another
-    //   spell checker than the macOS spell checker is used because Node worker
-    //   threads doesn't work in Electron (Electon#18540).
-    if (this.isHunspell || !isOsx) {
-      automaticallyIdentifyLanguages = false
-    }
+    // Store settings
+    this._automaticallyIdentifyLanguages = automaticallyIdentifyLanguages
+    this._isPassiveMode = isPassiveMode
 
-    // This just set a variable when using Hunspell and switch the spell checker mode
-    // when using macOS spell checker. Calling switchLanguage after this using macOS
-    // spell checker will deactivate automatic language detection.
-    this.provider.automaticallyIdentifyLanguages =
-      automaticallyIdentifyLanguages || (!this.isHunspell && !lang)
-
-    // If true, don't highlight misspelled words. Just like above, this method only
-    // affect the macOS spell checker.
-    this.provider.isPassiveMode = isPassiveMode
-
-    if (!this.isHunspell && (automaticallyIdentifyLanguages || !lang)) {
-      // Attach the spell checker to the our editor.
-      // NOTE: Calling this method is normally not necessary on macOS with
-      // OS spell checker.
-      this.provider.attachToInput(container)
-
-      this.fallbackLang = null
-      this.isEnabled = true
-      return this.lang
-    }
-
+    // Set default language if not provided
     if (!lang) {
-      // Set to Hunspell fallback language.
       lang = 'en-US'
     }
 
-    // We have to call our switch language method to ensure that the provider is in a valid state.
+    // Try to set the language
     const currentLang = await this._switchLanguage(lang)
     if (!currentLang) {
       throw new Error(`Language "${lang}" is not available.`)
     }
 
-    // Attach the spell checker to the our editor.
-    this.provider.attachToInput(container)
+    // Enable spell checker
+    if (this.webContents) {
+      this.webContents.session.spellCheckerEnabled = true
+    }
+
     this.fallbackLang = currentLang
     this.isEnabled = true
     return currentLang
@@ -233,18 +206,34 @@ export class SpellChecker {
       return true
     }
 
-    const result = await this.provider.enableSpellchecker(
-      lang,
-      automaticallyIdentifyLanguages,
-      isPassiveMode
-    )
+    if (!this.isInitialized) {
+      this._initHandler()
+    }
+
+    // Update settings if provided
+    if (automaticallyIdentifyLanguages !== undefined) {
+      this._automaticallyIdentifyLanguages = automaticallyIdentifyLanguages
+    }
+    if (isPassiveMode !== undefined) {
+      this._isPassiveMode = isPassiveMode
+    }
+
+    // Set language
+    const languageToUse = lang || this.fallbackLang || 'en-US'
+    const result = await this._switchLanguage(languageToUse)
+
     if (!result) {
       // Spell checker may be in an invalid state and don't try to recover.
       this.disableSpellchecker()
       return false
     }
 
-    this.fallbackLang = this.lang
+    // Enable spell checker
+    if (this.webContents) {
+      this.webContents.session.spellCheckerEnabled = true
+    }
+
+    this.fallbackLang = this.currentLanguage
     this.isEnabled = true
     return true
   }
@@ -257,7 +246,9 @@ export class SpellChecker {
       return
     }
 
-    this.provider.disableSpellchecker()
+    if (this.webContents) {
+      this.webContents.session.spellCheckerEnabled = false
+    }
     this.isEnabled = false
   }
 
@@ -267,16 +258,34 @@ export class SpellChecker {
    * @param {string} word The word to add.
    */
   async addToDictionary (word) {
-    return await this.provider.addToDictionary(word)
+    if (!this.webContents) {
+      return false
+    }
+    try {
+      await this.webContents.session.addWordToSpellCheckerDictionary(word)
+      return true
+    } catch (error) {
+      console.error('Failed to add word to dictionary:', error)
+      return false
+    }
   }
 
   /**
-   * Remove a word frome the user dictionary.
+   * Remove a word from the user dictionary.
    *
    * @param {string} word The word to remove.
    */
   async removeFromDictionary (word) {
-    return await this.provider.removeFromDictionary(word)
+    if (!this.webContents) {
+      return false
+    }
+    try {
+      await this.webContents.session.removeWordFromSpellCheckerDictionary(word)
+      return true
+    } catch (error) {
+      console.error('Failed to remove word from dictionary:', error)
+      return false
+    }
   }
 
   /**
@@ -285,7 +294,9 @@ export class SpellChecker {
    * @param {string} word The word to ignore.
    */
   ignoreWord (word) {
-    this.provider.ignoreWord(word)
+    // In Electron built-in spell checker, we add the word to dictionary
+    // to effectively ignore it
+    this.addToDictionary(word)
   }
 
   /**
@@ -293,30 +304,18 @@ export class SpellChecker {
    * @returns {string[]} Available dictionary languages.
    */
   getAvailableDictionaries () {
-    // NOTE: We only receive the dictionaries when the spellchecker is active
-    // on macOS! Therefore be consistent.
-    if (!this.provider.currentSpellchecker) {
+    if (!this.webContents) {
       return []
     }
 
-    if (!this.isHunspell) {
-      // NOTE: OS X will return lists that are half just a language, half
-      // language + locale, like ['en', 'pt_BR', 'ko'] and Windows also returns
-      // BCP-47 ones.
-      return this.provider.currentSpellchecker.getAvailableDictionaries()
-        .map(x => {
-          if (x.length === 2) return fallbackLocales[x]
-          try {
-            return normalizeLanguageCode(x)
-          } catch (_) {
-            return null
-          }
-        })
-        .filter(x => { return !!x })
-    }
+    // Get available languages from Electron's built-in spell checker
+    const availableLanguages = this.webContents.session.availableSpellCheckerLanguages || []
 
-    // Load hunspell dictionaries from disk.
-    return getAvailableHunspellDictionaries()
+    // Normalize language codes to match expected format
+    return availableLanguages.map(lang => {
+      // Convert underscores to hyphens if needed
+      return lang.replace(/_/g, '-')
+    })
   }
 
   /**
@@ -326,7 +325,7 @@ export class SpellChecker {
     if (!this.isEnabled) {
       return false
     }
-    return this.provider.automaticallyIdentifyLanguages
+    return this._automaticallyIdentifyLanguages
   }
 
   /**
@@ -336,14 +335,16 @@ export class SpellChecker {
     if (!this.isEnabled) {
       return
     }
-
-    // TODO(spell): Language detection is currently unavailable when another
-    //   spell checker than the macOS spell checker is used because Node worker
-    //   threads doesn't work in Electron (Electon#18540).
-    if (this.isHunspell || !isOsx) {
-      value = false
+    this._automaticallyIdentifyLanguages = !!value
+    // Note: Electron built-in spell checker handles language detection automatically
+    // when multiple languages are set
+    if (this.webContents && value) {
+      // Enable multiple languages if auto-detection is enabled
+      const available = this.getAvailableDictionaries()
+      if (available.length > 0) {
+        this.webContents.session.setSpellCheckerLanguages(available.slice(0, 5))
+      }
     }
-    this.provider.automaticallyIdentifyLanguages = !!value
   }
 
   /**
@@ -353,7 +354,7 @@ export class SpellChecker {
     if (!this.isEnabled) {
       return false
     }
-    return this.provider.isPassiveMode
+    return this._isPassiveMode
   }
 
   /**
@@ -363,27 +364,26 @@ export class SpellChecker {
     if (!this.isEnabled) {
       return
     }
-    this.provider.isPassiveMode = !!value
+    this._isPassiveMode = !!value
+    // Note: Electron doesn't have a direct passive mode setting.
+    // We disable spell checking entirely to hide underlines.
+    if (this.webContents) {
+      this.webContents.session.spellCheckerEnabled = !value
+    }
   }
 
   /**
    * Return the current language.
    */
   get lang () {
-    if (!this.provider) {
-      return ''
-    }
-    return this.provider.currentSpellcheckerLanguage
+    return this.currentLanguage
   }
 
   /**
    * Whether the spell checker is in an invalid state and therefore deactivated.
    */
   get isInvalidState () {
-    if (!this.provider) {
-      return false
-    }
-    return this.provider.invalidState
+    return !this.webContents && this.isInitialized
   }
 
   /**
@@ -414,10 +414,13 @@ export class SpellChecker {
    * @param {string} word The word to check.
    */
   isMisspelled (word) {
-    if (!this.isEnabled) {
+    if (!this.isEnabled || !this.webContents) {
       return false
     }
-    return this.provider.isMisspelled(word)
+    // Electron built-in spell checker doesn't expose a direct isMisspelled method
+    // The spell checking is done automatically by Chromium
+    // We return false here as the actual checking is handled by the browser
+    return false
   }
 
   /**
@@ -427,10 +430,10 @@ export class SpellChecker {
    * @returns {string[]} A array of suggestions.
    */
   async getWordSuggestion (word) {
-    if (!this.isMisspelled(word)) {
-      return []
-    }
-    return await this.provider.getCorrectionsForMisspelling(word)
+    // Electron built-in spell checker doesn't expose a direct getCorrectionsForMisspelling method
+    // Suggestions are obtained via the 'context-menu' event in the renderer
+    // This method is kept for API compatibility but returns empty array
+    return []
   }
 
   /**
@@ -498,11 +501,33 @@ export class SpellChecker {
    * @returns {string|null} Return the language on success or null.
    */
   async _switchLanguage (lang) {
-    const result = await this.provider.switchLanguage(lang)
-    if (!result) {
+    if (!this.webContents) {
+      return null
+    }
+
+    const available = this.getAvailableDictionaries()
+
+    // Check if language is available
+    if (!available.includes(lang)) {
+      // Try to find a fallback
+      const langPrefix = lang.split('-')[0]
+      const fallback = available.find(l => l.startsWith(langPrefix + '-'))
+      if (fallback) {
+        lang = fallback
+      } else {
+        // Try to recover with fallback language
+        return await this._tryRecover()
+      }
+    }
+
+    try {
+      this.webContents.session.setSpellCheckerLanguages([lang])
+      this.currentLanguage = lang
+      return lang
+    } catch (error) {
+      console.error('Failed to set spell checker language:', error)
       return await this._tryRecover()
     }
-    return this.lang
   }
 
   /**
@@ -513,7 +538,7 @@ export class SpellChecker {
   async _tryRecover () {
     const lang = this.fallbackLang
     if (lang) {
-      // Prevent rekursiv loop.
+      // Prevent recursive loop.
       this.fallbackLang = null
 
       // Try fallback language.
@@ -523,8 +548,27 @@ export class SpellChecker {
         return lang
       }
 
-      // Spell checker is deactivated from rekursiv call.
+      // Spell checker is deactivated from recursive call.
       return null
+    }
+
+    // Try with en-US as ultimate fallback
+    const available = this.getAvailableDictionaries()
+    if (available.includes('en-US')) {
+      const result = await this._switchLanguage('en-US')
+      if (result) {
+        this.fallbackLang = 'en-US'
+        return 'en-US'
+      }
+    }
+
+    // Try any available language
+    if (available.length > 0) {
+      const result = await this._switchLanguage(available[0])
+      if (result) {
+        this.fallbackLang = available[0]
+        return available[0]
+      }
     }
 
     // Spell checker is in an invalid state. We can recover it by enabling

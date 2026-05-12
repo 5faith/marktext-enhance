@@ -32,7 +32,6 @@
     "@electron/remote": "^2.1.2",
     "@element-plus/icons-vue": "^2.0",
     "@hfelix/electron-localshortcut": "^4.0.1",
-    "@hfelix/electron-spellchecker": "^2.0.0",
     "@marktext/file-icons": "file:../marktext-file-icons",
     "@octokit/rest": "^18.12.0",
     "arg": "^5.0.1",

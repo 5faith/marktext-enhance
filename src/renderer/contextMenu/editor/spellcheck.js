@@ -40,57 +40,65 @@ export default (spellchecker, selectedWord, wordSuggestions, replaceCallback) =>
     spellingSubmenu.push(SEPARATOR)
 
     // Handle misspelled word if wordSuggestions is set, otherwise word is correct.
-    if (selectedWord && wordSuggestions) {
-      spellingSubmenu.push({
+    if (selectedWord && wordSuggestions && wordSuggestions.length > 0) {
+      // Show spelling suggestions first
+      for (const suggestion of wordSuggestions) {
+        spellingSubmenu.push(new RemoteMenuItem({
+          label: suggestion,
+          click () {
+            // Notify Muya to replace the word. We cannot just use Chromium to
+            // replace the word because the change is not forwarded to Muya.
+            replaceCallback(suggestion)
+          }
+        }))
+      }
+
+      spellingSubmenu.push(SEPARATOR)
+
+      spellingSubmenu.push(new RemoteMenuItem({
         label: 'Add to Dictionary',
         click (menuItem, targetWindow) {
           // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          targetWindow.webContents.replaceMisspelling(selectedWord)
+          if (targetWindow && targetWindow.webContents) {
+            targetWindow.webContents.replaceMisspelling(selectedWord)
+          }
           spellchecker.addToDictionary(selectedWord)
             .catch(error => {
               log.error(`Error while adding "${selectedWord}" to dictionary.`)
               log.error(error)
             })
         }
-      })
+      }))
+
       // Ignore word for current runtime for all languages.
-      spellingSubmenu.push({
+      spellingSubmenu.push(new RemoteMenuItem({
         label: 'Ignore',
         click (menuItem, targetWindow) {
           // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          targetWindow.webContents.replaceMisspelling(selectedWord)
+          if (targetWindow && targetWindow.webContents) {
+            targetWindow.webContents.replaceMisspelling(selectedWord)
+          }
           spellchecker.ignoreWord(selectedWord)
         }
-      })
-
-      if (wordSuggestions.length > 0) {
-        spellingSubmenu.push(SEPARATOR)
-        for (const word of wordSuggestions) {
-          spellingSubmenu.push({
-            label: word,
-            click () {
-              // Notify Muya to replace the word. We cannot just use Chromium to
-              // replace the word because the change is not forwarded to Muya.
-              replaceCallback(word)
-            }
-          })
-        }
-      }
-    } else {
-      spellingSubmenu.push({
+      }))
+    } else if (selectedWord) {
+      // Word is spelled correctly - show option to remove from dictionary
+      spellingSubmenu.push(new RemoteMenuItem({
         label: 'Remove from Dictionary',
         // NOTE: We cannot validate that the word is inside the user dictionary.
         enabled: !!selectedWord && selectedWord.length >= 2,
         click (menuItem, targetWindow) {
           // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          targetWindow.webContents.replaceMisspelling(selectedWord)
+          if (targetWindow && targetWindow.webContents) {
+            targetWindow.webContents.replaceMisspelling(selectedWord)
+          }
           spellchecker.removeFromDictionary(selectedWord)
             .catch(error => {
               log.error(`Error while removing "${selectedWord}" from dictionary.`)
               log.error(error)
             })
         }
-      })
+      }))
     }
     return spellingSubmenu
   }

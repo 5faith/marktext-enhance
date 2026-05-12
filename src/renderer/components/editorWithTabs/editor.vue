@@ -193,7 +193,15 @@ export default {
       tableChecker: {
         rows: 4,
         columns: 3
-      }
+      },
+      // Store spell check suggestions from Electron's context-menu event
+      lastSpellcheckSuggestions: [],
+      lastMisspelledWord: ''
+    }
+  },
+      // Store spell check suggestions from Electron's context-menu event
+      lastSpellcheckSuggestions: [],
+      lastMisspelledWord: ''
     }
   },
 
@@ -619,6 +627,29 @@ export default {
         this.initSpellchecker()
       }
 
+      // Listen for Electron's context-menu event to get spell check suggestions
+      // This is needed for the built-in spell checker to provide suggestions
+      const { getCurrentWindow } = require('@electron/remote')
+      const win = getCurrentWindow()
+      win.webContents.on('context-menu', (event, params) => {
+        // Store spell check suggestions for use in our custom context menu
+        this.lastSpellcheckSuggestions = params.dictionarySuggestions || []
+        this.lastMisspelledWord = params.misspelledWord || ''
+      })
+
+      if (typewriter) {
+        this.scrollToCursor()
+      }
+
+      // Listen for Electron's context-menu event to get spell check suggestions
+      // This is needed for Electron built-in spell checker
+      if (this.spellchecker.webContents) {
+        this.spellchecker.webContents.on('context-menu', (event, params) => {
+          this.lastSpellcheckSuggestions = params.dictionarySuggestions || []
+          this.lastMisspelledWord = params.misspelledWord || ''
+        })
+      }
+
       if (typewriter) {
         this.scrollToCursor()
       }
@@ -733,17 +764,17 @@ export default {
             // Translate offsets into a cursor with the given line.
             const wordRange = offsetToWordCursor(selection, left, right)
 
-            // NOTE: Need to check whether the word is misspelled because
-            // suggestions may be empty even if word is misspelled.
-            if (this.spellchecker.isMisspelled(word)) {
-              this.spellchecker.getWordSuggestion(word)
-                .then(wordSuggestions => {
-                  const replaceCallback = replacement => {
-                    // wordRange := replace this range with the replacement
-                    this.editor.replaceWordInline(selection, wordRange, replacement, true)
-                  }
-                  showContextMenu(event, selection, this.spellchecker, word, wordSuggestions, replaceCallback)
-                })
+            // Use spell suggestions from Electron's context-menu event
+            const wordSuggestions = this.lastSpellcheckSuggestions || []
+            const misspelledWord = this.lastMisspelledWord
+
+            // Check if this word matches the misspelled word from the last context-menu event
+            if (misspelledWord && word === misspelledWord && wordSuggestions.length > 0) {
+              const replaceCallback = replacement => {
+                // wordRange := replace this range with the replacement
+                this.editor.replaceWordInline(selection, wordRange, replacement, true)
+              }
+              showContextMenu(event, selection, this.spellchecker, word, wordSuggestions, replaceCallback)
             } else {
               showContextMenu(event, selection, this.spellchecker, word, null, null)
             }

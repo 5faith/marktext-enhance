@@ -11,20 +11,13 @@
       </template>
       <template #children>
         <bool
-          description="Use Hunspell instead of system spell checker on macOS and Windows 10"
-          notes="Requires restart."
-          :bool="spellcheckerIsHunspell"
-          :disable="!isOsSpellcheckerSupported || !spellcheckerEnabled"
-          :onChange="value => onSelectChange('spellcheckerIsHunspell', value)"
-        ></bool>
-        <bool
           description="Hide marks for spelling errors"
           :bool="spellcheckerNoUnderline"
           :disable="!spellcheckerEnabled"
           :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
         ></bool>
         <bool
-          v-show="isOsx && !spellcheckerIsHunspell"
+          v-show="isOsx"
           description="Automatically detect document language (requires showing marks for spelling errors)"
           :bool="spellcheckerAutoDetectLanguage"
           :disable="!spellcheckerEnabled"
@@ -43,60 +36,61 @@
       :onChange="value => onSelectChange('spellcheckerLanguage', value)"
     ></cur-select>
     <div
-      v-if="isOsx && !isHunspellSelected && spellcheckerEnabled"
+      v-if="isOsx && spellcheckerEnabled"
       class="description"
     >
       Additional languages may be added through "Language & Region" in your system preferences pane.
     </div>
     <div
-      v-if="isWindows && !isHunspellSelected && spellcheckerEnabled"
+      v-if="isWindows && spellcheckerEnabled"
       class="description"
     >
       Additional languages may be added through "Language" in your "Time & language" settings.
     </div>
+    <div
+      v-if="isLinux && spellcheckerEnabled"
+      class="description"
+    >
+      Additional languages may be added through your system settings.
+    </div>
+  </div>
+</template>
+      <template #children>
+        <bool
+          description="Hide marks for spelling errors"
+          :bool="spellcheckerNoUnderline"
+          :disable="!spellcheckerEnabled"
+          :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
+        ></bool>
+      </template>
+    </compound>
 
-    <div v-if="isHunspellSelected && spellcheckerEnabled">
-      <h6 class="title">Hunspell settings:</h6>
-      <div class="description">Installed Hunspell dictionaries</div>
-      <el-table
-        :data="availableDictionaries"
-        style="width: 100%">
-        <el-table-column
-          prop="value"
-          label="Name"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="label"
-          label="Language"
-        >
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="Operations"
-          width="170">
-          <template slot-scope="scope">
-            <el-button @click="handleUpdateClick(scope.$index, scope.row)" type="text" size="small">Update</el-button>
-            <el-button @click="handleDeleteClick(scope.$index, scope.row)" type="text" size="small">Delete</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <separator></separator>
 
-      <div class="description">Download additional Hunspell dictionaries</div>
-      <div class="dictionary-group">
-        <el-select
-          v-model="selectedDictionaryToAdd"
-        >
-          <el-option
-            v-for="item in dictionariesLanguagesOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-button :icon="DocumentAdd" @click="addNewDict"></el-button>
-      </div>
-      <div v-if="errorMessage" class="description">{{ errorMessage }}</div>
+    <cur-select
+      description="Default language for spell checker"
+      :value="spellcheckerLanguage"
+      :options="availableDictionaries"
+      :disable="!spellcheckerEnabled"
+      :onChange="value => onSelectChange('spellcheckerLanguage', value)"
+    ></cur-select>
+    <div
+      v-if="isOsx && spellcheckerEnabled"
+      class="description"
+    >
+      Additional languages may be added through "Language & Region" in your system preferences pane.
+    </div>
+    <div
+      v-if="isWindows && spellcheckerEnabled"
+      class="description"
+    >
+      Additional languages may be added through "Language" in your "Time & language" settings.
+    </div>
+    <div
+      v-if="isLinux && spellcheckerEnabled"
+      class="description"
+    >
+      Additional languages may be added through your system settings.
     </div>
   </div>
 </template>
@@ -107,10 +101,9 @@ import Compound from '../common/compound'
 import CurSelect from '../common/select'
 import Bool from '../common/bool'
 import Separator from '../common/separator'
-import { isOsx, isLinux, isWindows, cloneObj } from '@/util'
-import { isOsSpellcheckerSupported, getAvailableHunspellDictionaries, SpellChecker } from '@/spellchecker'
-import { getLanguageName, HUNSPELL_DICTIONARY_LANGUAGE_MAP } from '@/spellchecker/languageMap'
-import { downloadHunspellDictionary, deleteHunspellDictionary } from '@/spellchecker/dictionaryDownloader'
+import { isOsx, isLinux, isWindows } from '@/util'
+import { SpellChecker } from '@/spellchecker'
+import { getLanguageName } from '@/spellchecker/languageMap'
 
 export default {
   components: {
@@ -123,60 +116,31 @@ export default {
     this.isOsx = isOsx
     this.isLinux = isLinux
     this.isWindows = isWindows
-    this.isOsSpellcheckerSupported = isOsSpellcheckerSupported()
-    this.dictionariesLanguagesOptions = cloneObj(HUNSPELL_DICTIONARY_LANGUAGE_MAP)
-    this.hunspellDictionaryDownloadCache = {}
     return {
       availableDictionaries: [],
-      selectedDictionaryToAdd: 'en-US',
-      errorMessage: ''
+      spellchecker: null
     }
   },
   computed: {
-        spellcheckerEnabled () { return usePreferencesStore().spellcheckerEnabled },
-        spellcheckerIsHunspell () { return usePreferencesStore().spellcheckerIsHunspell },
-        spellcheckerNoUnderline () { return usePreferencesStore().spellcheckerNoUnderline },
-        spellcheckerAutoDetectLanguage () { return usePreferencesStore().spellcheckerAutoDetectLanguage },
-        spellcheckerLanguage () { return usePreferencesStore().spellcheckerLanguage },
-    isHunspellSelected () {
-      return !isOsSpellcheckerSupported() || usePreferencesStore().spellcheckerIsHunspell
-    }
-  },
-  watch: {
-    spellcheckerIsHunspell: function (value, oldValue) {
-      if (this.isOsSpellcheckerSupported && value !== oldValue) {
-        this.ensureDictLanguage(value)
-        this.refreshDictionaryList()
-      }
-    }
+    spellcheckerEnabled () { return usePreferencesStore().spellcheckerEnabled },
+    spellcheckerNoUnderline () { return usePreferencesStore().spellcheckerNoUnderline },
+    spellcheckerAutoDetectLanguage () { return usePreferencesStore().spellcheckerAutoDetectLanguage },
+    spellcheckerLanguage () { return usePreferencesStore().spellcheckerLanguage }
   },
   created () {
     this.$nextTick(() => {
       this.refreshDictionaryList()
     })
   },
-  beforeDestroy () {
-    if (!isLinux && this.spellchecker) {
-      this.spellchecker.provider.unsubscribe()
-    }
-  },
   methods: {
     getAvailableDictionaries () {
-      let dictionaries = []
-      if (this.isHunspellSelected) {
-        // Search hunspell dictionaries on disk.
-        dictionaries = getAvailableHunspellDictionaries()
-      } else {
-        // We only receive the dictionaries from OS spell checker via the instance.
-        if (!this.spellchecker) {
-          // Create a new spell checker provider without attach it.
-          this.spellchecker = new SpellChecker()
-        }
-
-        // Receive available dictionaries from OS.
-        dictionaries = this.spellchecker.getAvailableDictionaries()
+      // Get available dictionaries from Electron's built-in spell checker
+      if (!this.spellchecker) {
+        // Create a new spell checker instance to get available dictionaries
+        this.spellchecker = new SpellChecker(false)
       }
 
+      const dictionaries = this.spellchecker.getAvailableDictionaries()
       return dictionaries.map(item => {
         return {
           value: item,
@@ -187,107 +151,36 @@ export default {
     refreshDictionaryList () {
       this.availableDictionaries = this.getAvailableDictionaries()
     },
-    ensureDictLanguage (isHunspell) {
-      const { isOsSpellcheckerSupported, spellcheckerLanguage } = this
-      if (isHunspell || !isOsSpellcheckerSupported) {
-        // Validate language for Hunspell.
-        const index = HUNSPELL_DICTIONARY_LANGUAGE_MAP.findIndex(d => d.value === spellcheckerLanguage)
-        if (index === -1) {
-          // Use fallback because language is not supported by Hunspell.
-          this.onSelectChange('spellcheckerLanguage', 'en-US')
-        }
-      } else {
-        // Validate language for OS spellchecker. We only receive the dictionaries from
-        // OS spell checker via the instance.
-        if (!this.spellchecker) {
-          // Create a new spell checker provider without attach it.
-          this.spellchecker = new SpellChecker()
-        }
+    ensureDictLanguage () {
+      const { spellcheckerLanguage } = this
+      if (!this.spellchecker) {
+        this.spellchecker = new SpellChecker(false)
+      }
 
-        const dicts = this.spellchecker.getAvailableDictionaries()
-        const index = dicts.findIndex(d => d === spellcheckerLanguage)
-        if (index === -1 && dicts.length >= 1) {
-          // Language is not supported, prefer OS language.
-          let lang = process.env.LANG
-          lang = lang ? lang.split('.')[0] : null
-          if (lang) {
-            lang = lang.replace(/_/g, '-')
-            if (dicts.findIndex(d => d === lang) === -1) {
-              lang = null
-            }
+      const dicts = this.spellchecker.getAvailableDictionaries()
+      const index = dicts.findIndex(d => d === spellcheckerLanguage)
+      if (index === -1 && dicts.length >= 1) {
+        // Language is not supported, prefer OS language.
+        let lang = process.env.LANG
+        lang = lang ? lang.split('.')[0] : null
+        if (lang) {
+          lang = lang.replace(/_/g, '-')
+          if (dicts.findIndex(d => d === lang) === -1) {
+            lang = null
           }
-          this.onSelectChange('spellcheckerLanguage', lang || dicts[0])
         }
+        this.onSelectChange('spellcheckerLanguage', lang || dicts[0])
       }
     },
 
     handleSpellcheckerEnabled (value) {
       if (value) {
-        const { spellcheckerIsHunspell } = this
-        this.ensureDictLanguage(spellcheckerIsHunspell)
+        this.ensureDictLanguage()
       }
       this.onSelectChange('spellcheckerEnabled', value)
     },
     onSelectChange (type, value) {
       usePreferencesStore().setSinglePreference({ type, value })
-    },
-
-    // --- Hunspell only ------------------------------------------------------
-
-    addNewDict () {
-      const { selectedDictionaryToAdd } = this
-      if (!this.isHunspellDictionaryAvailable(selectedDictionaryToAdd)) {
-        this.startDownloadHunspellDictionary(selectedDictionaryToAdd)
-      }
-    },
-    handleUpdateClick (index, row) {
-      this.startDownloadHunspellDictionary(row.value)
-    },
-    handleDeleteClick (index, row) {
-      const { spellcheckerLanguage } = this
-      const { value: lang } = row
-
-      // Don't allow to delete our fallback language.
-      if (lang === 'en-US') {
-        return
-      }
-
-      // Fallback before deleting selected language.
-      if (spellcheckerLanguage === lang) {
-        this.onSelectChange('spellcheckerLanguage', 'en-US')
-      }
-
-      deleteHunspellDictionary(lang)
-        .then(() => {
-          this.refreshDictionaryList()
-        }).catch(error => {
-          this.errorMessage = `Error deleting dictionary: ${error.message}`
-        })
-    },
-
-    startDownloadHunspellDictionary (languageCode) {
-      this.errorMessage = ''
-      if (this.hunspellDictionaryDownloadCache[languageCode]) {
-        return
-      } else if (!navigator.onLine) {
-        delete this.hunspellDictionaryDownloadCache[languageCode]
-        this.errorMessage = 'No Internet connection available.'
-        return
-      }
-
-      this.hunspellDictionaryDownloadCache[languageCode] = 1
-      downloadHunspellDictionary(languageCode)
-        .then(() => {
-          delete this.hunspellDictionaryDownloadCache[languageCode]
-          this.refreshDictionaryList()
-        }).catch(error => {
-          delete this.hunspellDictionaryDownloadCache[languageCode]
-          this.errorMessage = `Error while downloading: ${error.message}`
-        })
-    },
-    isHunspellDictionaryAvailable (languageCode) {
-      const { availableDictionaries } = this
-      return availableDictionaries.findIndex(d => d.value === languageCode) !== -1
     }
   }
 }
