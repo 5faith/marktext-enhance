@@ -66,7 +66,6 @@ src/
 | Vue Router | 4 | - |
 | Pinia | 2.0 | **Primary** state management (Vuex migration complete) |
 | Element Plus | 2.0 | Primary UI library |
-| Element UI | 2.15 | Legacy, compatibility only |
 | Vite | 5 | Primary build tool |
 | Webpack | 5.69 | Legacy, muya sub-package only |
 
