@@ -78,6 +78,6 @@ module.exports = {
   ignorePatterns: [
     'node_modules',
     'src/muya/dist/**/*',
-    'src/muya/webpack.config.js'
+    'src/muya/vite.config.js'
   ]
 }

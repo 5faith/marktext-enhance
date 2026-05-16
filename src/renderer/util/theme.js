@@ -153,9 +153,9 @@ export const addElementStyle = () => {
   const ID = 'mt-el-style'
   let sheet = document.querySelector(`#${ID}`)
   if (sheet) {
-    return
+
   }
-  
+
   // Element Plus uses CSS variables for theming, no need to inject CSS
   // The theme colors are applied via CSS variables in the theme CSS files
   // This function is kept for backward compatibility but does nothing

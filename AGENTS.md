@@ -67,13 +67,13 @@ src/
 | Pinia | 2.0 | **Primary** state management (Vuex migration complete) |
 | Element Plus | 2.0 | Primary UI library |
 | Vite | 5 | Primary build tool |
-| Webpack | 5.69 | Legacy, muya sub-package only |
+| ~~Webpack~~ | ~~5.69~~ | ~~Legacy, removed - muya now uses Vite~~ |
 
 ### Build System
 
 - **Primary**: Vite 5 (`vite.config.js`, `vite.test.config.js`)
 - **Plugins**: `vite-plugin-electron` + `vite-plugin-electron-renderer`
-- **Legacy**: `.electron-vue/` Webpack configs (muya only)
+- **Muya**: `src/muya/vite.config.js` (Vite library mode)
 - **Packaging**: `electron-builder.yml` (standalone)
 - **Config**: `asar: true` (native `.node` files unpacked), `cross-env` required for Windows
 
@@ -86,9 +86,9 @@ src/
 ### Muya Sub-package
 
 - **Location**: `src/muya/`
-- **Build**: `yarn build:muya` (uses own `webpack.config.js`)
+- **Build**: `yarn build:muya` (uses own `vite.config.js`)
 - **Constraint**: **Must not** import Electron/Node.js APIs
-- **ESLint**: Ignores `src/muya/dist/` and `src/muya/webpack.config.js`
+- **ESLint**: Ignores `src/muya/dist/` and `src/muya/vite.config.js`
 
 ---
 
