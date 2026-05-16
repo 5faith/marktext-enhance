@@ -1,6 +1,6 @@
 import './globalSetting'
 import path from 'path'
-import { app, dialog } from 'electron'
+import { app, dialog, session } from 'electron'
 import { initialize as remoteInitializeServer } from '@electron/remote/main'
 import cli from './cli'
 import setupExceptionHandler, { initExceptionLogger } from './exceptionHandler'

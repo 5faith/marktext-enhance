@@ -199,11 +199,6 @@ export default {
       lastMisspelledWord: ''
     }
   },
-      // Store spell check suggestions from Electron's context-menu event
-      lastSpellcheckSuggestions: [],
-      lastMisspelledWord: ''
-    }
-  },
 
   watch: {
     typewriter: function (value) {
@@ -636,19 +631,6 @@ export default {
         this.lastSpellcheckSuggestions = params.dictionarySuggestions || []
         this.lastMisspelledWord = params.misspelledWord || ''
       })
-
-      if (typewriter) {
-        this.scrollToCursor()
-      }
-
-      // Listen for Electron's context-menu event to get spell check suggestions
-      // This is needed for Electron built-in spell checker
-      if (this.spellchecker.webContents) {
-        this.spellchecker.webContents.on('context-menu', (event, params) => {
-          this.lastSpellcheckSuggestions = params.dictionarySuggestions || []
-          this.lastMisspelledWord = params.misspelledWord || ''
-        })
-      }
 
       if (typewriter) {
         this.scrollToCursor()
