@@ -55,45 +55,6 @@
     </div>
   </div>
 </template>
-      <template #children>
-        <bool
-          description="Hide marks for spelling errors"
-          :bool="spellcheckerNoUnderline"
-          :disable="!spellcheckerEnabled"
-          :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
-        ></bool>
-      </template>
-    </compound>
-
-    <separator></separator>
-
-    <cur-select
-      description="Default language for spell checker"
-      :value="spellcheckerLanguage"
-      :options="availableDictionaries"
-      :disable="!spellcheckerEnabled"
-      :onChange="value => onSelectChange('spellcheckerLanguage', value)"
-    ></cur-select>
-    <div
-      v-if="isOsx && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through "Language & Region" in your system preferences pane.
-    </div>
-    <div
-      v-if="isWindows && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through "Language" in your "Time & language" settings.
-    </div>
-    <div
-      v-if="isLinux && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through your system settings.
-    </div>
-  </div>
-</template>
 
 <script>
 import { usePreferencesStore } from '@/stores'
