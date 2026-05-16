@@ -3,7 +3,8 @@
   "started_at": "2026-05-16T14:58:05.687Z",
   "session_ids": [
     "ses_1cec86f70ffeBKk9hdquyShYD6",
-    "ses_1ceb2dfbfffeIpDNZ0sx8Ui01U"
+    "ses_1ceb2dfbfffeIpDNZ0sx8Ui01U",
+    "ses_1ce5e2ac1ffeiliZPuADstTuDN"
   ],
   "plan_name": "fix-github-actions",
   "agent": "atlas",
@@ -16,6 +17,15 @@
       "agent": "Sisyphus-Junior",
       "category": "quick",
       "updated_at": "2026-05-16T15:29:59.033Z"
+    },
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**工作流语法验证** — `quick`",
+      "session_id": "ses_1ce5d1eafffeTiJGlI2pyXZdm1",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-low",
+      "updated_at": "2026-05-16T16:36:25.706Z"
     }
   }
 }
