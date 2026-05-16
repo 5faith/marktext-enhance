@@ -119,6 +119,14 @@ src/
 | Code docs | `docs/dev/code/README.md` |
 | Contributing | `CONTRIBUTING.md` |
 
+## Sub-AGENTS.md
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/main/AGENTS.md` | Electron main process guidelines |
+| `src/renderer/AGENTS.md` | Vue 3 renderer guidelines |
+| `src/muya/AGENTS.md` | Markdown editor core guidelines |
+
 ## graphify
 
 Knowledge graph at `graphify-out/`.
