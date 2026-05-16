@@ -1,0 +1,21 @@
+{
+  "active_plan": "D:\\workspace\\github-my\\marktext-enhance\\.sisyphus\\plans\\fix-github-actions.md",
+  "started_at": "2026-05-16T14:58:05.687Z",
+  "session_ids": [
+    "ses_1cec86f70ffeBKk9hdquyShYD6",
+    "ses_1ceb2dfbfffeIpDNZ0sx8Ui01U"
+  ],
+  "plan_name": "fix-github-actions",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "升级 actions/cache v2 → v4",
+      "session_id": "ses_1ceb2dfbfffeIpDNZ0sx8Ui01U",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-16T15:29:59.033Z"
+    }
+  }
+}
