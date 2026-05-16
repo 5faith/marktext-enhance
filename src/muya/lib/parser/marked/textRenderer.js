@@ -19,7 +19,7 @@ TextRenderer.prototype.html = function (html) {
   return html
 }
 
-TextRenderer.prototype.inlineMath = function (math, displayMode) {
+TextRenderer.prototype.inlineMath = function (math, _displayMode) {
   return math
 }
 

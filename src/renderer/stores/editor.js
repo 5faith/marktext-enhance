@@ -338,7 +338,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     listenScreenShot () {
-      ipcRenderer.on('mt::screenshot-captured', e => {
+      ipcRenderer.on('mt::screenshot-captured', _e => {
         bus.emit('screenshot-captured')
       })
     },
@@ -347,7 +347,7 @@ export const useEditorStore = defineStore('editor', {
       const { pathname } = this.currentFile
       if (pathname) {
         let rs
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, _reject) => {
           rs = resolve
         })
         const id = getUniqueId()
@@ -486,7 +486,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     listenForClose () {
-      ipcRenderer.on('mt::ask-for-close', e => {
+      ipcRenderer.on('mt::ask-for-close', _e => {
         const unsavedFiles = this.tabs
           .filter(file => !file.isSaved)
           .map(file => {
@@ -615,13 +615,13 @@ export const useEditorStore = defineStore('editor', {
       })
     },
 
-    setPreferencesOnBootstrap (prefs) {
+    setPreferencesOnBootstrap (_prefs) {
     },
 
-    setModeOnBootstrap (mode) {
+    setModeOnBootstrap (_mode) {
     },
 
-    setLayoutOnBootstrap (layout) {
+    setLayoutOnBootstrap (_layout) {
     },
 
     listenForNewTab () {
@@ -639,7 +639,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     listenForCloseTab () {
-      ipcRenderer.on('mt::editor-close-tab', e => {
+      ipcRenderer.on('mt::editor-close-tab', _e => {
         const file = this.currentFile
         if (!hasKeys(file)) return
         this.closeTab(file)
@@ -647,43 +647,43 @@ export const useEditorStore = defineStore('editor', {
     },
 
     listenForTabCycle () {
-      ipcRenderer.on('mt::tabs-cycle-left', e => {
+      ipcRenderer.on('mt::tabs-cycle-left', _e => {
         this.cycleTabs(false)
       })
-      ipcRenderer.on('mt::tabs-cycle-right', e => {
+      ipcRenderer.on('mt::tabs-cycle-right', _e => {
         this.cycleTabs(true)
       })
     },
 
     listenForSwitchTabs () {
-      ipcRenderer.on('mt::switch-first-tab', e => {
+      ipcRenderer.on('mt::switch-first-tab', _e => {
         this.switchTabs(1)
       })
-      ipcRenderer.on('mt::switch-second-tab', e => {
+      ipcRenderer.on('mt::switch-second-tab', _e => {
         this.switchTabs(2)
       })
-      ipcRenderer.on('mt::switch-third-tab', e => {
+      ipcRenderer.on('mt::switch-third-tab', _e => {
         this.switchTabs(3)
       })
-      ipcRenderer.on('mt::switch-fourth-tab', e => {
+      ipcRenderer.on('mt::switch-fourth-tab', _e => {
         this.switchTabs(4)
       })
-      ipcRenderer.on('mt::switch-fifth-tab', e => {
+      ipcRenderer.on('mt::switch-fifth-tab', _e => {
         this.switchTabs(5)
       })
-      ipcRenderer.on('mt::switch-sixth-tab', e => {
+      ipcRenderer.on('mt::switch-sixth-tab', _e => {
         this.switchTabs(6)
       })
-      ipcRenderer.on('mt::switch-seventh-tab', e => {
+      ipcRenderer.on('mt::switch-seventh-tab', _e => {
         this.switchTabs(7)
       })
-      ipcRenderer.on('mt::switch-eighth-tab', e => {
+      ipcRenderer.on('mt::switch-eighth-tab', _e => {
         this.switchTabs(8)
       })
-      ipcRenderer.on('mt::switch-ninth-tab', e => {
+      ipcRenderer.on('mt::switch-ninth-tab', _e => {
         this.switchTabs(9)
       })
-      ipcRenderer.on('mt::switch-tenth-tab', e => {
+      ipcRenderer.on('mt::switch-tenth-tab', _e => {
         this.switchTabs(10)
       })
     },
@@ -1017,7 +1017,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     lintenForExportSuccess () {
-      ipcRenderer.on('mt::export-success', (e, { type, filePath }) => {
+      ipcRenderer.on('mt::export-success', (e, { _type, filePath }) => {
         notice.notify({
           title: 'Exported successfully',
           message: `Exported "${path.basename(filePath)}" successfully!`,
@@ -1034,7 +1034,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     lintenForPrintServiceClearup () {
-      ipcRenderer.on('mt::print-service-clearup', e => {
+      ipcRenderer.on('mt::print-service-clearup', _e => {
         bus.emit('print-service-clearup')
       })
     },
@@ -1150,7 +1150,7 @@ export const useEditorStore = defineStore('editor', {
     },
 
     listenForReloadImages () {
-      ipcRenderer.on('mt::invalidate-image-cache', (e) => {
+      ipcRenderer.on('mt::invalidate-image-cache', (_e) => {
         bus.emit('invalidate-image-cache')
       })
     },

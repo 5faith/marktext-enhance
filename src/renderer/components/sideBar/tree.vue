@@ -87,13 +87,13 @@ import File from './treeFile.vue'
 import OpenedFile from './treeOpenedTab.vue'
 import { useProjectStore, useEditorStore } from '@/stores'
 import bus from '../../bus'
-import { createFileOrDirectoryMixins } from '../../mixins'
+import { createFileOrDirectoryMixins as _createFileOrDirectoryMixins } from '../../mixins'
 import FolderIcon from '@/assets/icons/undraw_folder.svg'
 
 // State
 const depth = ref(0)
 const showDirectories = ref(true)
-const showNewInput = ref(false)
+const _showNewInput = ref(false)
 const showOpenedFiles = ref(true)
 const createName = ref('')
 

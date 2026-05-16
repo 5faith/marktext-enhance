@@ -93,7 +93,7 @@ export const moveImageToFolder = async (pathname, image, outputDir) => {
     }
   } else {
     const imagePath = path.join(outputDir, `${dayjs().format('YYYY-MM-DD-HH-mm-ss')}-${image.name}`)
-    const binaryString = await new Promise((resolve, reject) => {
+    const binaryString = await new Promise((resolve, _reject) => {
       const fileReader = new FileReader()
       fileReader.onload = () => {
         resolve(fileReader.result)

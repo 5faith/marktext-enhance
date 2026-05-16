@@ -23,7 +23,7 @@ export const PASTE = {
 export const COPY_AS_MARKDOWN = {
   label: 'Copy As Markdown',
   id: 'copyAsMarkdownMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.copyAsMarkdown()
   }
 }
@@ -31,7 +31,7 @@ export const COPY_AS_MARKDOWN = {
 export const COPY_AS_HTML = {
   label: 'Copy As Html',
   id: 'copyAsHtmlMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.copyAsHtml()
   }
 }
@@ -39,7 +39,7 @@ export const COPY_AS_HTML = {
 export const PASTE_AS_PLAIN_TEXT = {
   label: 'Paste as Plain Text',
   id: 'pasteAsPlainTextMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.pasteAsPlainText()
   }
 }
@@ -47,7 +47,7 @@ export const PASTE_AS_PLAIN_TEXT = {
 export const INSERT_BEFORE = {
   label: 'Insert Paragraph Before',
   id: 'insertParagraphBeforeMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.insertParagraph('before')
   }
 }
@@ -55,7 +55,7 @@ export const INSERT_BEFORE = {
 export const INSERT_AFTER = {
   label: 'Insert Paragraph After',
   id: 'insertParagraphAfterMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.insertParagraph('after')
   }
 }

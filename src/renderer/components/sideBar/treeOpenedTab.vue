@@ -18,7 +18,7 @@
 import { computed } from 'vue'
 import { useEditorStore } from '@/stores'
 
-const props = defineProps({
+const _props = defineProps({
   file: {
     type: Object,
     required: true

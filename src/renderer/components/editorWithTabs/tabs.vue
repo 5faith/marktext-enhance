@@ -50,7 +50,7 @@ import { tabsMixins } from '../../mixins'
 import { showContextMenu } from '../../contextMenu/tabs'
 import bus from '../../bus'
 
-const { autoScrollerMixins, tabsMixins: tabsMixinsData } = tabsMixins
+const { autoScrollerMixins: _autoScrollerMixins, tabsMixins: _tabsMixinsData } = tabsMixins
 const autoScroller = ref(null)
 const drake = ref(null)
 const tabContainer = ref(null)

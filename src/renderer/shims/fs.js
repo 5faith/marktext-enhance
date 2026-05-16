@@ -25,6 +25,7 @@ export const copyFile = _fs.copyFile
 export const copyFileSync = _fs.copyFileSync
 export const createReadStream = _fs.createReadStream
 export const createWriteStream = _fs.createWriteStream
+// eslint-disable-next-line node/no-deprecated-api
 export const exists = _fs.exists
 export const existsSync = _fs.existsSync
 export const fchmod = _fs.fchmod
@@ -41,7 +42,9 @@ export const ftruncate = _fs.ftruncate
 export const ftruncateSync = _fs.ftruncateSync
 export const futimes = _fs.futimes
 export const futimesSync = _fs.futimesSync
+// eslint-disable-next-line node/no-deprecated-api
 export const lchmod = _fs.lchmod
+// eslint-disable-next-line node/no-deprecated-api
 export const lchmodSync = _fs.lchmodSync
 export const lchown = _fs.lchown
 export const lchownSync = _fs.lchownSync

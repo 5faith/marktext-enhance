@@ -2,7 +2,7 @@ import { THEME_STYLE_ID, COMMON_STYLE_ID, DEFAULT_CODE_FONT_FAMILY, oneDarkTheme
 import { dark, graphite, materialDark, oneDark, ulysses } from './themeColor'
 import { isLinux } from './index'
 
-const ORIGINAL_THEME = '#409EFF'
+const _ORIGINAL_THEME = '#409EFF'
 const patchTheme = css => {
   return `@media not print {\n${css}\n}`
 }
@@ -13,7 +13,7 @@ const getEmojiPickerPatch = () => {
     : ''
 }
 
-const getThemeCluster = themeColor => {
+const _getThemeCluster = themeColor => {
   const tintColor = (color, tint) => {
     let red = parseInt(color.slice(1, 3), 16)
     let green = parseInt(color.slice(3, 5), 16)
@@ -153,7 +153,7 @@ export const addElementStyle = () => {
   const ID = 'mt-el-style'
   let sheet = document.querySelector(`#${ID}`)
   if (sheet) {
-
+    /* ignore */
   }
 
   // Element Plus uses CSS variables for theming, no need to inject CSS

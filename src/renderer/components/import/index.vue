@@ -50,11 +50,11 @@ const showDialog = (boolean) => {
   }
 }
 
-const dragOverHandler = (e) => {
+const dragOverHandler = (_e) => {
   isOver.value = true
 }
 
-const dragLeaveHandler = (e) => {
+const dragLeaveHandler = (_e) => {
   isOver.value = false
 }
 

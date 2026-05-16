@@ -145,7 +145,7 @@ class Preference extends EventEmitter {
     ipcMain.on('mt::set-user-preference', (e, settings) => {
       this.setItems(settings)
     })
-    ipcMain.on('mt::cmd-toggle-autosave', e => {
+    ipcMain.on('mt::cmd-toggle-autosave', _e => {
       this.setItem('autoSave', !!this.getItem('autoSave'))
     })
 

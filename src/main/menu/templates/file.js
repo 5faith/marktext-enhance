@@ -18,7 +18,7 @@ export default function (keybindings, userPreference, recentlyUsedFiles) {
     }, {
       label: 'New Window',
       accelerator: keybindings.getAccelerator('file.new-file'),
-      click (menuItem, browserWindow) {
+      click (_menuItem, _browserWindow) {
         actions.newEditorWindow()
       }
     }, {
@@ -59,7 +59,7 @@ export default function (keybindings, userPreference, recentlyUsedFiles) {
     }, {
       label: 'Clear Recently Used',
       enabled: recentlyUsedFiles.length > 0,
-      click (menuItem, browserWindow) {
+      click (_menuItem, _browserWindow) {
         actions.clearRecentlyUsed()
       }
     })

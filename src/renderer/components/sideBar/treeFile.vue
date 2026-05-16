@@ -27,7 +27,7 @@
 import { ref, computed, onMounted, nextTick, useTemplateRef } from 'vue'
 import FileIcon from './icon.vue'
 import { useProjectStore, useEditorStore } from '@/stores'
-import { fileMixins } from '../../mixins'
+import { fileMixins as _fileMixins } from '../../mixins'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
 
@@ -53,7 +53,7 @@ const renameCache = computed(() => useProjectStore().renameCache)
 const activeItem = computed(() => useProjectStore().activeItem)
 const clipboard = computed(() => useProjectStore().clipboard)
 const currentFile = computed(() => useEditorStore().currentFile)
-const tabs = computed(() => useEditorStore().tabs)
+const _tabs = computed(() => useEditorStore().tabs)
 
 // Methods
 const noop = () => {}

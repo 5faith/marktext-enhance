@@ -7,6 +7,7 @@ export const arch = os.arch
 export const cpus = os.cpus
 export const endianness = os.endianness
 export const freemem = os.freemem
+// eslint-disable-next-line node/no-deprecated-api
 export const getNetworkInterfaces = os.getNetworkInterfaces
 export const homedir = os.homedir
 export const hostname = os.hostname

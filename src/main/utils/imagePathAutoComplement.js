@@ -56,7 +56,7 @@ const rebuild = (directory) => {
 
 const watchDirectory = directory => {
   if (watchers.has(directory)) return // Do not duplicate watch the same directory
-  const watcher = fs.watch(directory, (eventType, filename) => {
+  const watcher = fs.watch(directory, (eventType, _filename) => {
     if (eventType === 'rename') {
       rebuild(directory)
     }

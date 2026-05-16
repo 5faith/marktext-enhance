@@ -50,7 +50,7 @@ export default function () {
       type: 'separator'
     }, {
       label: 'Donate via Open Collective...',
-      click (item, win) {
+      click (_item, _win) {
         shell.openExternal('https://opencollective.com/marktext')
       }
     }, {

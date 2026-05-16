@@ -32,7 +32,7 @@ import SourceCode from './sourceCode.vue'
 import TabNotifications from './notifications.vue'
 import DevtoolsButton from '@/components/devtools-button'
 
-const props = defineProps({
+const _props = defineProps({
   markdown: {
     type: String,
     required: true

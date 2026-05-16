@@ -180,7 +180,7 @@ export const getPageTitle = url => {
 
   const req = new XMLHttpRequest()
   let settle
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, _reject) => {
     settle = resolve
   })
   const handler = () => {
@@ -201,7 +201,7 @@ export const getPageTitle = url => {
       }
     }
   }
-  const handleError = (e) => {
+  const handleError = (_e) => {
     settle('')
   }
   req.open('GET', url)
@@ -210,7 +210,7 @@ export const getPageTitle = url => {
   req.send()
 
   // Resolve empty string when `TIMEOUT` passed.
-  const timer = new Promise((resolve, reject) => {
+  const timer = new Promise((resolve, _reject) => {
     setTimeout(() => {
       resolve('')
     }, TIMEOUT)
@@ -222,7 +222,7 @@ export const getPageTitle = url => {
 export const checkImageContentType = url => {
   const req = new XMLHttpRequest()
   let settle
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, _reject) => {
     settle = resolve
   })
   const handler = () => {

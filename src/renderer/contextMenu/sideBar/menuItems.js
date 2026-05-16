@@ -9,7 +9,7 @@ export const SEPARATOR = {
 export const NEW_FILE = {
   label: 'New File',
   id: 'newFileMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.newFile()
   }
 }
@@ -17,7 +17,7 @@ export const NEW_FILE = {
 export const NEW_DIRECTORY = {
   label: 'New Directory',
   id: 'newDirectoryMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.newDirectory()
   }
 }
@@ -25,7 +25,7 @@ export const NEW_DIRECTORY = {
 export const COPY = {
   label: 'Copy',
   id: 'copyMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.copy()
   }
 }
@@ -33,7 +33,7 @@ export const COPY = {
 export const CUT = {
   label: 'Cut',
   id: 'cutMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.cut()
   }
 }
@@ -41,7 +41,7 @@ export const CUT = {
 export const PASTE = {
   label: 'Paste',
   id: 'pasteMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.paste()
   }
 }
@@ -49,7 +49,7 @@ export const PASTE = {
 export const RENAME = {
   label: 'Rename',
   id: 'renameMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.rename()
   }
 }
@@ -57,7 +57,7 @@ export const RENAME = {
 export const DELETE = {
   label: 'Move To Trash',
   id: 'deleteMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.remove()
   }
 }
@@ -65,7 +65,7 @@ export const DELETE = {
 export const SHOW_IN_FOLDER = {
   label: 'Show In Folder',
   id: 'showInFolderMenuItem',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.showInFolder()
   }
 }

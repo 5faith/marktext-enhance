@@ -198,7 +198,7 @@ class ExportMarkdown {
     return this.translateBlocks2Markdown(children, newIndent)
   }
 
-  normalizeFrontMatter (block, indent) { // preBlock
+  normalizeFrontMatter (block, _indent) { // preBlock
     let startToken
     let endToken
     switch (block.lang) {
@@ -249,7 +249,7 @@ class ExportMarkdown {
   }
 
   // `mermaid` `flowchart` `sequence` `plantuml` `vega-lite`
-  normalizeContainer (block, indent) {
+  normalizeContainer (block, _indent) {
     const result = []
     const diagramType = block.children[0].functionType
     result.push('```' + diagramType + '\n')

@@ -113,7 +113,7 @@ onMounted(() => {
 
     sideBarViewWidth.value = sideBarWidthVal
 
-    const mouseUpHandler = (event) => {
+    const mouseUpHandler = (_event) => {
       document.removeEventListener('mousemove', mouseMoveHandler, false)
       document.removeEventListener('mouseup', mouseUpHandler, false)
       useLayoutStore().changeSideBarWidth(sideBarWidthVal < 220 ? 220 : sideBarWidthVal)

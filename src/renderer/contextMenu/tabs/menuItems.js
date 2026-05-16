@@ -9,7 +9,7 @@ export const SEPARATOR = {
 export const CLOSE_THIS = {
   label: 'Close',
   id: 'closeThisTab',
-  click (menuItem, browserWindow) {
+  click (menuItem, _browserWindow) {
     contextMenu.closeThis(menuItem._tabId)
   }
 }
@@ -17,7 +17,7 @@ export const CLOSE_THIS = {
 export const CLOSE_OTHERS = {
   label: 'Close others',
   id: 'closeOtherTabs',
-  click (menuItem, browserWindow) {
+  click (menuItem, _browserWindow) {
     contextMenu.closeOthers(menuItem._tabId)
   }
 }
@@ -25,7 +25,7 @@ export const CLOSE_OTHERS = {
 export const CLOSE_SAVED = {
   label: 'Close saved tabs',
   id: 'closeSavedTabs',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.closeSaved()
   }
 }
@@ -33,7 +33,7 @@ export const CLOSE_SAVED = {
 export const CLOSE_ALL = {
   label: 'Close all tabs',
   id: 'closeAllTabs',
-  click (menuItem, browserWindow) {
+  click (_menuItem, _browserWindow) {
     contextMenu.closeAll()
   }
 }
@@ -41,7 +41,7 @@ export const CLOSE_ALL = {
 export const RENAME = {
   label: 'Rename',
   id: 'renameFile',
-  click (menuItem, browserWindow) {
+  click (menuItem, _browserWindow) {
     contextMenu.rename(menuItem._tabId)
   }
 }
@@ -49,7 +49,7 @@ export const RENAME = {
 export const COPY_PATH = {
   label: 'Copy path',
   id: 'copyPath',
-  click (menuItem, browserWindow) {
+  click (menuItem, _browserWindow) {
     contextMenu.copyPath(menuItem._tabId)
   }
 }
@@ -57,7 +57,7 @@ export const COPY_PATH = {
 export const SHOW_IN_FOLDER = {
   label: 'Show in folder',
   id: 'showInFolder',
-  click (menuItem, browserWindow) {
+  click (menuItem, _browserWindow) {
     contextMenu.showInFolder(menuItem._tabId)
   }
 }

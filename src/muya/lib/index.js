@@ -72,7 +72,7 @@ class Muya {
     const config = { childList: true, subtree: true }
 
     // Callback function to execute when mutations are observed
-    const callback = (mutationsList, observer) => {
+    const callback = (mutationsList, _observer) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
           const { removedNodes, target } = mutation

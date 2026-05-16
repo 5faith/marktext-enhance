@@ -233,7 +233,7 @@ import TextBox from '@/prefComponents/common/textBox'
 import {
   pageSizeList,
   headerFooterTypes,
-  headerFooterStyles,
+  headerFooterStyles as _headerFooterStyles,
   exportThemeList
 } from './exportOptions'
 

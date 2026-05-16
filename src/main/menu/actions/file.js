@@ -170,7 +170,7 @@ const showUnsavedFilesMessage = async (win, files) => {
     case 2:
       return { needSave: false }
     case 0:
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, _reject) => {
         setTimeout(() => {
           resolve({ needSave: true })
         })
@@ -576,7 +576,7 @@ export const saveAs = win => {
   }
 }
 
-export const autoSave = (menuItem, browserWindow) => {
+export const autoSave = (menuItem, _browserWindow) => {
   const { checked } = menuItem
   ipcMain.emit('set-user-preference', { autoSave: checked })
 }

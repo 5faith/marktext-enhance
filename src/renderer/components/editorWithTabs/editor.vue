@@ -1234,7 +1234,7 @@ export default {
     },
 
     // listen for `open-single-file` event, it will call this method only when open a new file.
-    setMarkdownToEditor ({ id, markdown, cursor }) {
+    setMarkdownToEditor ({ _id, markdown, cursor }) {
       const { editor } = this
       if (editor) {
         editor.clearHistory()
@@ -1247,7 +1247,7 @@ export default {
     },
 
     // listen for markdown change form source mode or change tabs etc
-    handleFileChange ({ id, markdown, cursor, renderCursor, history }) {
+    handleFileChange ({ _id, markdown, cursor, renderCursor, history }) {
       const { editor } = this
       this.$nextTick(() => {
         if (editor) {

@@ -100,9 +100,9 @@ import { MARKDOWN_INCLUSIONS } from '../../../common/filesystem/paths'
 const log = require('electron-log')
 
 // State
-const lastKeyword = ref('')
-const lastSearchTime = ref(new Date())
-const keyUpTimer = ref(null)
+const _lastKeyword = ref('')
+const _lastSearchTime = ref(new Date())
+const _keyUpTimer = ref(null)
 const searcherCancelCallback = ref(null)
 const ripgrepDirectorySearcher = ref(new RipgrepDirectorySearcher())
 const keyword = ref('')

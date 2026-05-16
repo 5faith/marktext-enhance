@@ -1,14 +1,14 @@
 import bus from '../../bus'
 
-export const copyAsMarkdown = (menuItem, browserWindow) => {
+export const copyAsMarkdown = (_menuItem, _browserWindow) => {
   bus.emit('copyAsMarkdown', 'copyAsMarkdown')
 }
 
-export const copyAsHtml = (menuItem, browserWindow) => {
+export const copyAsHtml = (_menuItem, _browserWindow) => {
   bus.emit('copyAsHtml', 'copyAsHtml')
 }
 
-export const pasteAsPlainText = (menuItem, browserWindow) => {
+export const pasteAsPlainText = (_menuItem, _browserWindow) => {
   bus.emit('pasteAsPlainText', 'pasteAsPlainText')
 }
 

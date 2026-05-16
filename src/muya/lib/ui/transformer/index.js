@@ -146,7 +146,7 @@ class Transformer {
     this.update()
   }
 
-  mouseUp = (event) => {
+  mouseUp = (_event) => {
     const { eventCenter } = this.muya
     if (this.eventId.length) {
       for (const id of this.eventId) {

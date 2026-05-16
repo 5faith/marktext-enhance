@@ -107,7 +107,7 @@ Renderer.prototype.hr = function () {
   return this.options.xhtml ? '<hr/>\n' : '<hr>\n'
 }
 
-Renderer.prototype.list = function (body, ordered, start, taskList) {
+Renderer.prototype.list = function (body, ordered, start, _taskList) {
   const type = ordered ? 'ol' : 'ul'
   const startatt = (ordered && start !== 1) ? (' start="' + start + '"') : ''
   return '<' + type + startatt + '>\n' + body + '</' + type + '>\n'

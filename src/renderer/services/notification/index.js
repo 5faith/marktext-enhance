@@ -87,7 +87,7 @@ const notification = {
       if (timer) clearTimeout(timer)
     }
 
-    const mouseleaveHandler = event => {
+    const mouseleaveHandler = _event => {
       fluent.style.opacity = '0'
       fluent.style.height = noticeContainer.offsetHeight * 4 + 'px'
       fluent.style.width = noticeContainer.offsetHeight * 4 + 'px'

@@ -178,7 +178,7 @@ export const DEFAULT_TURNDOWN_CONFIG = Object.freeze({
   strongDelimiter: '**', // ** or __
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',
-  blankReplacement (content, node, options) {
+  blankReplacement (content, node, _options) {
     if (node && node.classList.contains('ag-soft-line-break')) {
       return LINE_BREAK
     } else if (node && node.classList.contains('ag-hard-line-break')) {

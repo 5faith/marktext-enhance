@@ -109,7 +109,7 @@ const tableDragBarCtrl = ContentState => {
     this.setSwitchStyle()
   }
 
-  ContentState.prototype.handleMouseUp = function (event) {
+  ContentState.prototype.handleMouseUp = function (_event) {
     const { eventCenter } = this.muya
     for (const id of this.dragEventIds) {
       eventCenter.detachDOMEvent(id)

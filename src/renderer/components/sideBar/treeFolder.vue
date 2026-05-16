@@ -54,7 +54,7 @@ import { ref, computed, onMounted, nextTick, useTemplateRef, defineAsyncComponen
 import { useProjectStore } from '@/stores'
 import { showContextMenu } from '../../contextMenu/sideBar'
 import bus from '../../bus'
-import { createFileOrDirectoryMixins } from '../../mixins'
+import { createFileOrDirectoryMixins as _createFileOrDirectoryMixins } from '../../mixins'
 
 // Props
 const props = defineProps({

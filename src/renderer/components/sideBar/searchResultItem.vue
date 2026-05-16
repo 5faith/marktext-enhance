@@ -62,7 +62,7 @@
 import { ref, computed } from 'vue'
 import path from 'path'
 import { useEditorStore } from '@/stores'
-import { fileMixins } from '../../mixins'
+import { fileMixins as _fileMixins } from '../../mixins'
 import { PATH_SEPARATOR } from '../../config'
 
 // State
@@ -78,8 +78,8 @@ const allMatchesShown = ref(props.searchResult.matches.length <= 10)
 const shownMatches = ref(10)
 
 // Stores
-const tabs = computed(() => useEditorStore().tabs)
-const currentFile = computed(() => useEditorStore().currentFile)
+const _tabs = computed(() => useEditorStore().tabs)
+const _currentFile = computed(() => useEditorStore().currentFile)
 
 // Computed
 const getMatches = computed(() => {
@@ -104,7 +104,7 @@ const extension = computed(() => {
 })
 
 // Return the parent directory with trailing path separator.
-const dirname = computed(() => {
+const _dirname = computed(() => {
   return path.join(path.dirname(props.searchResult.filePath), PATH_SEPARATOR)
 })
 

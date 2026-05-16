@@ -50,10 +50,10 @@ export const usePluginAddRules = (turndownService, keeps) => {
 
   // Handle multiple math lines
   turndownService.addRule('multiplemath', {
-    filter (node, options) {
+    filter (node, _options) {
       return node.nodeName === 'PRE' && node.classList.contains('multiple-math')
     },
-    replacement (content, node, options) {
+    replacement (content, _node, _options) {
       return `$$\n${content}\n$$`
     }
   })

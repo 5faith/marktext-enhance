@@ -50,7 +50,7 @@ class ImagePathPicker extends BaseScrollFloat {
           'aria-hidden': 'true'
         },
         hook: {
-          prepatch (oldvnode, vnode) {
+          prepatch (oldvnode, _vnode) {
             // cheat snabbdom that the pre block is changed!!!
             oldvnode.children = []
             oldvnode.elm.innerHTML = ''

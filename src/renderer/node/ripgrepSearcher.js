@@ -244,7 +244,7 @@ class RipgrepDirectorySearcher {
       let pendingLeadingContext
       let pendingTrailingContexts
 
-      child.on('close', (code, signal) => {
+      child.on('close', (code, _signal) => {
         // code 1 is used when no results are found.
         if (code !== null && code > 1) {
           reject(new Error(bufferError))

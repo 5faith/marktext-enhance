@@ -333,7 +333,7 @@ class ImageSelector extends BaseFloat {
       bodyContent = [
         h('button.muya-button.role-button.select', {
           on: {
-            click: event => {
+            click: _event => {
               this.handleSelectButtonClick()
             }
           }
@@ -402,7 +402,7 @@ class ImageSelector extends BaseFloat {
 
       const embedButton = h('button.muya-button.role-button.link', {
         on: {
-          click: event => {
+          click: _event => {
             this.handleLinkButtonClick()
           }
         }
@@ -411,7 +411,7 @@ class ImageSelector extends BaseFloat {
         h('span', 'Paste web image or local image path. Use '),
         h('a', {
           on: {
-            click: event => {
+            click: _event => {
               this.toggleMode()
             }
           }

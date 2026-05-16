@@ -87,7 +87,7 @@ const dragDropCtrl = ContentState => {
     }
   }
 
-  ContentState.prototype.dragleaveHandler = function (event) {
+  ContentState.prototype.dragleaveHandler = function (_event) {
     return this.hideGhost()
   }
 
