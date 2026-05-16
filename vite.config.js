@@ -25,7 +25,6 @@ export default defineConfig(({ command }) => {
         'fs-extra': resolve(__dirname, 'src/renderer/shims/fs-extra.js'),
         'fs/promises': resolve(__dirname, 'src/renderer/shims/fs-promises.js'),
         '@hfelix/electron-spellchecker': resolve(__dirname, 'src/renderer/shims/electron-spellchecker.js'),
-        'element-ui/lib/theme-chalk/index.css': resolve(__dirname, 'src/renderer/shims/element-ui-css.js'),
         'vscode-ripgrep': resolve(__dirname, 'src/renderer/shims/vscode-ripgrep.js'),
         '@electron/remote': resolve(__dirname, 'src/renderer/shims/electron-remote.js'),
         'path': resolve(__dirname, 'src/renderer/shims/path.js'),
@@ -184,7 +183,7 @@ export default defineConfig(({ command }) => {
     },
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
-      include: ['snapsvg', 'path-browserify', 'element-ui'],
+      include: ['snapsvg', 'path-browserify'],
       exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep']
     },
     ssr: {

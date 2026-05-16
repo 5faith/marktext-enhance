@@ -1,7 +1,6 @@
 import { THEME_STYLE_ID, COMMON_STYLE_ID, DEFAULT_CODE_FONT_FAMILY, oneDarkThemes, railscastsThemes } from '../config'
 import { dark, graphite, materialDark, oneDark, ulysses } from './themeColor'
 import { isLinux } from './index'
-import elementStyle from 'element-ui/lib/theme-chalk/index.css?inline'
 
 const ORIGINAL_THEME = '#409EFF'
 const patchTheme = css => {
@@ -156,16 +155,11 @@ export const addElementStyle = () => {
   if (sheet) {
     return
   }
-  const themeCluster = getThemeCluster(ORIGINAL_THEME)
-  let newElementStyle = elementStyle
-  for (const { color, variable } of themeCluster) {
-    newElementStyle = newElementStyle.replace(new RegExp(color, 'ig'), variable)
-  }
-  sheet = document.createElement('style')
-  sheet.id = ID
-  // NOTE: Prepend element UI style, otherwise we cannot overwrite the style with the default light theme.
-  document.head.insertBefore(sheet, document.head.firstChild)
-  sheet.innerHTML = newElementStyle
+  
+  // Element Plus uses CSS variables for theming, no need to inject CSS
+  // The theme colors are applied via CSS variables in the theme CSS files
+  // This function is kept for backward compatibility but does nothing
+  // as Element Plus handles theming through CSS variables automatically
 }
 
 // Append common sheet and theme at the end of head - order is important.

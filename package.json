@@ -50,7 +50,6 @@
     "electron-window-state": "^5.0.3",
     "element-plus": "^2.0",
     "element-resize-detector": "^1.2.4",
-    "element-ui": "^2.15.7",
     "execall": "^2.0.0",
     "flowchart.js": "^1.17.1",
     "fontmanager-redux": "^1.1.0",
