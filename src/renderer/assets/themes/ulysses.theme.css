@@ -66,6 +66,7 @@
 
   --floatFontColor: rgba(101, 101, 101, .7);
   --floatBgColor: #ffffff;
+  --floatBgColorAlpha: rgba(255, 255, 255, 0.85);
   --floatHoverColor: rgba(101, 101, 101, .04);
   --floatBorderColor: rgba(0, 0, 0, .03);
   --maskColor: rgba(232, 232, 232, .8);

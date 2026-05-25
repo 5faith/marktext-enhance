@@ -492,7 +492,41 @@ class AppMenu {
     }
   }
 
+  _getMenuData () {
+    const menu = Menu.getApplicationMenu()
+    if (!menu) return []
+
+    const menuData = []
+    for (const item of menu.items) {
+      const menuItem = {
+        label: item.label.replace(/&/g, ''),
+        id: item.id,
+        submenu: []
+      }
+
+      if (item.submenu) {
+        for (const subItem of item.submenu.items) {
+          menuItem.submenu.push({
+            label: subItem.label.replace(/&/g, ''),
+            id: subItem.id,
+            type: subItem.type,
+            enabled: subItem.enabled,
+            visible: subItem.visible,
+            checked: subItem.checked
+          })
+        }
+      }
+
+      menuData.push(menuItem)
+    }
+
+    return menuData
+  }
+
   _listenForIpcMain () {
+    ipcMain.handle('mt::get-menu-data', () => {
+      return this._getMenuData()
+    })
     ipcMain.on('mt::add-recently-used-document', (e, pathname) => {
       this.addRecentlyUsedDocument(pathname)
     })

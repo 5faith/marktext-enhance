@@ -291,14 +291,14 @@ class Muya {
     this.contentState.insertImage(imageInfo)
   }
 
-  search (value, opt) {
-    const { selectHighlight } = opt
+  search (value, opt = {}) {
+    const { selectHighlight = false } = opt
     this.contentState.search(value, opt)
     this.contentState.render(!!selectHighlight)
     return this.contentState.searchMatches
   }
 
-  replace (value, opt) {
+  replace (value, opt = {}) {
     this.contentState.replace(value, opt)
     this.contentState.render(false)
     return this.contentState.searchMatches

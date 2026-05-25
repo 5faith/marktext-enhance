@@ -1,6 +1,6 @@
 /* Common CSS use by both light and dark themes */
 :root {
-  --titleBarHeight: 32px;
+  --titleBarHeight: 64px;
   --editorAreaWidth: 750px;
 
   /*editor*/
@@ -73,6 +73,7 @@
 
   --floatFontColor: rgba(0, 0, 0, .6);
   --floatBgColor: #fff;
+  --floatBgColorAlpha: rgba(255, 255, 255, 0.85);
   --floatHoverColor: rgba(0, 0, 0, .04);
   --floatBorderColor: rgba(0, 0, 0, .1);
   --floatShadow: rgba(15, 15, 15, 0.03) 0px 0px 0px 1px, rgba(15, 15, 15, 0.04) 0px 3px 6px, rgba(15, 15, 15, 0.05) 0px 9px 24px;

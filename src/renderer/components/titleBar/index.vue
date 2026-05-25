@@ -8,40 +8,60 @@
       class="title-bar"
       :class="[{ 'active': active }, { 'tabs-visible': showTabBar }, { 'frameless': titleBarStyle === 'custom' }, { 'isOsx': isOsx }]"
     >
-      <div class="title" @dblclick.stop="toggleMaxmizeOnMacOS">
-        <span v-if="!filename">MarkText</span>
-        <span v-else>
-          <span
-            v-for="(path, index) of paths"
-            :key="index"
+      <!-- 第一行：水平菜单 + 窗口控制按钮 -->
+      <div class="first-row">
+        <div :class="showCustomTitleBar ? 'left-toolbar title-no-drag' : 'right-toolbar'">
+          <div
+            v-if="showCustomTitleBar"
+            class="horizontal-menu title-no-drag"
           >
-            {{ path }}
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-arrow-right"></use>
-            </svg>
-          </span>
-          <span
-            class="filename"
-            :class="{'isOsx': platform === 'darwin'}"
-            @click="rename"
-          >
-            {{ filename }}
-          </span>
-          <span class="save-dot" :class="{'show': !isSaved}"></span>
-        </span>
-      </div>
-      <div :class="showCustomTitleBar ? 'left-toolbar title-no-drag' : 'right-toolbar'">
-        <div
-          v-if="showCustomTitleBar"
-          class="frameless-titlebar-menu title-no-drag"
-          @click.stop="handleMenuClick"
-        >
-          <span class="text-center-vertical">&#9776;</span>
+            <div
+              v-for="(menu, index) in menuData"
+              :key="index"
+              class="menu-item"
+              @click.stop="handleMenuClick($event, index)"
+              @mouseenter="handleMenuHover($event, index)"
+            >
+              <span class="text-center-vertical">{{ menu.label }}</span>
+            </div>
+          </div>
         </div>
         <div
+          v-if="titleBarStyle === 'custom' && !isFullScreen && !isOsx"
+          class="right-toolbar"
+          :class="[{ 'title-no-drag': titleBarStyle === 'custom' }]"
+        >
+          <div class="frameless-titlebar-button frameless-titlebar-close" @click.stop="handleCloseClick">
+            <div>
+              <svg width="10" height="10">
+                <path :d="windowIconClose" />
+              </svg>
+            </div>
+          </div>
+          <div class="frameless-titlebar-button frameless-titlebar-toggle" @click.stop="handleMaximizeClick">
+            <div>
+              <svg width="10" height="10">
+                <path v-show="!isMaximized" :d="windowIconMaximize" />
+                <path v-show="isMaximized" :d="windowIconRestore" />
+              </svg>
+            </div>
+          </div>
+          <div class="frameless-titlebar-button frameless-titlebar-minimize" @click.stop="handleMinimizeClick">
+            <div>
+              <svg width="10" height="10">
+                <path :d="windowIconMinimize" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二行：字数统计 + 标题 -->
+      <div class="second-row">
+        <div
           v-if="wordCount"
-          class="word-count-wrapper"
-          :class="[{ 'title-no-drag': platform !== 'darwin' }]"
+          class="word-count-wrapper title-no-drag"
+          :style="wordCountStyle"
           @mouseenter="handleWordCountMouseEnter"
           @mouseleave="handleWordCountMouseLeave"
         >
@@ -53,11 +73,11 @@
             <span class="text-center-vertical">{{ `${HASH[show].short} ${wordCount[show]}` }}</span>
           </div>
           <transition name="popup-fade">
-<div
-  v-show="showPopup"
-  class="word-count-popup"
-  ref="wordCountPopup"
->
+            <div
+              v-show="showPopup"
+              class="word-count-popup"
+              ref="wordCountPopup"
+            >
               <div class="title-item">
                 <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
               </div>
@@ -70,33 +90,27 @@
             </div>
           </transition>
         </div>
-      </div>
-      <div
-        v-if="titleBarStyle === 'custom' && !isFullScreen && !isOsx"
-        class="right-toolbar"
-        :class="[{ 'title-no-drag': titleBarStyle === 'custom' }]"
-      >
-        <div class="frameless-titlebar-button frameless-titlebar-close" @click.stop="handleCloseClick">
-          <div>
-            <svg width="10" height="10">
-              <path :d="windowIconClose" />
-            </svg>
-          </div>
-        </div>
-        <div class="frameless-titlebar-button frameless-titlebar-toggle" @click.stop="handleMaximizeClick">
-          <div>
-            <svg width="10" height="10">
-              <path v-show="!isMaximized" :d="windowIconMaximize" />
-              <path v-show="isMaximized" :d="windowIconRestore" />
-            </svg>
-          </div>
-        </div>
-        <div class="frameless-titlebar-button frameless-titlebar-minimize" @click.stop="handleMinimizeClick">
-          <div>
-            <svg width="10" height="10">
-              <path :d="windowIconMinimize" />
-            </svg>
-          </div>
+        <div class="title" @dblclick.stop="toggleMaxmizeOnMacOS">
+          <span v-if="!filename">MarkText</span>
+          <span v-else>
+            <span
+              v-for="(path, index) of paths"
+              :key="index"
+            >
+              {{ path }}
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-arrow-right"></use>
+              </svg>
+            </span>
+            <span
+              class="filename"
+              :class="{'isOsx': platform === 'darwin'}"
+              @click="rename"
+            >
+              {{ filename }}
+            </span>
+            <span class="save-dot" :class="{'show': !isSaved}"></span>
+          </span>
         </div>
       </div>
     </div>
@@ -143,6 +157,8 @@ const isFullScreen = ref(getCurrentWindow().isFullScreen())
 const isMaximized = ref(getCurrentWindow().isMaximized())
 const show = ref('word')
 const showPopup = ref(false)
+const menuData = ref([])
+const activeMenuIndex = ref(-1)
 
 // Refs
 const wordCountBtn = ref(null)
@@ -160,8 +176,11 @@ const props = defineProps({
 })
 
 // Stores
+const layoutStore = useLayoutStore()
 const titleBarStyle = computed(() => usePreferencesStore().titleBarStyle)
-const showTabBar = computed(() => useLayoutStore().showTabBar)
+const showTabBar = computed(() => layoutStore.showTabBar)
+const showSideBar = computed(() => layoutStore.showSideBar)
+const sideBarWidth = computed(() => layoutStore.sideBarWidth)
 
 // Computed
 const paths = computed(() => {
@@ -172,6 +191,11 @@ const paths = computed(() => {
 
 const showCustomTitleBar = computed(() => {
   return titleBarStyle.value === 'custom' && !isOsxRef.value
+})
+
+const wordCountStyle = computed(() => {
+  const left = showSideBar.value ? `${sideBarWidth.value + 10}px` : '10px'
+  return { left }
 })
 
 // Watchers
@@ -223,9 +247,23 @@ const handleMinimizeClick = () => {
   getCurrentWindow().minimize()
 }
 
-const handleMenuClick = () => {
+const handleMenuClick = (event, index) => {
   const win = getCurrentWindow()
-  RemoteMenu.getApplicationMenu().popup({ window: win, x: 23, y: 20 })
+  const menu = RemoteMenu.getApplicationMenu()
+  const menuItem = menu.items[index]
+
+  if (menuItem && menuItem.submenu) {
+    const rect = event.target.getBoundingClientRect()
+    menuItem.submenu.popup({
+      window: win,
+      x: Math.round(rect.left),
+      y: Math.round(rect.bottom)
+    })
+  }
+}
+
+const handleMenuHover = (event, index) => {
+  activeMenuIndex.value = index
 }
 
 const rename = () => {
@@ -291,6 +329,11 @@ onMounted(() => {
   ipcRenderer.on('mt::window-unmaximize', onUnmaximize)
   ipcRenderer.on('mt::window-enter-full-screen', onEnterFullScreen)
   ipcRenderer.on('mt::window-leave-full-screen', onLeaveFullScreen)
+
+  // Get menu data for horizontal menu bar
+  ipcRenderer.invoke('mt::get-menu-data').then(data => {
+    menuData.value = data
+  })
 })
 
 onBeforeUnmount(() => {
@@ -324,6 +367,20 @@ onBeforeUnmount(() => {
     z-index: 2;
     transition: color .4s ease-in-out;
     cursor: default;
+    display: flex;
+    flex-direction: column;
+  }
+  .first-row {
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+  .second-row {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    position: relative;
   }
   .active {
     color: var(--editorColor);
@@ -334,9 +391,10 @@ onBeforeUnmount(() => {
     vertical-align: top;
   }
   .title {
+    flex: 1;
     padding: 0 142px;
     height: 100%;
-    line-height: var(--titleBarHeight);
+    line-height: 32px;
     font-size: 14px;
     text-align: center;
     transition: all .25s ease-in-out;
@@ -385,20 +443,41 @@ onBeforeUnmount(() => {
 
   .left-toolbar {
     padding: 0 10px;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 118px; /* + 2*10px padding*/
+    height: 32px;
     display: flex;
     flex-direction: row;
+    align-items: center;
+  }
+  .horizontal-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    gap: 2px;
+  }
+  .horizontal-menu .menu-item {
+    padding: 0 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--editorColor50);
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+  }
+  .horizontal-menu .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--editorColor);
+  }
+  .active .horizontal-menu .menu-item {
+    color: var(--editorColor);
+  }
+  .active .horizontal-menu .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
   }
   .right-toolbar {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 138px;
+    height: 32px;
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
@@ -408,7 +487,8 @@ onBeforeUnmount(() => {
   }
 
   .word-count-wrapper {
-    position: relative;
+    position: absolute;
+    left: 10px;
     display: inline-flex;
     align-items: center;
   }
@@ -435,7 +515,7 @@ onBeforeUnmount(() => {
   .word-count-popup {
     position: fixed;
     padding: 6px 10px;
-    background: var(--floatBgColor);
+    background: var(--floatBgColorAlpha);
     color: var(--floatFontColor);
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -444,6 +524,8 @@ onBeforeUnmount(() => {
     white-space: nowrap;
     z-index: 100;
     pointer-events: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .popup-fade-enter-active,
@@ -464,7 +546,7 @@ onBeforeUnmount(() => {
     position: relative;
     display: block;
     width: 46px;
-    height: var(--titleBarHeight);
+    height: 32px;
   }
   .frameless-titlebar-button > div {
     position: absolute;
