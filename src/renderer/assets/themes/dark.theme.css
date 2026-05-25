@@ -10,6 +10,7 @@
   --themeColor30: rgba(64, 158, 255, .3);
   --themeColor20: rgba(64, 158, 255, .2);
   --themeColor10: rgba(64, 158, 255, .1);
+  --highlightThemeColor: var(--themeColor);
 
   --highlightColor: rgba(102, 177, 255, .6);
   --selectionColor: rgba(102, 177, 255, .3);
@@ -41,6 +42,7 @@
   --buttonFontColorActive: var(--buttonFontColor);
   --buttonBgColorActive: #333434;
   --buttonBorderActive: var(--buttonBorder);
+  --buttonFocusBorder: 1px solid var(--themeColor);
 
   --buttonPrimaryFontColor: #ffffff;
   --buttonPrimaryBgColor: var(--themeColor);
@@ -72,6 +74,16 @@
   --floatShadow: rgba(0, 0, 0, 0.2);
   --maskColor: rgba(0, 0, 0, .7);
   --editorAreaWidth: 750px;
+
+  /* Notification colors */
+  --notificationPrimaryColor: #ffffff;
+  --notificationPrimaryBg: var(--themeColor);
+  --notificationInfoColor: #ffffff;
+  --notificationInfoBg: #909399;
+  --notificationWarningColor: #ffffff;
+  --notificationWarningBg: #ff8800;
+  --notificationErrorColor: #ffffff;
+  --notificationErrorBg: #ff6969;
 }
 
 ::-webkit-scrollbar {

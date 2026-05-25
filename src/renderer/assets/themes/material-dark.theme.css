@@ -10,6 +10,7 @@
   --themeColor30: rgba(244, 130, 55, .3);
   --themeColor20: rgba(244, 130, 55, .2);
   --themeColor10: rgba(244, 130, 55, .1);
+  --highlightThemeColor: var(--themeColor);
 
   --highlightColor: rgba(244, 130, 55, .4);
   --selectionColor: rgba(255, 255, 255, .2);
@@ -40,6 +41,7 @@
   --buttonFontColorActive: var(--buttonFontColor);
   --buttonBgColorActive: #4a5159;
   --buttonBorderActive: var(--buttonBorder);
+  --buttonFocusBorder: 1px solid var(--themeColor);
 
   --buttonPrimaryFontColor: #ffffff;
   --buttonPrimaryBgColor: var(--themeColor);
@@ -71,6 +73,16 @@
   --floatShadow: rgba(0, 0, 0, 0.2);
   --maskColor: rgba(0, 0, 0, .7);
   --editorAreaWidth: 750px;
+
+  /* Notification colors */
+  --notificationPrimaryColor: #ffffff;
+  --notificationPrimaryBg: var(--themeColor);
+  --notificationInfoColor: #ffffff;
+  --notificationInfoBg: #909399;
+  --notificationWarningColor: #ffffff;
+  --notificationWarningBg: #ff8800;
+  --notificationErrorColor: #ffffff;
+  --notificationErrorBg: #ff6969;
 }
 
 .ag-front-menu .submenu,

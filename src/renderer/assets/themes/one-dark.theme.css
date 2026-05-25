@@ -73,6 +73,16 @@
   --floatShadow: rgba(0, 0, 0, 0.3);
   --maskColor: rgba(0, 0, 0, .7);
   --editorAreaWidth: 750px;
+
+  /* Notification colors */
+  --notificationPrimaryColor: #ffffff;
+  --notificationPrimaryBg: var(--themeColor);
+  --notificationInfoColor: #ffffff;
+  --notificationInfoBg: #909399;
+  --notificationWarningColor: #ffffff;
+  --notificationWarningBg: #ff8800;
+  --notificationErrorColor: #ffffff;
+  --notificationErrorBg: #ff6969;
 }
 
 ::-webkit-scrollbar,

@@ -9,6 +9,7 @@
   --themeColor30: rgba(12, 139, 186, .3);
   --themeColor20: rgba(12, 139, 186, .2);
   --themeColor10: rgba(12, 139, 186, .1);
+  --highlightThemeColor: var(--themeColor);
 
   --highlightColor: rgba(12, 139, 186, .4);
   --selectionColor: rgba(0, 0, 0, .1);
@@ -69,6 +70,16 @@
   --floatBorderColor: rgba(0, 0, 0, .03);
   --maskColor: rgba(232, 232, 232, .8);
   --editorAreaWidth: 750px;
+
+  /* Notification colors */
+  --notificationPrimaryColor: #ffffff;
+  --notificationPrimaryBg: var(--themeColor);
+  --notificationInfoColor: #ffffff;
+  --notificationInfoBg: #909399;
+  --notificationWarningColor: #ffffff;
+  --notificationWarningBg: #ff8800;
+  --notificationErrorColor: #ffffff;
+  --notificationErrorBg: #ff6969;
 }
 
 .editor-tabs {

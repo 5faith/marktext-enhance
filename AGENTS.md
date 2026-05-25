@@ -129,6 +129,118 @@ src/
 
 ---
 
+## Design System
+
+> **Full Reference**: See [`DESIGN.md`](DESIGN.md) for complete design specifications.
+
+### Theme System
+
+主题系统采用 CSS 变量实现，支持 6 种内置主题，通过动态切换 `:root` 变量实现主题切换。
+
+**核心特点：**
+- 所有主题变量定义在 `:root` 选择器中
+- 主题文件位于 `src/renderer/assets/themes/`
+- 通过 `theme.js` 中的 `addThemeStyle()` 函数动态应用
+- 主题颜色通过 `themeColor.js` 统一导出
+
+### Required CSS Variables
+
+每个主题必须定义以下变量集：
+
+**主题色（10级透明度变体）：**
+```css
+--themeColor, --themeColor90 ~ --themeColor10
+--highlightThemeColor
+```
+
+**编辑器色（8级透明度变体）：**
+```css
+--editorColor, --editorColor80 ~ --editorColor04
+```
+
+**背景色：**
+```css
+--editorBgColor, --codeBgColor, --codeBlockBgColor, --inputBgColor, --footnoteBgColor
+```
+
+**特殊色：**
+```css
+--highlightColor, --selectionColor, --deleteColor, --iconColor, --focusColor, --tableBorderColor
+```
+
+**按钮样式：**
+```css
+--buttonFontColor, --buttonBgColor, --buttonBorder, --buttonShadow
+--buttonFontColorHover, --buttonBgColorHover, --buttonBorderHover
+--buttonFontColorActive, --buttonBgColorActive, --buttonBorderActive
+--buttonFocusBorder
+--buttonPrimaryFontColor, --buttonPrimaryBgColor, --buttonPrimaryBorder, --buttonPrimaryShadow
+--buttonPrimaryFontColorHover, --buttonPrimaryBgColorHover, --buttonPrimaryBorderHover
+--buttonPrimaryFontColorActive, --buttonPrimaryBgColorActive, --buttonPrimaryBorderActive
+--buttonPrimaryFocusBorder, --buttonPrimaryFocusShadow
+```
+
+**侧边栏样式：**
+```css
+--sideBarColor, --sideBarIconColor, --sideBarTitleColor, --sideBarTextColor
+--sideBarBgColor, --sideBarItemHoverBgColor, --itemBgColor
+```
+
+**浮动元素样式：**
+```css
+--floatFontColor, --floatBgColor, --floatHoverColor, --floatBorderColor
+--floatShadow, --maskColor
+```
+
+**通知颜色：**
+```css
+--notificationPrimaryColor, --notificationPrimaryBg
+--notificationInfoColor, --notificationInfoBg
+--notificationWarningColor, --notificationWarningBg
+--notificationErrorColor, --notificationErrorBg
+```
+
+**布局：**
+```css
+--editorAreaWidth
+```
+
+### Theme List
+
+| Theme | Type | Theme Color |
+|---|---|---|
+| `light` | Light | `#409EFF` |
+| `dark` | Dark | `#409EFF` |
+| `graphite` | Light | `rgb(104, 134, 170)` |
+| `material-dark` | Dark | `#f48237` |
+| `ulysses` | Light | `#f48237` |
+| `one-dark` | Dark | `rgba(77, 120, 204, 1)` |
+
+### Design Rules
+
+**Do:**
+- 使用 CSS 变量定义所有主题相关的颜色和样式
+- 为每个主题定义完整的变量集（包括所有透明度变体）
+- 保持所有主题的变量结构一致
+- 使用 `patchTheme()` 函数包装主题 CSS 以支持打印
+- 为亮色和暗色主题分别优化对比度
+
+**Don't:**
+- 不要在主题文件中使用硬编码的颜色值（除了特殊情况如滚动条）
+- 不要修改其他主题的变量结构
+- 不要在组件中直接使用主题颜色，应使用 CSS 变量
+- 不要忘记定义变量的透明度变体
+
+### Adding New Themes
+
+1. 在 `src/renderer/assets/themes/` 创建新的 `.theme.css` 文件
+2. 在 `themeColor.js` 中导入并导出主题函数
+3. 在 `theme.js` 的 `addThemeStyle()` 中添加新的 case
+4. 在 `prefComponents/theme/config.js` 中添加主题选项
+5. 如需要，在 `stores/preferences.js` 中更新默认主题
+
+---
+
 ## Reference Documentation
 
 | Document | Path | Description |
