@@ -56,40 +56,8 @@
         </div>
       </div>
 
-      <!-- 第二行：字数统计 + 标题 -->
+      <!-- 第二行：标题 -->
       <div class="second-row">
-        <div
-          v-if="wordCount"
-          class="word-count-wrapper title-no-drag"
-          :style="wordCountStyle"
-          @mouseenter="handleWordCountMouseEnter"
-          @mouseleave="handleWordCountMouseLeave"
-        >
-          <div
-            class="word-count"
-            ref="wordCountBtn"
-            @click.stop="handleWordClick"
-          >
-            <span class="text-center-vertical">{{ `${HASH[show].short} ${wordCount[show]}` }}</span>
-          </div>
-          <transition name="popup-fade">
-            <div
-              v-show="showPopup"
-              class="word-count-popup"
-              ref="wordCountPopup"
-            >
-              <div class="title-item">
-                <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
-              </div>
-              <div class="title-item">
-                <span class="front">Characters:</span><span class="text">{{wordCount['character']}}</span>
-              </div>
-              <div class="title-item">
-                <span class="front">Paragraphs:</span><span class="text">{{wordCount['paragraph']}}</span>
-              </div>
-            </div>
-          </transition>
-        </div>
         <div class="title" @dblclick.stop="toggleMaxmizeOnMacOS">
           <span v-if="!filename">MarkText</span>
           <span v-else>
@@ -118,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { ipcRenderer } from 'electron'
 import { getCurrentWindow, Menu as RemoteMenu } from '@electron/remote'
 import { minimizePath, restorePath, maximizePath, closePath } from '../../assets/window-controls.js'
@@ -127,25 +95,6 @@ import { isOsx } from '@/util'
 import { usePreferencesStore, useLayoutStore, useEditorStore } from '@/stores'
 
 // Static data
-const HASH = {
-  word: {
-    short: 'W',
-    full: 'word'
-  },
-  character: {
-    short: 'C',
-    full: 'character'
-  },
-  paragraph: {
-    short: 'P',
-    full: 'paragraph'
-  },
-  all: {
-    short: 'A',
-    full: '(with space)character'
-  }
-}
-
 const windowIconMinimize = minimizePath
 const windowIconRestore = restorePath
 const windowIconMaximize = maximizePath
@@ -155,14 +104,8 @@ const windowIconClose = closePath
 const isOsxRef = ref(isOsx)
 const isFullScreen = ref(getCurrentWindow().isFullScreen())
 const isMaximized = ref(getCurrentWindow().isMaximized())
-const show = ref('word')
-const showPopup = ref(false)
 const menuData = ref([])
 const activeMenuIndex = ref(-1)
-
-// Refs
-const wordCountBtn = ref(null)
-const wordCountPopup = ref(null)
 
 // Props
 const props = defineProps({
@@ -170,7 +113,6 @@ const props = defineProps({
   filename: String,
   pathname: String,
   active: Boolean,
-  wordCount: Object,
   platform: String,
   isSaved: Boolean
 })
@@ -179,8 +121,6 @@ const props = defineProps({
 const layoutStore = useLayoutStore()
 const titleBarStyle = computed(() => usePreferencesStore().titleBarStyle)
 const showTabBar = computed(() => layoutStore.showTabBar)
-const showSideBar = computed(() => layoutStore.showSideBar)
-const sideBarWidth = computed(() => layoutStore.sideBarWidth)
 
 // Computed
 const paths = computed(() => {
@@ -191,11 +131,6 @@ const paths = computed(() => {
 
 const showCustomTitleBar = computed(() => {
   return titleBarStyle.value === 'custom' && !isOsxRef.value
-})
-
-const wordCountStyle = computed(() => {
-  const left = showSideBar.value ? `${sideBarWidth.value + 10}px` : '10px'
-  return { left }
 })
 
 // Watchers
@@ -213,15 +148,6 @@ watch(() => props.filename, (value) => {
 })
 
 // Methods
-const handleWordClick = () => {
-  const ITEMS = ['word', 'paragraph', 'character', 'all']
-  const len = ITEMS.length
-  let index = ITEMS.indexOf(show.value)
-  index += 1
-  if (index >= len) index = 0
-  show.value = ITEMS[index]
-}
-
 const handleCloseClick = () => {
   getCurrentWindow().close()
 }
@@ -272,40 +198,6 @@ const rename = () => {
   }
 }
 
-const handleWordCountMouseEnter = () => {
-  showPopup.value = true
-  nextTick(() => {
-    if (wordCountPopup.value && wordCountBtn.value) {
-      const popup = wordCountPopup.value
-      const btnRect = wordCountBtn.value.getBoundingClientRect()
-      const popupRect = popup.getBoundingClientRect()
-
-      // 计算初始位置（在按钮下方，右对齐）
-      let left = btnRect.right - popupRect.width
-      let top = btnRect.bottom + 4
-
-      // 确保不超出右边界
-      if (left + popupRect.width > window.innerWidth) {
-        left = window.innerWidth - popupRect.width - 4
-      }
-
-      // 确保不超出左边界
-      if (left < 0) {
-        left = 4
-      }
-
-      // 使用 fixed 定位，相对于视口
-      popup.style.position = 'fixed'
-      popup.style.left = `${left}px`
-      popup.style.top = `${top}px`
-    }
-  })
-}
-
-const handleWordCountMouseLeave = () => {
-  showPopup.value = false
-}
-
 // IPC handlers
 const onMaximize = () => {
   isMaximized.value = true
@@ -346,7 +238,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
   .title-bar-editor-bg {
-    height: var(--titleBarHeight);
+    height: calc(var(--menuBarHeight) * 2);
     background: var(--editorBgColor);
     position: relative;
     left: 0;
@@ -357,7 +249,7 @@ onBeforeUnmount(() => {
     -webkit-app-region: drag;
     user-select: none;
     background: transparent;
-    height: var(--titleBarHeight);
+    height: calc(var(--menuBarHeight) * 2);
     box-sizing: border-box;
     color: var(--editorColor50);
     position: fixed;
@@ -490,58 +382,6 @@ onBeforeUnmount(() => {
     }
   }
 
-  .word-count-wrapper {
-    position: absolute;
-    left: 10px;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .word-count {
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--editorColor30);
-    text-align: center;
-    line-height: 24px;
-    padding: 0 5px;
-    box-sizing: border-box;
-    transition: all .25s ease-in-out;
-    & > .text-center-vertical {
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-    &:hover > span {
-      background: var(--sideBarBgColor);
-      color: var(--sideBarTitleColor);
-    }
-  }
-
-  .word-count-popup {
-    position: fixed;
-    padding: 6px 10px;
-    background: var(--floatBgColorAlpha);
-    color: var(--floatFontColor);
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    font-size: 13px;
-    line-height: 1.4;
-    white-space: nowrap;
-    z-index: 100;
-    pointer-events: none;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  .popup-fade-enter-active,
-  .popup-fade-leave-active {
-    transition: opacity 0.2s ease;
-  }
-
-  .popup-fade-enter-from,
-  .popup-fade-leave-to {
-    opacity: 0;
-  }
-
   .title-no-drag {
     -webkit-app-region: no-drag;
   }
@@ -581,17 +421,4 @@ onBeforeUnmount(() => {
     vertical-align: middle;
     line-height: normal;
   }
-</style>
-
-<style>
-.title-item {
-  height: 28px;
-  line-height: 28px;
-  & .front {
-    opacity: .7;
-  }
-  & .text {
-    margin-left: 10px;
-  }
-}
 </style>

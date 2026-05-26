@@ -9,7 +9,6 @@
         :pathname="pathname"
         :filename="filename"
         :active="windowActive"
-        :word-count="wordCount"
         :platform="platform"
         :is-saved="isSaved"
       ></title-bar>
@@ -71,7 +70,6 @@ const filename = computed(() => useEditorStore().currentFile?.filename)
 const isSaved = computed(() => useEditorStore().currentFile?.isSaved)
 const markdown = computed(() => useEditorStore().currentFile?.markdown)
 const cursor = computed(() => useEditorStore().currentFile?.cursor)
-const wordCount = computed(() => useEditorStore().currentFile?.wordCount)
 const windowActive = computed(() => useRootStore().windowActive)
 const platform = computed(() => useRootStore().platform)
 const init = computed(() => useRootStore().init)

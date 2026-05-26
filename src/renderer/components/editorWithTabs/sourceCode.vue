@@ -272,7 +272,7 @@ export default {
 
 <style>
   .source-code {
-    height: calc(100vh - var(--titleBarHeight));
+    height: calc(100vh - var(--menuBarHeight) * 2);
     box-sizing: border-box;
     overflow: auto;
   }

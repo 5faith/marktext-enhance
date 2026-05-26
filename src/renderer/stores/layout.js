@@ -8,8 +8,8 @@ const sideBarWidth = typeof +width === 'number' ? Math.max(+width, 220) : 280
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
     rightColumn: 'files',
-    showSideBar: false,
-    showTabBar: false,
+    showSideBar: true,
+    showTabBar: true,
     sideBarWidth
   }),
   actions: {
