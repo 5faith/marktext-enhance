@@ -58,7 +58,7 @@ export default function (keybindings) {
       id: 'sideBarMenuItem',
       accelerator: keybindings.getAccelerator('view.toggle-sidebar'),
       type: 'checkbox',
-      checked: false,
+      checked: true,
       click (item, browserWindow, event) {
         // if we call this function, the checked state is not set
         if (!event) {
@@ -72,7 +72,7 @@ export default function (keybindings) {
       id: 'tabBarMenuItem',
       accelerator: keybindings.getAccelerator('view.toggle-tabbar'),
       type: 'checkbox',
-      checked: false,
+      checked: true,
       click (item, browserWindow, event) {
         // if we call this function, the checked state is not set
         if (!event) {

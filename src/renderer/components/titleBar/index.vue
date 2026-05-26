@@ -56,8 +56,41 @@
         </div>
       </div>
 
-      <!-- 第二行：标题 -->
+      <!-- 第二行：统计信息 + 标题 -->
       <div class="second-row">
+        <div class="stats-section title-no-drag" :style="showSideBar ? { width: `${finalSideBarWidth}px` } : {}">
+          <div
+            v-if="wordCount"
+            class="word-count-wrapper"
+            @mouseenter="handleWordCountMouseEnter"
+            @mouseleave="handleWordCountMouseLeave"
+          >
+            <div
+              class="word-count"
+              ref="wordCountBtn"
+              @click.stop="handleWordClick"
+            >
+              <span class="text-center-vertical">{{ `${WORD_HASH[showCountType].short} ${wordCount[showCountType]}` }}</span>
+            </div>
+            <transition name="popup-fade">
+              <div
+                v-show="showPopup"
+                class="word-count-popup"
+                ref="wordCountPopup"
+              >
+                <div class="title-item">
+                  <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
+                </div>
+                <div class="title-item">
+                  <span class="front">Characters:</span><span class="text">{{wordCount['character']}}</span>
+                </div>
+                <div class="title-item">
+                  <span class="front">Paragraphs:</span><span class="text">{{wordCount['paragraph']}}</span>
+                </div>
+              </div>
+            </transition>
+          </div>
+        </div>
         <div class="title" @dblclick.stop="toggleMaxmizeOnMacOS">
           <span v-if="!filename">MarkText</span>
           <span v-else>
@@ -86,7 +119,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { ipcRenderer } from 'electron'
 import { getCurrentWindow, Menu as RemoteMenu } from '@electron/remote'
 import { minimizePath, restorePath, maximizePath, closePath } from '../../assets/window-controls.js'
@@ -100,12 +133,23 @@ const windowIconRestore = restorePath
 const windowIconMaximize = maximizePath
 const windowIconClose = closePath
 
+const WORD_HASH = {
+  word: { short: 'W', full: 'word' },
+  character: { short: 'C', full: 'character' },
+  paragraph: { short: 'P', full: 'paragraph' },
+  all: { short: 'A', full: '(with space)character' }
+}
+
 // State
 const isOsxRef = ref(isOsx)
 const isFullScreen = ref(getCurrentWindow().isFullScreen())
 const isMaximized = ref(getCurrentWindow().isMaximized())
 const menuData = ref([])
 const activeMenuIndex = ref(-1)
+const showCountType = ref('word')
+const showPopup = ref(false)
+const wordCountBtn = ref(null)
+const wordCountPopup = ref(null)
 
 // Props
 const props = defineProps({
@@ -121,6 +165,10 @@ const props = defineProps({
 const layoutStore = useLayoutStore()
 const titleBarStyle = computed(() => usePreferencesStore().titleBarStyle)
 const showTabBar = computed(() => layoutStore.showTabBar)
+const showSideBar = computed(() => layoutStore.showSideBar)
+const sideBarWidth = computed(() => layoutStore.sideBarWidth)
+const wordCount = computed(() => useEditorStore().currentFile?.wordCount)
+const rightColumn = computed(() => layoutStore.rightColumn)
 
 // Computed
 const paths = computed(() => {
@@ -131,6 +179,12 @@ const paths = computed(() => {
 
 const showCustomTitleBar = computed(() => {
   return titleBarStyle.value === 'custom' && !isOsxRef.value
+})
+
+const finalSideBarWidth = computed(() => {
+  if (!showSideBar.value) return 0
+  if (rightColumn.value === '') return 45
+  return sideBarWidth.value < 220 ? 220 : sideBarWidth.value
 })
 
 // Watchers
@@ -198,6 +252,42 @@ const rename = () => {
   }
 }
 
+const handleWordClick = () => {
+  const ITEMS = ['word', 'paragraph', 'character', 'all']
+  let index = ITEMS.indexOf(showCountType.value)
+  index = (index + 1) % ITEMS.length
+  showCountType.value = ITEMS[index]
+}
+
+const handleWordCountMouseEnter = () => {
+  showPopup.value = true
+  nextTick(() => {
+    if (wordCountPopup.value && wordCountBtn.value) {
+      const popup = wordCountPopup.value
+      const btnRect = wordCountBtn.value.getBoundingClientRect()
+      const popupRect = popup.getBoundingClientRect()
+
+      let left = btnRect.right - popupRect.width
+      let top = btnRect.bottom + 4
+
+      if (left + popupRect.width > window.innerWidth) {
+        left = window.innerWidth - popupRect.width - 4
+      }
+      if (left < 0) {
+        left = 4
+      }
+
+      popup.style.position = 'fixed'
+      popup.style.left = `${left}px`
+      popup.style.top = `${top}px`
+    }
+  })
+}
+
+const handleWordCountMouseLeave = () => {
+  showPopup.value = false
+}
+
 // IPC handlers
 const onMaximize = () => {
   isMaximized.value = true
@@ -256,7 +346,7 @@ onBeforeUnmount(() => {
     left: 0;
     top: 0;
     right: 0;
-    z-index: 2;
+    z-index: 100;
     transition: color .4s ease-in-out;
     cursor: default;
     display: flex;
@@ -265,18 +355,15 @@ onBeforeUnmount(() => {
   .first-row {
     height: 32px;
     display: flex;
-    justify-content: space-between;
     position: relative;
   }
   .second-row {
     height: var(--menuBarHeight);
     display: flex;
     align-items: center;
-    position: fixed;
-    top: var(--menuBarHeight);
-    left: 0;
-    right: 0;
+    position: relative;
     z-index: 1;
+    overflow: hidden;
   }
   .active {
     color: var(--editorColor);
@@ -294,6 +381,7 @@ onBeforeUnmount(() => {
     font-size: 14px;
     text-align: center;
     transition: all .25s ease-in-out;
+    overflow: hidden;
     & .filename {
       transition: all .25s ease-in-out;
     }
@@ -343,6 +431,7 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex: 1;
   }
   .horizontal-menu {
     display: flex;
@@ -420,5 +509,62 @@ onBeforeUnmount(() => {
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
+  }
+
+  .stats-section {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    transition: width 0.2s ease;
+    flex-shrink: 0;
+  }
+  .word-count-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .word-count {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--editorColor30);
+    text-align: center;
+    line-height: 20px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    transition: all .25s ease-in-out;
+    & > .text-center-vertical {
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+    &:hover > span {
+      background: var(--sideBarItemHoverBgColor);
+      color: var(--sideBarTitleColor);
+    }
+  }
+  .word-count-popup {
+    position: fixed;
+    padding: 6px 10px;
+    background: var(--floatBgColorAlpha);
+    color: var(--floatFontColor);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .popup-fade-enter-active,
+  .popup-fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+  .popup-fade-enter-from,
+  .popup-fade-leave-to {
+    opacity: 0;
   }
 </style>

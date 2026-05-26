@@ -31,37 +31,6 @@
       </ul>
     </div>
     <div class="right-column" v-show="rightColumn">
-      <div
-        v-if="wordCount"
-        class="word-count-wrapper"
-        @mouseenter="handleWordCountMouseEnter"
-        @mouseleave="handleWordCountMouseLeave"
-      >
-        <div
-          class="word-count"
-          ref="wordCountBtn"
-          @click.stop="handleWordClick"
-        >
-          <span class="text-center-vertical">{{ `${WORD_HASH[showCountType].short} ${wordCount[showCountType]}` }}</span>
-        </div>
-        <transition name="popup-fade">
-          <div
-            v-show="showPopup"
-            class="word-count-popup"
-            ref="wordCountPopup"
-          >
-            <div class="title-item">
-              <span class="front">Words:</span><span class="text">{{wordCount['word']}}</span>
-            </div>
-            <div class="title-item">
-              <span class="front">Characters:</span><span class="text">{{wordCount['character']}}</span>
-            </div>
-            <div class="title-item">
-              <span class="front">Paragraphs:</span><span class="text">{{wordCount['paragraph']}}</span>
-            </div>
-          </div>
-        </transition>
-      </div>
       <tree
         :project-tree="projectTree"
         :opened-files="openedFiles"
@@ -86,13 +55,6 @@ import SideBarSearch from './search.vue'
 import Toc from './toc.vue'
 import { useLayoutStore, useProjectStore, useEditorStore } from '@/stores'
 
-const WORD_HASH = {
-  word: { short: 'W', full: 'word' },
-  character: { short: 'C', full: 'character' },
-  paragraph: { short: 'P', full: 'paragraph' },
-  all: { short: 'A', full: '(with space)character' }
-}
-
 const sideBarIcons = [
   { name: 'folder', icon: 'folder' },
   { name: 'file', icon: 'file' },
@@ -107,17 +69,12 @@ const sideBarBottomIcons = [
 const openedFiles = ref([])
 const sideBarViewWidth = ref(280)
 const dragBar = ref(null)
-const showCountType = ref('word')
-const showPopup = ref(false)
-const wordCountBtn = ref(null)
-const wordCountPopup = ref(null)
 
 const rightColumn = computed(() => useLayoutStore().rightColumn)
 const showSideBar = computed(() => useLayoutStore().showSideBar)
 const projectTree = computed(() => useProjectStore().projectTree)
 const sideBarWidth = computed(() => useLayoutStore().sideBarWidth)
 const tabs = computed(() => useEditorStore().tabs)
-const wordCount = computed(() => useEditorStore().currentFile?.wordCount)
 
 const finalSideBarWidth = computed(() => {
   if (!showSideBar.value) return 0
@@ -143,42 +100,6 @@ const handleLeftBottomClick = (name) => {
   if (name === 'settings') {
     useProjectStore().openSettingWindow()
   }
-}
-
-const handleWordClick = () => {
-  const ITEMS = ['word', 'paragraph', 'character', 'all']
-  let index = ITEMS.indexOf(showCountType.value)
-  index = (index + 1) % ITEMS.length
-  showCountType.value = ITEMS[index]
-}
-
-const handleWordCountMouseEnter = () => {
-  showPopup.value = true
-  nextTick(() => {
-    if (wordCountPopup.value && wordCountBtn.value) {
-      const popup = wordCountPopup.value
-      const btnRect = wordCountBtn.value.getBoundingClientRect()
-      const popupRect = popup.getBoundingClientRect()
-
-      let left = btnRect.right - popupRect.width
-      let top = btnRect.bottom + 4
-
-      if (left + popupRect.width > window.innerWidth) {
-        left = window.innerWidth - popupRect.width - 4
-      }
-      if (left < 0) {
-        left = 4
-      }
-
-      popup.style.position = 'fixed'
-      popup.style.left = `${left}px`
-      popup.style.top = `${top}px`
-    }
-  })
-}
-
-const handleWordCountMouseLeave = () => {
-  showPopup.value = false
 }
 
 onMounted(() => {
@@ -288,53 +209,6 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
   }
-  .word-count-wrapper {
-    display: flex;
-    align-items: center;
-    padding: 4px 10px;
-    flex-shrink: 0;
-  }
-  .word-count {
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--editorColor30);
-    text-align: center;
-    line-height: 20px;
-    padding: 0 5px;
-    box-sizing: border-box;
-    transition: all .25s ease-in-out;
-    & > .text-center-vertical {
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-    &:hover > span {
-      background: var(--sideBarItemHoverBgColor);
-      color: var(--sideBarTitleColor);
-    }
-  }
-  .word-count-popup {
-    position: fixed;
-    padding: 6px 10px;
-    background: var(--floatBgColorAlpha);
-    color: var(--floatFontColor);
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    font-size: 13px;
-    line-height: 1.4;
-    white-space: nowrap;
-    z-index: 100;
-    pointer-events: none;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  .popup-fade-enter-active,
-  .popup-fade-leave-active {
-    transition: opacity 0.2s ease;
-  }
-  .popup-fade-enter-from,
-  .popup-fade-leave-to {
-    opacity: 0;
-  }
   .text-center-vertical {
     display: inline-block;
     vertical-align: middle;
@@ -352,17 +226,4 @@ onMounted(() => {
       border-right: 2px solid var(--iconColor);
     }
   }
-</style>
-
-<style>
-.word-count-wrapper .title-item {
-  height: 28px;
-  line-height: 28px;
-}
-.word-count-wrapper .title-item .front {
-  opacity: .7;
-}
-.word-count-wrapper .title-item .text {
-  margin-left: 10px;
-}
 </style>
