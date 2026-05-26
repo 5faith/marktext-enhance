@@ -143,9 +143,10 @@ onMounted(() => {
     flex-shrink: 0;
     flex-grow: 0;
     width: 280px;
-    height: 100vh;
+    height: calc(100vh - var(--menuBarHeight));
     min-width: 220px;
     position: relative;
+    top: var(--menuBarHeight);
     color: var(--sideBarColor);
     user-select: none;
     background: var(--sideBarBgColor);
@@ -163,7 +164,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding-top: 40px;
+    padding-top: 0;
     box-sizing: border-box;
     & > ul {
       opacity: 1;

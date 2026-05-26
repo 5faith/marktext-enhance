@@ -377,10 +377,14 @@ onBeforeUnmount(() => {
     position: relative;
   }
   .second-row {
-    height: 32px;
+    height: var(--menuBarHeight);
     display: flex;
     align-items: center;
-    position: relative;
+    position: fixed;
+    top: var(--menuBarHeight);
+    left: 0;
+    right: 0;
+    z-index: 1;
   }
   .active {
     color: var(--editorColor);
