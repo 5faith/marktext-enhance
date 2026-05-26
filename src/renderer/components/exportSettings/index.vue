@@ -1,16 +1,19 @@
 <template>
   <div class="print-settings-dialog">
-  <el-dialog
-    v-model="showExportSettingsDialog"
-    :show-close="false"
-    :modal="true"
-    custom-class="ag-dialog-table"
-    width="500px"
-  >
+    <el-dialog
+      v-model="showExportSettingsDialog"
+      :show-close="false"
+      :modal="true"
+      custom-class="ag-dialog-table"
+      width="500px"
+    >
       <h3>Export Options</h3>
       <el-tabs v-model="activeName">
         <el-tab-pane label="Info" name="info">
-          <span class="text">Please customize the page appearance and click on "export" to continue.</span>
+          <span class="text"
+            >Please customize the page appearance and click on "export" to
+            continue.</span
+          >
         </el-tab-pane>
         <el-tab-pane label="Page" name="page">
           <!-- HTML -->
@@ -19,7 +22,7 @@
               description="The page title:"
               :input="htmlTitle"
               :emitTime="0"
-              :onChange="value => onSelectChange('htmlTitle', value)"
+              :onChange="(value) => onSelectChange('htmlTitle', value)"
             ></text-box>
           </div>
 
@@ -31,18 +34,28 @@
                 description="Page size:"
                 :value="pageSize"
                 :options="pageSizeList"
-                :onChange="value => onSelectChange('pageSize', value)"
+                :onChange="(value) => onSelectChange('pageSize', value)"
               ></cur-select>
               <div v-if="pageSize === 'custom'" class="row">
                 <div>Width/Height in mm:</div>
-                <el-input-number v-model="pageSizeWidth" size="mini" controls-position="right" :min="100"></el-input-number>
-                <el-input-number v-model="pageSizeHeight" size="mini" controls-position="right" :min="100"></el-input-number>
+                <el-input-number
+                  v-model="pageSizeWidth"
+                  size="mini"
+                  controls-position="right"
+                  :min="100"
+                ></el-input-number>
+                <el-input-number
+                  v-model="pageSizeHeight"
+                  size="mini"
+                  controls-position="right"
+                  :min="100"
+                ></el-input-number>
               </div>
 
               <bool
                 description="Landscape orientation:"
                 :bool="isLandscape"
-                :onChange="value => onSelectChange('isLandscape', value)"
+                :onChange="(value) => onSelectChange('isLandscape', value)"
               ></bool>
             </div>
 
@@ -50,13 +63,37 @@
               <div class="description">Page margin in mm:</div>
               <div>
                 <div class="label">Top/Bottom:</div>
-                <el-input-number v-model="pageMarginTop" size="mini" controls-position="right" :min="0" :max="100"></el-input-number>
-                <el-input-number v-model="pageMarginBottom" size="mini" controls-position="right" :min="0" :max="100"></el-input-number>
+                <el-input-number
+                  v-model="pageMarginTop"
+                  size="mini"
+                  controls-position="right"
+                  :min="0"
+                  :max="100"
+                ></el-input-number>
+                <el-input-number
+                  v-model="pageMarginBottom"
+                  size="mini"
+                  controls-position="right"
+                  :min="0"
+                  :max="100"
+                ></el-input-number>
               </div>
               <div>
                 <div class="label">Left/Right:</div>
-                <el-input-number v-model="pageMarginLeft" size="mini" controls-position="right" :min="0" :max="100"></el-input-number>
-                <el-input-number v-model="pageMarginRight" size="mini" controls-position="right" :min="0" :max="100"></el-input-number>
+                <el-input-number
+                  v-model="pageMarginLeft"
+                  size="mini"
+                  controls-position="right"
+                  :min="0"
+                  :max="100"
+                ></el-input-number>
+                <el-input-number
+                  v-model="pageMarginRight"
+                  size="mini"
+                  controls-position="right"
+                  :min="0"
+                  :max="100"
+                ></el-input-number>
               </div>
             </div>
           </div>
@@ -65,13 +102,15 @@
           <bool
             description="Overwrite theme font settings:"
             :bool="fontSettingsOverwrite"
-            :onChange="value => onSelectChange('fontSettingsOverwrite', value)"
+            :onChange="
+              (value) => onSelectChange('fontSettingsOverwrite', value)
+            "
           ></bool>
           <div v-if="fontSettingsOverwrite">
             <font-text-box
               description="Font family:"
               :value="fontFamily"
-              :onChange="value => onSelectChange('fontFamily', value)"
+              :onChange="(value) => onSelectChange('fontFamily', value)"
             ></font-text-box>
             <range
               description="Font size"
@@ -80,7 +119,7 @@
               :max="32"
               unit="px"
               :step="1"
-              :onChange="value => onSelectChange('fontSize', value)"
+              :onChange="(value) => onSelectChange('fontSize', value)"
             ></range>
             <range
               description="Line height"
@@ -88,99 +127,108 @@
               :min="1.0"
               :max="2.0"
               :step="0.1"
-              :onChange="value => onSelectChange('lineHeight', value)"
+              :onChange="(value) => onSelectChange('lineHeight', value)"
             ></range>
           </div>
           <bool
             description="Auto numbering headings:"
             :bool="autoNumberingHeadings"
-            :onChange="value => onSelectChange('autoNumberingHeadings', value)"
+            :onChange="
+              (value) => onSelectChange('autoNumberingHeadings', value)
+            "
           ></bool>
           <bool
             description="Show front matter:"
             :bool="showFrontMatter"
-            :onChange="value => onSelectChange('showFrontMatter', value)"
+            :onChange="(value) => onSelectChange('showFrontMatter', value)"
           ></bool>
         </el-tab-pane>
         <el-tab-pane label="Theme" name="theme">
-          <div class="text">You can change the document appearance by choosing a theme or create a handcrafted one.</div>
+          <div class="text">
+            You can change the document appearance by choosing a theme or create
+            a handcrafted one.
+          </div>
           <cur-select
             description="Theme:"
-            more="https://github.com/marktext/marktext/blob/develop/docs/EXPORT_THEMES.md"
+            more="https://github.com/5faith/marktext-enhance/blob/develop/docs/EXPORT_THEMES.md"
             :value="theme"
             :options="themeList"
-            :onChange="value => onSelectChange('theme', value)"
+            :onChange="(value) => onSelectChange('theme', value)"
           ></cur-select>
         </el-tab-pane>
         <el-tab-pane v-if="isPrintable" label="Header & Footer" name="header">
-          <div class="text">The text appear on all pages if header and/or footer is defined.</div>
+          <div class="text">
+            The text appear on all pages if header and/or footer is defined.
+          </div>
           <cur-select
             description="Header type:"
             :value="headerType"
             :options="headerFooterTypes"
-            :onChange="value => onSelectChange('headerType', value)"
+            :onChange="(value) => onSelectChange('headerType', value)"
           ></cur-select>
           <text-box
             v-if="headerType === 2"
             description="The left header text:"
             :input="headerTextLeft"
             :emitTime="0"
-            :onChange="value => onSelectChange('headerTextLeft', value)"
+            :onChange="(value) => onSelectChange('headerTextLeft', value)"
           ></text-box>
           <text-box
             v-if="headerType !== 0"
             description="The main header text:"
             :input="headerTextCenter"
             :emitTime="0"
-            :onChange="value => onSelectChange('headerTextCenter', value)"
+            :onChange="(value) => onSelectChange('headerTextCenter', value)"
           ></text-box>
           <text-box
             v-if="headerType === 2"
             description="The right header text:"
             :input="headerTextRight"
             :emitTime="0"
-            :onChange="value => onSelectChange('headerTextRight', value)"
+            :onChange="(value) => onSelectChange('headerTextRight', value)"
           ></text-box>
 
           <cur-select
             description="Footer type:"
             :value="footerType"
             :options="headerFooterTypes"
-            :onChange="value => onSelectChange('footerType', value)"
+            :onChange="(value) => onSelectChange('footerType', value)"
           ></cur-select>
           <text-box
             v-if="footerType === 2"
             description="The left footer text:"
             :input="footerTextLeft"
             :emitTime="0"
-            :onChange="value => onSelectChange('footerTextLeft', value)"
+            :onChange="(value) => onSelectChange('footerTextLeft', value)"
           ></text-box>
           <text-box
             v-if="footerType !== 0"
             description="The main footer text:"
             :input="footerTextCenter"
             :emitTime="0"
-            :onChange="value => onSelectChange('footerTextCenter', value)"
+            :onChange="(value) => onSelectChange('footerTextCenter', value)"
           ></text-box>
           <text-box
             v-if="footerType === 2"
             description="The right footer text:"
             :input="footerTextRight"
             :emitTime="0"
-            :onChange="value => onSelectChange('footerTextRight', value)"
+            :onChange="(value) => onSelectChange('footerTextRight', value)"
           ></text-box>
 
           <bool
             description="Customize style:"
             :bool="headerFooterCustomize"
-            :onChange="value => onSelectChange('headerFooterCustomize', value)"
+            :onChange="
+              (value) => onSelectChange('headerFooterCustomize', value)
+            "
           ></bool>
 
           <div v-if="headerFooterCustomize">
             <bool
               description="Allow styled header and footer:"
               :bool="headerFooterStyled"
-              :onChange="value => onSelectChange('headerFooterStyled', value)"
+              :onChange="(value) => onSelectChange('headerFooterStyled', value)"
             ></bool>
             <range
               description="Header and footer font size"
@@ -189,7 +237,9 @@
               :max="20"
               unit="px"
               :step="1"
-              :onChange="value => onSelectChange('headerFooterFontSize', value)"
+              :onChange="
+                (value) => onSelectChange('headerFooterFontSize', value)
+              "
             ></range>
           </div>
         </el-tab-pane>
@@ -199,98 +249,99 @@
             description="Include top heading:"
             detailedDescription="Includes the first heading level too."
             :bool="tocIncludeTopHeading"
-            :onChange="value => onSelectChange('tocIncludeTopHeading', value)"
+            :onChange="(value) => onSelectChange('tocIncludeTopHeading', value)"
           ></bool>
           <text-box
             description="Title:"
             :input="tocTitle"
             :emitTime="0"
-            :onChange="value => onSelectChange('tocTitle', value)"
+            :onChange="(value) => onSelectChange('tocTitle', value)"
           ></text-box>
-         </el-tab-pane>
+        </el-tab-pane>
       </el-tabs>
       <div class="button-controlls">
-        <button class="button-primary" @click="handleClicked">
-          Export...
-        </button>
+        <button class="button-primary" @click="handleClicked">Export...</button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import fs from 'fs'
-import fsPromises from 'fs/promises'
-import path from 'path'
-import { isDirectory, isFile } from 'common/filesystem'
-import bus from '../../bus'
-import Bool from '@/prefComponents/common/bool'
-import CurSelect from '@/prefComponents/common/select'
-import FontTextBox from '@/prefComponents/common/fontTextBox'
-import Range from '@/prefComponents/common/range'
-import TextBox from '@/prefComponents/common/textBox'
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import fs from "fs";
+import fsPromises from "fs/promises";
+import path from "path";
+import { isDirectory, isFile } from "common/filesystem";
+import bus from "../../bus";
+import Bool from "@/prefComponents/common/bool";
+import CurSelect from "@/prefComponents/common/select";
+import FontTextBox from "@/prefComponents/common/fontTextBox";
+import Range from "@/prefComponents/common/range";
+import TextBox from "@/prefComponents/common/textBox";
 import {
   pageSizeList,
   headerFooterTypes,
   headerFooterStyles as _headerFooterStyles,
-  exportThemeList
-} from './exportOptions'
+  exportThemeList,
+} from "./exportOptions";
 
 // State
-const exportType = ref('')
-const themesLoaded = ref(false)
+const exportType = ref("");
+const themesLoaded = ref(false);
 
-const isPrintable = ref(true)
-const showExportSettingsDialog = ref(false)
-const activeName = ref('info')
-const htmlTitle = ref('')
-const pageSize = ref('A4')
-const pageSizeWidth = ref(210)
-const pageSizeHeight = ref(297)
-const isLandscape = ref(false)
-const pageMarginTop = ref(20)
-const pageMarginRight = ref(15)
-const pageMarginBottom = ref(20)
-const pageMarginLeft = ref(15)
-const fontSettingsOverwrite = ref(false)
-const fontFamily = ref('Default')
-const fontSize = ref(14)
-const lineHeight = ref(1.5)
-const autoNumberingHeadings = ref(false)
-const showFrontMatter = ref(false)
-const theme = ref('default')
-const themeList = ref([...exportThemeList])
-const headerType = ref(0)
-const headerTextLeft = ref('')
-const headerTextCenter = ref('')
-const headerTextRight = ref('')
-const footerType = ref(0)
-const footerTextLeft = ref('')
-const footerTextCenter = ref('')
-const footerTextRight = ref('')
-const headerFooterCustomize = ref(false)
-const headerFooterStyled = ref(true)
-const headerFooterFontSize = ref(12)
-const tocTitle = ref('')
-const tocIncludeTopHeading = ref(true)
+const isPrintable = ref(true);
+const showExportSettingsDialog = ref(false);
+const activeName = ref("info");
+const htmlTitle = ref("");
+const pageSize = ref("A4");
+const pageSizeWidth = ref(210);
+const pageSizeHeight = ref(297);
+const isLandscape = ref(false);
+const pageMarginTop = ref(20);
+const pageMarginRight = ref(15);
+const pageMarginBottom = ref(20);
+const pageMarginLeft = ref(15);
+const fontSettingsOverwrite = ref(false);
+const fontFamily = ref("Default");
+const fontSize = ref(14);
+const lineHeight = ref(1.5);
+const autoNumberingHeadings = ref(false);
+const showFrontMatter = ref(false);
+const theme = ref("default");
+const themeList = ref([...exportThemeList]);
+const headerType = ref(0);
+const headerTextLeft = ref("");
+const headerTextCenter = ref("");
+const headerTextRight = ref("");
+const footerType = ref(0);
+const footerTextLeft = ref("");
+const footerTextCenter = ref("");
+const footerTextRight = ref("");
+const headerFooterCustomize = ref(false);
+const headerFooterStyled = ref(true);
+const headerFooterFontSize = ref(12);
+const tocTitle = ref("");
+const tocIncludeTopHeading = ref(true);
 
 // Methods
 const showDialog = (type) => {
-  exportType.value = type
-  isPrintable.value = type !== 'styledHtml'
-  if (!isPrintable.value && (activeName.value === 'header' || activeName.value === 'page')) {
-    activeName.value = 'info'
+  exportType.value = type;
+  isPrintable.value = type !== "styledHtml";
+  if (
+    !isPrintable.value &&
+    (activeName.value === "header" || activeName.value === "page")
+  ) {
+    activeName.value = "info";
   }
 
-  showExportSettingsDialog.value = true
-  bus.emit('editor-blur')
+  showExportSettingsDialog.value = true;
+  bus.emit("editor-blur");
 
   if (!themesLoaded.value) {
-    themesLoaded.value = true
-    loadThemesFromDisk()
+    themesLoaded.value = true;
+    loadThemesFromDisk();
   }
-}
+};
 
 const handleClicked = () => {
   const options = {
@@ -305,21 +356,21 @@ const handleClicked = () => {
     pageMarginLeft: pageMarginLeft.value,
     autoNumberingHeadings: autoNumberingHeadings.value,
     showFrontMatter: showFrontMatter.value,
-    theme: theme.value === 'default' ? null : theme.value,
+    theme: theme.value === "default" ? null : theme.value,
     tocTitle: tocTitle.value,
-    tocIncludeTopHeading: tocIncludeTopHeading.value
-  }
+    tocIncludeTopHeading: tocIncludeTopHeading.value,
+  };
 
   if (!isPrintable.value) {
-    options.htmlTitle = htmlTitle.value
+    options.htmlTitle = htmlTitle.value;
   }
 
   if (fontSettingsOverwrite.value) {
     Object.assign(options, {
       fontSize: fontSize.value,
       lineHeight: lineHeight.value,
-      fontFamily: fontFamily.value === 'Default' ? null : fontFamily.value
-    })
+      fontFamily: fontFamily.value === "Default" ? null : fontFamily.value,
+    });
   }
 
   if (headerType.value !== 0) {
@@ -328,9 +379,9 @@ const handleClicked = () => {
         type: headerType.value,
         left: headerTextLeft.value,
         center: headerTextCenter.value,
-        right: headerTextRight.value
-      }
-    })
+        right: headerTextRight.value,
+      },
+    });
   }
 
   if (footerType.value !== 0) {
@@ -339,21 +390,21 @@ const handleClicked = () => {
         type: footerType.value,
         left: footerTextLeft.value,
         center: footerTextCenter.value,
-        right: footerTextRight.value
-      }
-    })
+        right: footerTextRight.value,
+      },
+    });
   }
 
   if (headerFooterCustomize.value) {
     Object.assign(options, {
       headerFooterStyled: headerFooterStyled.value,
-      headerFooterFontSize: headerFooterFontSize.value
-    })
+      headerFooterFontSize: headerFooterFontSize.value,
+    });
   }
 
-  showExportSettingsDialog.value = false
-  bus.emit('export', options)
-}
+  showExportSettingsDialog.value = false;
+  bus.emit("export", options);
+};
 
 const onSelectChange = (key, value) => {
   // Dynamically update ref values
@@ -389,111 +440,113 @@ const onSelectChange = (key, value) => {
     headerFooterStyled,
     headerFooterFontSize,
     tocTitle,
-    tocIncludeTopHeading
-  }
+    tocIncludeTopHeading,
+  };
   if (refs[key]) {
-    refs[key].value = value
+    refs[key].value = value;
   }
-}
+};
 
 const loadThemesFromDisk = () => {
-  const { userDataPath } = global.marktext.paths
-  const themeDir = path.join(userDataPath, 'themes/export')
+  const { userDataPath } = global.marktext.paths;
+  const themeDir = path.join(userDataPath, "themes/export");
 
   // Search for dictionaries on filesystem.
   if (isDirectory(themeDir)) {
-    fs.readdirSync(themeDir).forEach(async filename => {
-      const fullname = path.join(themeDir, filename)
+    fs.readdirSync(themeDir).forEach(async (filename) => {
+      const fullname = path.join(themeDir, filename);
       if (/.+\.css$/i.test(filename) && isFile(fullname)) {
         try {
-          const content = await fsPromises.readFile(fullname, 'utf8')
+          const content = await fsPromises.readFile(fullname, "utf8");
 
           // Match comment with theme name in first line only.
-          const match = content.match(/^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/)
+          const match = content.match(
+            /^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/,
+          );
 
-          let label
+          let label;
           if (match && match[1]) {
-            label = match[1]
+            label = match[1];
           } else {
-            label = filename
+            label = filename;
           }
 
           themeList.value.push({
             value: filename,
-            label
-          })
+            label,
+          });
         } catch (e) {
-          console.error('loadThemesFromDisk failed:', e)
+          console.error("loadThemesFromDisk failed:", e);
         }
       }
-    })
+    });
   }
-}
+};
 
 // Lifecycle
 onMounted(() => {
-  bus.on('showExportDialog', showDialog)
-})
+  bus.on("showExportDialog", showDialog);
+});
 
 onBeforeUnmount(() => {
-  bus.off('showExportDialog', showDialog)
-})
+  bus.off("showExportDialog", showDialog);
+});
 </script>
 
 <style scoped>
-  .print-settings-dialog {
-    user-select: none;
-  }
-  .row {
-    margin-bottom: 8px;
-  }
-  .description {
-    margin-bottom: 10px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .label {
-    margin-bottom: 5px;
-  }
-  .label ~ div {
-    margin-right: 20px;
-  }
-  .text {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
+.print-settings-dialog {
+  user-select: none;
+}
+.row {
+  margin-bottom: 8px;
+}
+.description {
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.label {
+  margin-bottom: 5px;
+}
+.label ~ div {
+  margin-right: 20px;
+}
+.text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
-  .button-controlls {
-    margin-top: 8px;
-    text-align: right;
-  }
+.button-controlls {
+  margin-top: 8px;
+  text-align: right;
+}
 
-  .button-controlls .button-primary {
-    font-size: 14px;
-  }
+.button-controlls .button-primary {
+  font-size: 14px;
+}
 
-  .el-tab-pane section:first-child {
-    margin-top: 0;
-  }
+.el-tab-pane section:first-child {
+  margin-top: 0;
+}
 </style>
 <style>
-  .print-settings-dialog #pane-header .pref-text-box-item .el-input {
-    width: 90% !important;
-  }
+.print-settings-dialog #pane-header .pref-text-box-item .el-input {
+  width: 90% !important;
+}
 
-  .print-settings-dialog .el-dialog__body {
-    padding: 0 20px 20px 20px;
-  }
-  .print-settings-dialog .pref-select-item .el-select {
-    width: 240px;
-  }
-  .print-settings-dialog .el-tabs__content {
-    max-height: 350px;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+.print-settings-dialog .el-dialog__body {
+  padding: 0 20px 20px 20px;
+}
+.print-settings-dialog .pref-select-item .el-select {
+  width: 240px;
+}
+.print-settings-dialog .el-tabs__content {
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 
-  .print-settings-dialog .el-tabs__content::-webkit-scrollbar:vertical {
-    width: 5px;
-  }
+.print-settings-dialog .el-tabs__content::-webkit-scrollbar:vertical {
+  width: 5px;
+}
 </style>

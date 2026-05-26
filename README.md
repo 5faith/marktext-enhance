@@ -6,7 +6,7 @@
 > See [Vue 3 Migration Guide](docs/dev/VUE3_MIGRATION.md) for details.
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/5faith/marktext-enhance/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
@@ -35,11 +35,11 @@
     <img src="https://ci.appveyor.com/api/projects/status/l4gxgydj0i95hmxg/branch/master?svg=true" alt="build">
   </a>
   <!-- Downloads total -->
-  <a href="https://github.com/marktext/marktext/releases">
+  <a href="https://github.com/5faith/marktext-enhance/releases">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
   </a>
   <!-- Downloads latest release -->
-  <a href="https://github.com/marktext/marktext/releases/latest">
+  <a href="https://github.com/5faith/marktext-enhance/releases/latest">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/v0.17.1/total.svg" alt="latest download">
   </a>
   <!-- sponsors -->
@@ -54,19 +54,19 @@
       Website
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       Features
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       Downloads
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       Development
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       Contribution
     </a>
   </h3>
@@ -106,7 +106,7 @@
 <div align="center">
   <sub>This Markdown editor that could. Built with ❤︎ by
     <a href="https://github.com/Jocs">Jocs</a> and
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       contributors
     </a>
     .
@@ -207,13 +207,13 @@ Names and company logos of all sponsors (from both Patreon and Open Collective) 
 
 | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                  | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                          | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                        |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
 Want to see new features of the latest version? Please refer to [CHANGELOG](.github/CHANGELOG.md).
 
 #### macOS
 
-You can either download the latest `marktext-%version%.dmg` from the [release page](https://github.com/marktext/marktext/releases/latest) or install MarkText using [**homebrew cask**](https://github.com/caskroom/homebrew-cask). To use Homebrew-Cask you just need to have [Homebrew](https://brew.sh/) installed.
+You can either download the latest `marktext-%version%.dmg` from the [release page](https://github.com/5faith/marktext-enhance/releases/latest) or install MarkText using [**homebrew cask**](https://github.com/caskroom/homebrew-cask). To use Homebrew-Cask you just need to have [Homebrew](https://brew.sh/) installed.
 
 ```bash
 brew install --cask mark-text
@@ -241,7 +241,7 @@ Please follow the [Linux installation instructions](docs/LINUX.md).
 
 #### Other
 
-All binaries for Linux, macOS and Windows can be downloaded from the [release page](https://github.com/marktext/marktext/releases/latest). If a version is unavailable for your system, then please open an [issue](https://github.com/marktext/marktext/issues).
+All binaries for Linux, macOS and Windows can be downloaded from the [release page](https://github.com/5faith/marktext-enhance/releases/latest). If a version is unavailable for your system, then please open an [issue](https://github.com/5faith/marktext-enhance/issues).
 
 ## Development
 
@@ -258,16 +258,16 @@ If you have any questions regarding MarkText, you are welcome to write an issue.
 
 ## Contribution
 
-MarkText is in development, please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request. Want to add some features to MarkText? Refer to our [roadmap](https://github.com/marktext/marktext/projects) and open issues.
+MarkText is in development, please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request. Want to add some features to MarkText? Refer to our [roadmap](https://github.com/5faith/marktext-enhance/projects) and open issues.
 
 
 ## Contributors
 
-Thank you to all the people who have already contributed to MarkText[[contributors](https://github.com/marktext/marktext/graphs/contributors)].
+Thank you to all the people who have already contributed to MarkText[[contributors](https://github.com/5faith/marktext-enhance/graphs/contributors)].
 
 Special thanks to @[Yasujizr](https://github.com/Yasujizr) who designed the MarkText logo.
 
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+<a href="https://github.com/5faith/marktext-enhance/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
 ## License
 

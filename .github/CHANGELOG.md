@@ -444,7 +444,7 @@ foo<section>bar</section>zar
 - Add symbolic link support
 - Fixed bug when combine pre list and next list into one when inline update #707
 - Fix renderer error when selection in sidebar (#625)
-- Fixed list parse error [more info](https://github.com/marktext/marktext/issues/831#issuecomment-477719256)
+- Fixed list parse error [more info](https://github.com/5faith/marktext-enhance/issues/831#issuecomment-477719256)
 - Fixed source code mode tab switching
 - Fixed source code mode to preview switching
 - MarkText didn't remove highlight when I delete the markdown symbol like * or `. (#893)

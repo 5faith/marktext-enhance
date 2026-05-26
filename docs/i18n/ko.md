@@ -3,7 +3,7 @@
 <h1 align="center">마크 텍스트</h1>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/5faith/marktext-enhance/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
@@ -32,11 +32,11 @@
     <img src="https://ci.appveyor.com/api/projects/status/l4gxgydj0i95hmxg/branch/master?svg=true" alt="build">
   </a>
   <!-- Downloads total -->
-  <a href="https://github.com/marktext/marktext/releases">
+  <a href="https://github.com/5faith/marktext-enhance/releases">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
   </a>
   <!-- Downloads latest release -->
-  <a href="https://github.com/marktext/marktext/releases/latest">
+  <a href="https://github.com/5faith/marktext-enhance/releases/latest">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/v0.17.1/total.svg" alt="latest download">
   </a>
   <!-- sponsors -->
@@ -51,19 +51,19 @@
       웹사이트
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       기능
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       다운로드
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       개발
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       기여
     </a>
   </h3>
@@ -103,7 +103,7 @@
 <div align="center">
   <sub>이 마크다운 에디터는
     <a href="https://github.com/Jocs">Jocs</a>와
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       기여자분들의 ❤︎로 만들어집니다.
     </a>
   </sub>
@@ -201,13 +201,13 @@ Open Collective: 모든 지출은 투명합니다. 후원금은 마크 텍스트
 
 | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                  | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                          | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                        |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![최신 버전](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
 최신 버전의 새로운 기능을 보고 싶나요? [변경사항](.github/CHANGELOG.md)을 참조하세요.
 
 #### 맥OS
 
-최신 `marktext-%version%.dmg`를 [릴리즈 페이지](https://github.com/marktext/marktext/releases/latest)에서 다운로드하거나 [**homebrew cask**](https://github.com/caskroom/homebrew-cask)를 이용하여 설치할 수 있습니다. Homebrew-Cask를 이용하려면 [Homebrew](https://brew.sh/)가 설치되어 있어야 합니다.
+최신 `marktext-%version%.dmg`를 [릴리즈 페이지](https://github.com/5faith/marktext-enhance/releases/latest)에서 다운로드하거나 [**homebrew cask**](https://github.com/caskroom/homebrew-cask)를 이용하여 설치할 수 있습니다. Homebrew-Cask를 이용하려면 [Homebrew](https://brew.sh/)가 설치되어 있어야 합니다.
 
 ```bash
 brew install --cask mark-text
@@ -229,7 +229,7 @@ choco install marktext
 
 #### 기타
 
-모든 리눅스, 맥OS 그리고 윈도우 용 파일은 [릴리즈 페이지](https://github.com/marktext/marktext/releases/latest)에서 다운로드할 수 있습니다. 시스템에서 버전을 이용할 수 없을 시, [이슈](https://github.com/marktext/marktext/issues)를 열어주세요.
+모든 리눅스, 맥OS 그리고 윈도우 용 파일은 [릴리즈 페이지](https://github.com/5faith/marktext-enhance/releases/latest)에서 다운로드할 수 있습니다. 시스템에서 버전을 이용할 수 없을 시, [이슈](https://github.com/5faith/marktext-enhance/issues)를 열어주세요.
 
 ## 개발
 
@@ -247,15 +247,15 @@ choco install marktext
 ## 기여
 
 마크 텍스트는 전체 개발 중입니다. PR 하기 전에 [컨트리뷰트 가이드](CONTRIBUTING.md)를 필히 읽어주십시오.
-마크 텍스트에 새로운 기능을 추가하고 싶은가요? [로드맵](https://github.com/marktext/marktext/projects)을 참조하시어 이슈를 열어주세요.
+마크 텍스트에 새로운 기능을 추가하고 싶은가요? [로드맵](https://github.com/5faith/marktext-enhance/projects)을 참조하시어 이슈를 열어주세요.
 
 ## 기여자
 
-마크 텍스트에 기여해주신 모든 분들께 감사합니다. [[기여자](https://github.com/marktext/marktext/graphs/contributors)]
+마크 텍스트에 기여해주신 모든 분들께 감사합니다. [[기여자](https://github.com/5faith/marktext-enhance/graphs/contributors)]
 
 마크 텍스트 로고를 디자인해주신 @[Yasujizr](https://github.com/Yasujizr)에게 특별한 감사를 전합니다.
 
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+<a href="https://github.com/5faith/marktext-enhance/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
 ## 라이센스
 

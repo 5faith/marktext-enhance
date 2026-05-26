@@ -5,7 +5,7 @@
 <h1 align="center">MarkText</h1>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20me?&hashtags=happyMarkText">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/5faith/marktext-enhance/&text=What%20do%20you%20want%20to%20say%20to%20me?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
@@ -55,19 +55,19 @@
       Página web
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       Funcionalidades
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       Descargas
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       Desarrollo
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       Contribuciones
     </a>
   </h3>
@@ -76,7 +76,7 @@
 <div align="center">
   <sub>Editor escrito con ❤︎ por
     <a href="https://github.com/Jocs">Jocs</a> y
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       contribuidores
     </a>
   </sub>
@@ -119,9 +119,9 @@
 
 | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                             | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                                     | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                                   |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
-¿No encuentras tu sistema? Ve a la [página de descargas](https://github.com/marktext/marktext/releases). ¿No se encuentra disponible tu versión? Abre una [issue](https://github.com/marktext/marktext/issues).
+¿No encuentras tu sistema? Ve a la [página de descargas](https://github.com/5faith/marktext-enhance/releases). ¿No se encuentra disponible tu versión? Abre una [issue](https://github.com/5faith/marktext-enhance/issues).
 
 ¿Quieres saber las nuevas funcionalidades de la última versión? Échale un vistazo al [CHANGELOG](../../.github/CHANGELOG.md)
 
@@ -187,11 +187,11 @@ Apoya este proyecto convirtiéndote en un sponsor. Tu logo se verá aquí con un
 
 ## Contribuidores
 
-Gracias a todo el mundo que ha contribuido al desarrollo de MarkText! [[contributors](https://github.com/marktext/marktext/graphs/contributors)]
+Gracias a todo el mundo que ha contribuido al desarrollo de MarkText! [[contributors](https://github.com/5faith/marktext-enhance/graphs/contributors)]
 
 Un especial agradecimiento a @[Yasujizr](https://github.com/Yasujizr) por hacer el logo de MarkText.
 
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+<a href="https://github.com/5faith/marktext-enhance/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
 ## Licencia
 

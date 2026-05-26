@@ -127,8 +127,6 @@
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^8.4.1",
     "esm": "^3.2.25",
-
-
     "karma": "^6.3.16",
     "karma-chai": "^0.1.0",
     "karma-coverage": "^2.2.0",
@@ -149,16 +147,13 @@
     "require-dir": "^1.2.0",
     "rollup-plugin-styles": "^4.0.0",
     "stacktrace-parser": "^0.1.10",
-
     "svgo": "^2.8.0",
-
     "unplugin-auto-import": "^0.16",
     "unplugin-vue-components": "^0.25",
     "vite": "^5.0",
     "vite-plugin-electron": "^0.28",
     "vite-plugin-electron-renderer": "^0.14",
     "vite-plugin-svg-icons": "^2.0"
-
   },
   "resolutions": {
     "cld": "^2.7.1",
@@ -172,7 +167,7 @@
     "url": "git@github.com:marktext/marktext.git"
   },
   "bugs": {
-    "url": "https://github.com/marktext/marktext/issues"
+    "url": "https://github.com/5faith/marktext-enhance/issues"
   },
   "author": {
     "name": "Jocs",

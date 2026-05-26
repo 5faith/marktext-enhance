@@ -55,19 +55,19 @@
       Strona
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       Cechy programu
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       Instalacja
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       Rozwój
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       Udział w projekcie
     </a>
   </h3>
@@ -76,7 +76,7 @@
 <div align="center">
   <sub>Edytor Markdown, który potrafi. Zbudowany z ❤︎ przez
     <a href="https://github.com/Jocs">Jocs</a> i
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       innych
     </a>
   </sub>
@@ -119,9 +119,9 @@
 
 | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                             | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                                     | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                                   |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
-Nie znalazłeś swojego systemu? Przejdź do strony [release](https://github.com/marktext/marktext/releases). Wciąż nie znalazłeś? Zgłoś [problem](https://github.com/marktext/marktext/issues).
+Nie znalazłeś swojego systemu? Przejdź do strony [release](https://github.com/5faith/marktext-enhance/releases). Wciąż nie znalazłeś? Zgłoś [problem](https://github.com/5faith/marktext-enhance/issues).
 
 Chciałbyś zobaczyć jak nowe udogodnienia wprowadziła najnowsza wersja? Udaj się do [CHANGELOG](../../.github/CHANGELOG.md)
 
@@ -146,7 +146,7 @@ W przypadku jakichkolwiek pytań podczas korzystania z **MarkText** zaczęcamy d
 
 MarkText jest w trakcie rozwijania. Upewnij się, że przeczytałeś [Contributing Guide](../../CONTRIBUTING.md) przed stworzeniem pull request. Chcesz dodać nowe udogodnienia do MarkText? Udaj się do [TODO LIST](../../.github/TODOLIST.md)
 
-Dziękujemy wszystkim osobom, które już wzięły udział w projekcie MarkText! Jeżeli już jesteś członkiem [contributors](https://github.com/marktext/marktext/graphs/contributors), otwórz pull request aby dodać twoje imię i zdjęcie do poniższej listy osób, które pomogły przy projekcie.
+Dziękujemy wszystkim osobom, które już wzięły udział w projekcie MarkText! Jeżeli już jesteś członkiem [contributors](https://github.com/5faith/marktext-enhance/graphs/contributors), otwórz pull request aby dodać twoje imię i zdjęcie do poniższej listy osób, które pomogły przy projekcie.
 
 Specjalne podziękowania dla @[Yasujizr](https://github.com/Yasujizr), który zaprojektował logo MarkText.
 

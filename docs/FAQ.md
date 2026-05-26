@@ -10,7 +10,7 @@ MarkText is a desktop application and available for:
 
 ### Is MarkText open-source and free?
 
-Yes, MarkText is licensed under the [MIT](https://github.com/marktext/marktext/blob/develop/LICENSE) license and completely free for everyone. The source-code is available on [GitHub](https://github.com/marktext/marktext).
+Yes, MarkText is licensed under the [MIT](https://github.com/5faith/marktext-enhance/blob/develop/LICENSE) license and completely free for everyone. The source-code is available on [GitHub](https://github.com/5faith/marktext-enhance).
 
 ### Can I use MarkText as note management/taking app?
 
@@ -20,9 +20,9 @@ MarkText is a pure markdown editor without feature such as knowledge management 
 
 Documentation is currently under development.
 
-- [End-user documentation](https://github.com/marktext/marktext/blob/develop/docs/README.md)
+- [End-user documentation](https://github.com/5faith/marktext-enhance/blob/develop/docs/README.md)
 
-- [Developer documentation](https://github.com/marktext/marktext/blob/develop/docs/dev/README.md)
+- [Developer documentation](https://github.com/5faith/marktext-enhance/blob/develop/docs/dev/README.md)
 
 ### Can I run a portable version of MarkText?
 
@@ -30,7 +30,7 @@ Yes, please see [here](PORTABLE.md) for further information.
 
 ### How can I report bugs and problems
 
-You can report bugs and problems via our [GitHub issue tracker](https://github.com/marktext/marktext/issues). Please provide a detailed description of the problem to better solve the issue.
+You can report bugs and problems via our [GitHub issue tracker](https://github.com/5faith/marktext-enhance/issues). Please provide a detailed description of the problem to better solve the issue.
 
 ### I cannot launch MarkText on Linux (SUID sandbox)
 

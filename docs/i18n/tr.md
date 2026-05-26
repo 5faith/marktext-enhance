@@ -3,7 +3,7 @@
 <h1 align="center">MarkText</h1>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=Uygulama%20için%20ne%20demek%20istersiniz?&hashtags=happyMarkText">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/5faith/marktext-enhance/&text=Uygulama%20için%20ne%20demek%20istersiniz?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
@@ -32,11 +32,11 @@
     <img src="https://ci.appveyor.com/api/projects/status/l4gxgydj0i95hmxg/branch/master?svg=true" alt="build">
   </a>
   <!-- Downloads total -->
-  <a href="https://github.com/marktext/marktext/releases">
+  <a href="https://github.com/5faith/marktext-enhance/releases">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
   </a>
   <!-- Downloads latest release -->
-  <a href="https://github.com/marktext/marktext/releases/latest">
+  <a href="https://github.com/5faith/marktext-enhance/releases/latest">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/v0.17.1/total.svg" alt="latest download">
   </a>
   <!-- sponsors -->
@@ -51,19 +51,19 @@
       Web sitesi
     </a>
      <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       Özellikler
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       İndirmeler
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       Geliştirme
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       Katkı
     </a>
   </h3>
@@ -103,7 +103,7 @@
 <div align="center">
   <sub>❤︎ ile
     <a href="https://github.com/Jocs">Jocs</a> ve
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       katkıda bulunanlar tarafından yapıldı.
     </a>
   </sub>
@@ -203,13 +203,13 @@ Tüm sponsorlarımızın (hem Patreon hem Open Collective) isimleri ve logoları
 
 | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                  | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                          | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                        |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![son sürüm](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
 Son sürümde gelen değişiklikler için [CHANGELOG](.github/CHANGELOG.md)'a bakınız.
 
 #### macOS
 
-MarkText'i [indirmeler](https://github.com/marktext/marktext/releases/latest)'den`marktext-%sürüm%.dmg` olarak  indirebilir, ya da [**homebrew cask**](https://github.com/caskroom/homebrew-cask) yoluyla kurabilirsiniz. Homebrew-Cask kullanabilmek için [Homebrew](https://brew.sh/)'ün kurulu olması gerekir.
+MarkText'i [indirmeler](https://github.com/5faith/marktext-enhance/releases/latest)'den`marktext-%sürüm%.dmg` olarak  indirebilir, ya da [**homebrew cask**](https://github.com/caskroom/homebrew-cask) yoluyla kurabilirsiniz. Homebrew-Cask kullanabilmek için [Homebrew](https://brew.sh/)'ün kurulu olması gerekir.
 
 ```bash
 brew install --cask mark-text
@@ -231,7 +231,7 @@ bkz. [Linux kurulumu](../LINUX.md).
 
 #### Diğer platformlar
 
-Tüm Linux, macOS ve Windows sürümleri [indirmeler](https://github.com/marktext/marktext/releases/latest)'de bulunur. Kendi platformunuz için bir sürüm bulamıyorsanuz, [issue](https://github.com/marktext/marktext/issues) açınız.
+Tüm Linux, macOS ve Windows sürümleri [indirmeler](https://github.com/5faith/marktext-enhance/releases/latest)'de bulunur. Kendi platformunuz için bir sürüm bulamıyorsanuz, [issue](https://github.com/5faith/marktext-enhance/issues) açınız.
 
 ## Geliştirme
 
@@ -248,15 +248,15 @@ Eğer **MarkText** kendiniz derlemek isterseniz, lütfen [geliştirici döküman
 
 ## Katkıda Bulunmak
 
-MarkText geliştirme aşamasındadır. Lütfen pull request açmadan önce [Katkıda bulunma Rehberine](../../CONTRIBUTING.md) bakınız. MarkText'e katkıda bulunmak için [roadmap](https://github.com/marktext/marktext/projects)'e bakınız.
+MarkText geliştirme aşamasındadır. Lütfen pull request açmadan önce [Katkıda bulunma Rehberine](../../CONTRIBUTING.md) bakınız. MarkText'e katkıda bulunmak için [roadmap](https://github.com/5faith/marktext-enhance/projects)'e bakınız.
 
 ## Destekçiler
 
-Tüm destekçilerimize teşekkürler! [[destekçiler](https://github.com/marktext/marktext/graphs/contributors)]
+Tüm destekçilerimize teşekkürler! [[destekçiler](https://github.com/5faith/marktext-enhance/graphs/contributors)]
 
 MarkText logosunu tasarlayan @[Yasujizr](https://github.com/Yasujizr)'a özel teşekkürler.
 
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+<a href="https://github.com/5faith/marktext-enhance/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
 ## Lisans
 

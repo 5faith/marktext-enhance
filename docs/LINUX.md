@@ -2,7 +2,7 @@
 
 ## AppImage
 
-[Download the AppImage](https://github.com/marktext/marktext/releases/latest) and type the following:
+[Download the AppImage](https://github.com/5faith/marktext-enhance/releases/latest) and type the following:
 
 1. `chmod +x marktext-%version%-x86_64.AppImage`
 2. `./marktext-%version%-x86_64.AppImage`
@@ -14,7 +14,7 @@ You cannot really install an AppImage. It's a file which can run directly after 
 
 #### Desktop file creation
 
-See [example desktop file](https://github.com/marktext/marktext/blob/develop/resources/linux/marktext.desktop).
+See [example desktop file](https://github.com/5faith/marktext-enhance/blob/develop/resources/linux/marktext.desktop).
 
 ```bash
 $ curl -L https://raw.githubusercontent.com/marktext/marktext/develop/resources/linux/marktext.desktop -o $HOME/.local/share/applications/marktext.desktop
@@ -52,7 +52,7 @@ You can integrate the AppImage into the system via [AppImageLauncher](https://gi
 
 ## Binary
 
-You can download the latest `marktext-%version%.tar.gz` package from the [release page](https://github.com/marktext/marktext/releases/latest). You may need to install electron dependencies.
+You can download the latest `marktext-%version%.tar.gz` package from the [release page](https://github.com/5faith/marktext-enhance/releases/latest). You may need to install electron dependencies.
 
 ## Flatpak
 

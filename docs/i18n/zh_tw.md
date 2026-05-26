@@ -2,7 +2,7 @@
 
 <h1 align="center">MarkText</h1>
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/5faith/marktext-enhance/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
@@ -33,11 +33,11 @@
     <img src="https://ci.appveyor.com/api/projects/status/l4gxgydj0i95hmxg/branch/master?svg=true" alt="build">
   </a>
   <!-- Downloads total -->
-  <a href="https://github.com/marktext/marktext/releases">
+  <a href="https://github.com/5faith/marktext-enhance/releases">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
   </a>
   <!-- Downloads latest release -->
-  <a href="https://github.com/marktext/marktext/releases/latest">
+  <a href="https://github.com/5faith/marktext-enhance/releases/latest">
     <img src="https://img.shields.io/github/downloads/marktext/marktext/v0.17.1/total.svg" alt="latest download">
   </a>
   <!-- sponsors -->
@@ -52,19 +52,19 @@
       官網
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#features">
+    <a href="https://github.com/5faith/marktext-enhance#features">
       功能
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download-and-installation">
+    <a href="https://github.com/5faith/marktext-enhance#download-and-installation">
       下載
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#development">
+    <a href="https://github.com/5faith/marktext-enhance#development">
       開發
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#contribution">
+    <a href="https://github.com/5faith/marktext-enhance#contribution">
       貢獻
     </a>
   </h3>
@@ -101,7 +101,7 @@
 <div align="center">
   <sub>This Markdown editor that could. Built with ❤︎ by
     <a href="https://github.com/Jocs">Jocs</a> and
-    <a href="https://github.com/marktext/marktext/graphs/contributors">
+    <a href="https://github.com/5faith/marktext-enhance/graphs/contributors">
       contributors
     </a>
   </sub>
@@ -195,13 +195,13 @@ MarkText 是 MIT 許可的開源專案，你可以持續在 GitHub 發布頁面�
 
 | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                  | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                          | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                        |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.17.1/marktext-x86_64.AppImage) |
+| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x64.dmg.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x64.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/5faith/marktext-enhance/releases/download/v0.17.1/marktext-x86_64.AppImage) |
 
 想知道最新版本有什麼新功能嗎？請參閱 [CHANGELOG](.github/CHANGELOG.md)。
 
 #### macOS
 
-你可以從 [release page](https://github.com/marktext/marktext/releases/latest) 下載最新的 `marktext-%version%.dmg` 或是使用 [**homebrew cask**](https://github.com/caskroom/homebrew-cask) 安裝 MarkText。如果使用 Homebrew-Cask，您只需要安裝 [Homebrew](https://brew.sh/)。
+你可以從 [release page](https://github.com/5faith/marktext-enhance/releases/latest) 下載最新的 `marktext-%version%.dmg` 或是使用 [**homebrew cask**](https://github.com/caskroom/homebrew-cask) 安裝 MarkText。如果使用 Homebrew-Cask，您只需要安裝 [Homebrew](https://brew.sh/)。
 
 ```bash
 brew install --cask mark-text
@@ -217,7 +217,7 @@ brew install --cask mark-text
 
 #### 其它
 
-可以從下面網址下載 Linux、macOS 和 Windows 的安裝檔：[release page](https://github.com/marktext/marktext/releases/latest)。如果該版本在你的系统不能使用，請開一個 [issue](https://github.com/marktext/marktext/issues).
+可以從下面網址下載 Linux、macOS 和 Windows 的安裝檔：[release page](https://github.com/5faith/marktext-enhance/releases/latest)。如果該版本在你的系统不能使用，請開一個 [issue](https://github.com/5faith/marktext-enhance/issues).
 
 ## 開發
 
@@ -235,11 +235,11 @@ MarkText 正在全面開發中，請確保在提出 PR 之前先閱讀 [Contribu
 ## 貢獻者
 
 感謝所有為 MarkText 做出貢獻的人們
-[[contributors](https://github.com/marktext/marktext/graphs/contributors)]
+[[contributors](https://github.com/5faith/marktext-enhance/graphs/contributors)]
 
 特别感謝 @[Yasujizr](https://github.com/Yasujizr) 設計了一個 Logo 給 MarkText。
 
-<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
+<a href="https://github.com/5faith/marktext-enhance/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
 ### License
 

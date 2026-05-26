@@ -3,10 +3,10 @@
 - Create a release candidate
   - Create branch `release-v%version%`
   - Set environment variable `MARKTEXT_IS_STABLE` to `1` (default on AppVeyor and Travis CI)
-  - Ensure [changelog](https://github.com/marktext/marktext/blob/master/.github/CHANGELOG.md) is up-to-date
+  - Ensure [changelog](https://github.com/5faith/marktext-enhance/blob/master/.github/CHANGELOG.md) is up-to-date
   - Bump version in `package.json` and changelog
   - Update all `README.md` files
-  - Bump Flathub version ([marktext.appdata.xml](https://github.com/marktext/marktext/blob/master/resources/linux/marktext.appdata.xml))
+  - Bump Flathub version ([marktext.appdata.xml](https://github.com/5faith/marktext-enhance/blob/master/resources/linux/marktext.appdata.xml))
   - Create commit `release version %version%`
   - Ensure all tests pass
   - A new draft release should be available or create one
