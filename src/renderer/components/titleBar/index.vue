@@ -330,10 +330,11 @@ onBeforeUnmount(() => {
   .title-bar-editor-bg {
     height: calc(var(--menuBarHeight) * 2);
     background: var(--editorBgColor);
-    position: relative;
+    position: fixed;
     left: 0;
     top: 0;
     right: 0;
+    z-index: 99;
   }
   .title-bar {
     -webkit-app-region: drag;
