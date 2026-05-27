@@ -90,6 +90,8 @@
   --notificationWarningBg: #ff8800;
   --notificationErrorColor: #ffffff;
   --notificationErrorBg: #ff6969;
+
+  --sideBarContentPaddingTop: 20px;
 }
 
 ::-webkit-scrollbar,

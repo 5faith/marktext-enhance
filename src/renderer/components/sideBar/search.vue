@@ -147,7 +147,7 @@ const showNoResultFoundMessage = computed(() => {
 // Watchers
 watch(showSideBar, (value, oldValue) => {
   if (value && !oldValue && rightColumn.value === 'search') {
-    keyword.value = searchMatches.value
+    keyword.value = searchMatches.value?.value ?? ''
   }
 })
 
@@ -300,13 +300,13 @@ const openFolder = () => {
 }
 
 const handleFindInFolder = () => {
-  keyword.value = searchMatches.value
+  keyword.value = searchMatches.value?.value ?? ''
 }
 
 // Lifecycle
 onMounted(() => {
   nextTick(() => {
-    keyword.value = searchMatches.value
+    keyword.value = searchMatches.value?.value ?? ''
     bus.on('findInFolder', handleFindInFolder)
     if (keyword.value.length > 0 && searcherRunning.value === false) {
       searcherRunning.value = true
@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
   }
   .search-wrapper {
     display: flex;
-    margin: 37px 15px 10px 15px;
+    margin: var(--sideBarContentPaddingTop) 15px 10px 15px;
     padding: 0 6px;
     border-radius: 14px;
     height: 28px;

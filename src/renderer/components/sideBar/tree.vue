@@ -215,8 +215,8 @@ onBeforeUnmount(() => {
     height: 100%;
   }
   .tree-view > .title {
-    height: 35px;
-    line-height: 35px;
+    height: var(--sideBarContentPaddingTop);
+    line-height: var(--sideBarContentPaddingTop);
     padding: 0 15px;
     display: flex;
     flex-shrink: 0;

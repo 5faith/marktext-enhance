@@ -55,7 +55,7 @@ const handleClick = ({ slug }) => {
       color: var(--sideBarTitleColor);
       font-weight: 600;
       font-size: 16px;
-      margin: 37px 0 10px 0;
+      margin: var(--sideBarContentPaddingTop) 0 10px 0;
       padding-left: 25px;
     }
     & .el-tree-node {
