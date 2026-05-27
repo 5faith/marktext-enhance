@@ -141,11 +141,6 @@ onMounted(() => {
     user-select: none;
     background: var(--sideBarBgColor);
     border-right: 1px solid var(--itemBgColor);
-    & .left-column {
-      & svg {
-        fill: var(--iconColor);
-      }
-    }
   }
 
   .left-column {
@@ -176,15 +171,17 @@ onMounted(() => {
       justify-content: space-around;
       align-items: center;
       cursor: pointer;
+      color: var(--sideBarIconColor);
+      transition: color .25s ease-in-out;
       & > svg {
         width: 18px;
         height: 18px;
-        fill: var(--sideBarIconColor);
+        fill: currentColor;
         opacity: 1;
         transition: transform .25s ease-in-out;
       }
-      &.active > svg {
-        fill: var(--themeColor);
+      &.active {
+        color: var(--themeColor);
       }
     }
   }

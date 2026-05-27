@@ -15,12 +15,10 @@ function svgImportPlugin (iconDirs) {
     name: 'vite-plugin-svg-import',
     enforce: 'pre',
     transform (code, id) {
-      // Normalize the id path (handle /@fs/ prefix and path separators)
       let normalizedId = id
       if (normalizedId.startsWith('/@fs/')) {
         normalizedId = normalizedId.slice(4)
       }
-      // On Windows, /@fs/D:... -> D:...
       if (normalizedId.startsWith('/') && /^[A-Z]:/i.test(normalizedId.slice(1))) {
         normalizedId = normalizedId.slice(1)
       }
