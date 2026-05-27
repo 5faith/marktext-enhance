@@ -174,7 +174,7 @@ export default {
         content: '';
         width: 4px;
         height: 0;
-        background: var(--highlightThemeColor);
+        background: var(--itemBgColor);
         position: absolute;
         left: 0;
         border-top-right-radius: 3px;

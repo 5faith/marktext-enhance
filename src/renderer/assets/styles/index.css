@@ -1,5 +1,9 @@
 /* Common CSS use by both light and dark themes */
 :root {
+  /* Element Plus overrides - use theme color */
+  --el-color-primary: var(--themeColor);
+  --el-switch-on-color: var(--themeColor);
+
   --titleBarHeight: 32px;
   --menuBarHeight: 32px;
   --editorAreaWidth: 750px;
@@ -185,6 +189,35 @@ body {
 
 .el-slider__bar {
   background-color: var(--themeColor);
+}
+
+.el-switch .el-switch__core {
+  min-width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1.5px solid var(--iconColor);
+  background: transparent;
+}
+.el-switch .el-switch__core .el-switch__action {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 2px;
+}
+.el-switch.is-checked .el-switch__core .el-switch__action {
+  left: calc(100% - 14px);
+}
+.el-switch:not(.is-checked) .el-switch__core .el-switch__action {
+  background-color: var(--iconColor);
+}
+.el-switch.is-checked .el-switch__core {
+  border-color: var(--themeColor);
+  background-color: var(--themeColor);
+}
+.el-switch.is-checked .el-switch__core .el-switch__action {
+  background-color: #ffffff;
 }
 
 .el-dialog,

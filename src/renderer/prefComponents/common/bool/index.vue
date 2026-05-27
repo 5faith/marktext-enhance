@@ -93,24 +93,7 @@ export default {
     }
   }
 
-  span.el-switch__core::after {
-    top: 3px;
-    left: 7px;
-    width: 10px;
-    height: 10px;
-  }
-
-  .el-switch .el-switch__core {
-    border: 2px solid var(--iconColor);
-    background: transparent;
-    box-sizing: border-box;
-  }
-
   span.el-switch__label {
     color: var(--editorColor50);
-  }
-
-  .el-switch:not(.is-checked) .el-switch__core::after {
-    background: var(--iconColor);
   }
 </style>
