@@ -233,9 +233,17 @@ body {
   padding: 8px 6px;
 }
 
+.el-input__wrapper {
+  box-shadow: 0 0 0 1px var(--editorColor10) inset !important;
+  background: var(--inputBgColor) !important;
+}
+.el-input__wrapper.is-focus,
+.el-input.is-focus .el-input__wrapper {
+  box-shadow: 0 0 0 1px var(--themeColor) inset !important;
+}
 input.el-input__inner {
-  background: var(--inputBgColor);
-  border: 1px solid var(--editorColor10);
+  background: transparent;
+  border: none;
   color: var(--editorColor80);
 }
 
