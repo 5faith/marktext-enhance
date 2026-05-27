@@ -10,7 +10,7 @@
     >
       <!-- 第一行：水平菜单 + 窗口控制按钮 -->
       <div class="first-row">
-        <div :class="showCustomTitleBar ? 'left-toolbar title-no-drag' : 'right-toolbar'">
+        <div :class="showCustomTitleBar ? 'left-toolbar' : 'right-toolbar'">
           <div
             v-if="showCustomTitleBar"
             class="horizontal-menu title-no-drag"
@@ -29,16 +29,15 @@
         <div
           v-if="titleBarStyle === 'custom' && !isFullScreen && !isOsx"
           class="right-toolbar"
-          :class="[{ 'title-no-drag': titleBarStyle === 'custom' }]"
         >
-          <div class="frameless-titlebar-button frameless-titlebar-close" @click.stop="handleCloseClick">
+          <div class="frameless-titlebar-button frameless-titlebar-close title-no-drag" @click.stop="handleCloseClick">
             <div>
               <svg width="10" height="10">
                 <path :d="windowIconClose" />
               </svg>
             </div>
           </div>
-          <div class="frameless-titlebar-button frameless-titlebar-toggle" @click.stop="handleMaximizeClick">
+          <div class="frameless-titlebar-button frameless-titlebar-toggle title-no-drag" @click.stop="handleMaximizeClick">
             <div>
               <svg width="10" height="10">
                 <path v-show="!isMaximized" :d="windowIconMaximize" />
@@ -46,7 +45,7 @@
               </svg>
             </div>
           </div>
-          <div class="frameless-titlebar-button frameless-titlebar-minimize" @click.stop="handleMinimizeClick">
+          <div class="frameless-titlebar-button frameless-titlebar-minimize title-no-drag" @click.stop="handleMinimizeClick">
             <div>
               <svg width="10" height="10">
                 <path :d="windowIconMinimize" />
@@ -58,7 +57,7 @@
 
       <!-- 第二行：统计信息 + 标题 -->
       <div class="second-row">
-        <div class="stats-section title-no-drag" :style="showSideBar ? { width: `${finalSideBarWidth}px` } : {}">
+        <div class="stats-section" :style="showSideBar ? { width: `${finalSideBarWidth}px` } : {}">
           <div
             v-if="wordCount"
             class="word-count-wrapper"
@@ -66,7 +65,7 @@
             @mouseleave="handleWordCountMouseLeave"
           >
             <div
-              class="word-count"
+              class="word-count title-no-drag"
               ref="wordCountBtn"
               @click.stop="handleWordClick"
             >
@@ -354,11 +353,13 @@ onBeforeUnmount(() => {
     flex-direction: column;
   }
   .first-row {
+    -webkit-app-region: drag;
     height: 32px;
     display: flex;
     position: relative;
   }
   .second-row {
+    -webkit-app-region: drag;
     height: var(--menuBarHeight);
     display: flex;
     align-items: center;
