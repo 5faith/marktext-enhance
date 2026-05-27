@@ -79,9 +79,6 @@ class EditorWindow extends BaseWindow {
       this.lifecycle = WindowLifecycle.READY
       this.emit('window-ready')
 
-      // Force open DevTools for debugging
-      win.webContents.openDevTools()
-
       // Delay sending bootstrap to ensure renderer is ready
       setTimeout(() => {
         const lineEnding = preferences.getPreferredEol()
