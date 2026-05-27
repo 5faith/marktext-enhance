@@ -54,17 +54,7 @@ import Tree from './tree.vue'
 import SideBarSearch from './search.vue'
 import Toc from './toc.vue'
 import { useLayoutStore, useProjectStore, useEditorStore } from '@/stores'
-
-const sideBarIcons = [
-  { name: 'folder', icon: 'folder' },
-  { name: 'file', icon: 'file' },
-  { name: 'search', icon: 'search' },
-  { name: 'toc', icon: 'list' }
-]
-
-const sideBarBottomIcons = [
-  { name: 'settings', icon: 'setting' }
-]
+import { sideBarIcons, sideBarBottomIcons } from './help'
 
 const openedFiles = ref([])
 const sideBarViewWidth = ref(280)

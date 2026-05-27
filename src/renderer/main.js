@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import sourceMapSupport from 'source-map-support'
 import bootstrapRenderer from './bootstrap'
 import axios from './axios'
-import './assets/symbolIcon'
+import 'virtual:svg-icons-register'
 import { ipcRenderer } from 'electron'
 
 // Import stores and other modules

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import { resolve, relative, extname, normalize } from 'path'
+import { readFileSync } from 'fs'
 import vue from '@vitejs/plugin-vue'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import electron from 'vite-plugin-electron'
@@ -7,6 +8,55 @@ import renderer from 'vite-plugin-electron-renderer'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
+
+function svgImportPlugin (iconDirs) {
+  const normalizedDirs = iconDirs.map(d => normalize(d))
+  return {
+    name: 'vite-plugin-svg-import',
+    enforce: 'pre',
+    transform (code, id) {
+      // Normalize the id path (handle /@fs/ prefix and path separators)
+      let normalizedId = id
+      if (normalizedId.startsWith('/@fs/')) {
+        normalizedId = normalizedId.slice(4)
+      }
+      // On Windows, /@fs/D:... -> D:...
+      if (normalizedId.startsWith('/') && /^[A-Z]:/i.test(normalizedId.slice(1))) {
+        normalizedId = normalizedId.slice(1)
+      }
+      normalizedId = normalize(normalizedId)
+
+      if (!normalizedId.endsWith('.svg')) return null
+      if (normalizedId.includes('?')) return null
+
+      const isIconSvg = normalizedDirs.some(dir => normalizedId.startsWith(dir))
+      if (!isIconSvg) return null
+
+      const content = readFileSync(normalizedId, 'utf-8')
+      const viewBoxMatch = content.match(/viewBox=["']([^"']*)["']/)
+      const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 1024 1024'
+
+      const iconDir = normalizedDirs.find(dir => normalizedId.startsWith(dir))
+      const relativePath = relative(iconDir, normalizedId).replace(/\\/g, '/')
+      const ext = extname(relativePath)
+      const nameWithoutExt = relativePath.slice(0, -ext.length)
+      const parts = nameWithoutExt.split('/')
+      const fileName = parts.pop()
+      const dirName = parts.join('-')
+      let symbolId = 'icon-[dir]-[name]'
+      symbolId = symbolId.replace(/\[dir\]/g, dirName)
+      if (!dirName) {
+        symbolId = symbolId.replace('--', '-')
+      }
+      symbolId = symbolId.replace(/\[name\]/g, fileName)
+
+      return {
+        code: `export default { viewBox: "${viewBox}", url: "#${symbolId}" }`,
+        map: null
+      }
+    }
+  }
+}
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
@@ -48,6 +98,7 @@ export default defineConfig(({ command }) => {
           }
         }
       }),
+      svgImportPlugin([resolve(__dirname, 'src/renderer/assets/icons')]),
       createSvgIconsPlugin({
         iconDirs: [resolve(__dirname, 'src/renderer/assets/icons')],
         symbolId: 'icon-[dir]-[name]',
