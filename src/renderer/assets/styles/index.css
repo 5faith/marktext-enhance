@@ -156,17 +156,25 @@ body {
   font-weight: bold;
   font-size: inherit;
   cursor: pointer;
-  transition: background-color .2s;
   margin-left: 4px;
+  transition: background-color .2s;
+}
+.el-icon-info:hover {
+  background: var(--themeColor);
+}
+.el-icon-info-static {
+  cursor: default;
+}
+.el-icon-info-static:hover {
+  background: var(--iconColor);
 }
 .el-icon-info::after {
   content: 'i';
   color: var(--editorBgColor);
-  font-size: 0.75em;
+  font-size: 0.7em;
+  font-style: italic;
   line-height: 1;
-}
-.el-icon-info:hover {
-  background: var(--themeColor);
+  margin-top: -1px;
 }
 
 .text-overflow {

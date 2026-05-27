@@ -13,7 +13,7 @@
         effect="dark"
         placement="top-start"
       >
-        <i class="el-icon-info"></i>
+        <i class="el-icon-info el-icon-info-static"></i>
       </el-tooltip>
       <span v-if="notes" class="notes">
         {{notes}}

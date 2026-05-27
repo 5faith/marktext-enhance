@@ -33,7 +33,7 @@
 
 <script>
 import { usePreferencesStore } from '@/stores'
-import themeMd from './theme.md'
+import themeMd from './theme.md?raw'
 import { autoSwitchThemeOptions, themes } from './config'
 import markdownToHtml from '@/util/markdownToHtml'
 import CurSelect from '../common/select'
