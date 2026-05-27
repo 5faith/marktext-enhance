@@ -93,7 +93,7 @@
               Hide "lastState" for now (#2064).
             <el-radio class="ag-underdevelop" label="lastState">Restore last editor session</el-radio>
             -->
-            <el-radio label="folder" style="margin-bottom: 10px;">Open the default directory<span>: {{defaultDirectoryToOpen}}</span></el-radio>
+            <el-radio label="folder">Open the default directory<span>: {{defaultDirectoryToOpen}}</span></el-radio>
             <el-button size="small" @click="selectDefaultDirectoryToOpen">Select Folder</el-button>
             <el-radio label="blank">Open a blank page</el-radio>
           </el-radio-group>
@@ -188,12 +188,18 @@ export default {
       font-size: 14px;
       user-select: none;
       color: var(--editorColor);
+      & .el-radio-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      & .el-radio {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
       & .el-button--small {
         margin-left: 25px;
-      }
-      & label {
-        display: block;
-        margin: 20px 0;
+        margin-bottom: 10px;
       }
     }
   }
