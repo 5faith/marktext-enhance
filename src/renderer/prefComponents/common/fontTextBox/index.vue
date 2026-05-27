@@ -2,7 +2,7 @@
   <section class="pref-font-input-item" :class="{'ag-underdevelop': disable}">
     <div class="description">
       <span>{{description}}:</span>
-      <el-icon v-if="more" @click="handleMoreClick"><Info /></el-icon>
+      <i class="el-icon-info" v-if="more" @click="handleMoreClick"></i>
     </div>
     <el-autocomplete
       class="font-autocomplete"

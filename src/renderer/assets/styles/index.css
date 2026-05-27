@@ -143,6 +143,32 @@ body {
   overflow: hidden;
 }
 
+.el-icon-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--iconColor);
+  font-style: normal;
+  font-weight: bold;
+  font-size: inherit;
+  cursor: pointer;
+  transition: background-color .2s;
+  margin-left: 4px;
+}
+.el-icon-info::after {
+  content: 'i';
+  color: var(--editorBgColor);
+  font-size: 0.75em;
+  line-height: 1;
+}
+.el-icon-info:hover {
+  background: var(--themeColor);
+}
+
 .text-overflow {
   text-overflow: ellipsis;
   overflow: hidden;

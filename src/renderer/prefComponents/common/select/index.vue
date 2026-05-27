@@ -2,9 +2,10 @@
   <section class="pref-select-item" :class="{'ag-underdevelop': disable}">
     <div class="description" v-if="description">
       <span>{{description}}:</span>
-      <el-icon v-if="more"
+      <i class="el-icon-info"
+        v-if="more"
         @click="handleMoreClick"
-      ><Info /></el-icon>
+      ></i>
     </div>
     <el-select
       v-model="selectValue"
@@ -91,14 +92,6 @@ export default {
 }
 .pref-select-item .description {
   margin-bottom: 10px;
-  & i {
-    cursor: pointer;
-    opacity: .7;
-    color: var(--iconColor);
-  }
-  & i:hover {
-    color: var(--themeColor);
-  }
 }
 li.el-select-dropdown__item {
   color: var(--editorColor);
