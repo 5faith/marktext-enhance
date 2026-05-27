@@ -14,6 +14,23 @@ import { useProjectStore } from './project'
 
 const autoSaveTimers = new Map()
 
+// Extract plain data from reactive proxy for IPC serialization
+const extractFileData = (file) => {
+  const { id, filename, pathname, markdown, encoding, lineEnding, adjustLineEndingOnSave, trimTrailingNewline } = file
+  return {
+    id,
+    filename,
+    pathname,
+    markdown,
+    options: {
+      encoding: JSON.parse(JSON.stringify(encoding)),
+      lineEnding,
+      adjustLineEndingOnSave,
+      trimTrailingNewline
+    }
+  }
+}
+
 export const useEditorStore = defineStore('editor', {
   state: () => ({
     currentFile: {},
@@ -395,25 +412,16 @@ export const useEditorStore = defineStore('editor', {
     },
 
     closeUnsavedTab (file) {
-      const { id, pathname, filename, markdown } = file
-      const options = getOptionsFromState(file)
-
-      ipcRenderer.send('mt::save-and-close-tabs', [{ id, pathname, filename, markdown, options }])
+      ipcRenderer.send('mt::save-and-close-tabs', [extractFileData(file)])
     },
 
     listenForSave () {
       ipcRenderer.on('mt::editor-ask-file-save', () => {
-        const { id, filename, pathname, markdown } = this.currentFile
-        const options = getOptionsFromState(this.currentFile)
-        const defaultPath = this.getRootFolderFromState()
+        const { id } = this.currentFile
         if (id) {
           ipcRenderer.send('mt::response-file-save', {
-            id,
-            filename,
-            pathname,
-            markdown,
-            options,
-            defaultPath
+            ...extractFileData(this.currentFile),
+            defaultPath: this.getRootFolderFromState()
           })
         }
       })
@@ -421,17 +429,11 @@ export const useEditorStore = defineStore('editor', {
 
     listenForSaveAs () {
       ipcRenderer.on('mt::editor-ask-file-save-as', () => {
-        const { id, filename, pathname, markdown } = this.currentFile
-        const options = getOptionsFromState(this.currentFile)
-        const defaultPath = this.getRootFolderFromState()
+        const { id } = this.currentFile
         if (id) {
           ipcRenderer.send('mt::response-file-save-as', {
-            id,
-            filename,
-            pathname,
-            markdown,
-            options,
-            defaultPath
+            ...extractFileData(this.currentFile),
+            defaultPath: this.getRootFolderFromState()
           })
         }
       })
@@ -489,11 +491,7 @@ export const useEditorStore = defineStore('editor', {
       ipcRenderer.on('mt::ask-for-close', _e => {
         const unsavedFiles = this.tabs
           .filter(file => !file.isSaved)
-          .map(file => {
-            const { id, filename, pathname, markdown } = file
-            const options = getOptionsFromState(file)
-            return { id, filename, pathname, markdown, options }
-          })
+          .map(file => extractFileData(file))
 
         if (unsavedFiles.length) {
           ipcRenderer.send('mt::close-window-confirm', unsavedFiles)
@@ -515,11 +513,7 @@ export const useEditorStore = defineStore('editor', {
       const { tabs } = this
       const unsavedFiles = tabs
         .filter(file => !(file.isSaved && /[^\n]/.test(file.markdown)))
-        .map(file => {
-          const { id, filename, pathname, markdown } = file
-          const options = getOptionsFromState(file)
-          return { id, filename, pathname, markdown, options }
-        })
+        .map(file => extractFileData(file))
 
       if (closeTabs) {
         if (unsavedFiles.length) {
@@ -535,18 +529,12 @@ export const useEditorStore = defineStore('editor', {
 
     listenForMoveTo () {
       ipcRenderer.on('mt::editor-move-file', () => {
-        const { id, filename, pathname, markdown } = this.currentFile
-        const options = getOptionsFromState(this.currentFile)
-        const defaultPath = this.getRootFolderFromState()
+        const { id, pathname } = this.currentFile
         if (!id) return
         if (!pathname) {
           ipcRenderer.send('mt::response-file-save', {
-            id,
-            filename,
-            pathname,
-            markdown,
-            options,
-            defaultPath
+            ...extractFileData(this.currentFile),
+            defaultPath: this.getRootFolderFromState()
           })
         } else {
           ipcRenderer.send('mt::response-file-move-to', { id, pathname })
@@ -561,18 +549,12 @@ export const useEditorStore = defineStore('editor', {
     },
 
     responseForRename () {
-      const { id, filename, pathname, markdown } = this.currentFile
-      const options = getOptionsFromState(this.currentFile)
-      const defaultPath = this.getRootFolderFromState()
+      const { id, pathname } = this.currentFile
       if (!id) return
       if (!pathname) {
         ipcRenderer.send('mt::response-file-save', {
-          id,
-          filename,
-          pathname,
-          markdown,
-          options,
-          defaultPath
+          ...extractFileData(this.currentFile),
+          defaultPath: this.getRootFolderFromState()
         })
       } else {
         bus.emit('rename')
@@ -915,14 +897,7 @@ export const useEditorStore = defineStore('editor', {
         this.setSaveStatus(false)
 
         if (pathname && autoSave) {
-          const options = getOptionsFromState(this.currentFile)
-          this.handleAutoSave({
-            id: currentId,
-            filename,
-            pathname,
-            markdown,
-            options
-          })
+          this.handleAutoSave(extractFileData(this.currentFile))
         }
       }
     },
