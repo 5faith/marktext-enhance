@@ -7,7 +7,11 @@
         all changes (requires a restart). All available and default key binding
         can be found <a class="link" @click="openKeybindingWiki">online</a>.
       </div>
-      <el-table :data="keybindingList" style="width: 100%" border>
+      <el-table
+        :data="keybindingList"
+        style="width: 100%"
+        border
+      >
         <el-table-column prop="description" label="Description">
         </el-table-column>
         <el-table-column prop="accelerator" label="Key Combination" width="220">
@@ -288,5 +292,22 @@ export default {
 .pref-keybindings .el-table .el-table__cell {
   padding: 2px 0;
   margin: 0;
+}
+.pref-keybindings .el-table {
+  overflow: visible;
+}
+.pref-keybindings .el-table__body-wrapper {
+  overflow: visible;
+}
+.pref-keybindings .el-table__body-wrapper .el-scrollbar {
+  height: fit-content;
+  overflow: visible;
+}
+.pref-keybindings .el-table__body-wrapper .el-scrollbar__wrap {
+  height: fit-content;
+  overflow: visible;
+}
+.pref-keybindings .el-table__body-wrapper .el-scrollbar__thumb {
+  display: none;
 }
 </style>
