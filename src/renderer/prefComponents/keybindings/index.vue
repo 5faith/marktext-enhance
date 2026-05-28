@@ -7,11 +7,7 @@
         all changes (requires a restart). All available and default key binding
         can be found <a class="link" @click="openKeybindingWiki">online</a>.
       </div>
-      <el-table
-        :data="keybindingList"
-        style="width: 100%"
-        border
-      >
+      <el-table :data="keybindingList" style="width: 100%">
         <el-table-column prop="description" label="Description">
         </el-table-column>
         <el-table-column prop="accelerator" label="Key Combination" width="220">
@@ -24,7 +20,7 @@
               size="small"
               title="Edit"
             >
-              <i class="el-icon-edit"></i>
+              <el-icon><Edit /></el-icon>
             </el-button>
             <el-button
               @click="handleResetClick(scope.$index, scope.row)"
@@ -32,7 +28,7 @@
               size="small"
               title="Reset"
             >
-              <i class="el-icon-refresh-right"></i>
+              <el-icon><RefreshRight /></el-icon>
             </el-button>
             <el-button
               @click="handleUnbindClick(scope.$index, scope.row)"
@@ -40,7 +36,7 @@
               size="small"
               title="Unbind"
             >
-              <i class="el-icon-delete"></i>
+              <el-icon><Delete /></el-icon>
             </el-button>
           </template>
         </el-table-column>
@@ -69,6 +65,7 @@
 
 <script>
 import notice from "@/services/notification";
+import { Delete, Edit, RefreshRight } from "@element-plus/icons-vue";
 import { setKeyboardLayout } from "@hfelix/electron-localshortcut";
 import { ipcRenderer, shell } from "electron";
 import Compound from "../common/compound";
@@ -83,6 +80,9 @@ export default {
     Compound,
     Separator,
     KeyInputDialog,
+    Edit,
+    RefreshRight,
+    Delete,
   },
   data() {
     return {
