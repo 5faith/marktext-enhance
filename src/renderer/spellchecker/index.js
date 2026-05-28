@@ -364,7 +364,9 @@ export class SpellChecker {
     }
 
     // Extract language code from filename (e.g., "en_US.dic" -> "en_US")
-    const dicFilename = path.basename(dicPath)
+    // Use raw replace instead of path.basename because path-browserify doesn't handle Windows paths
+    const lastSlash = Math.max(dicPath.lastIndexOf('/'), dicPath.lastIndexOf('\\'))
+    const dicFilename = lastSlash >= 0 ? dicPath.substring(lastSlash + 1) : dicPath
     const langCode = dicFilename.replace(/\.dic$/, '')
     const destDicPath = path.join(userDataDictPath, `${langCode}.dic`)
     const destAffPath = path.join(userDataDictPath, `${langCode}.aff`)
