@@ -1,5 +1,5 @@
 change: builtin-spellchecker-dictionaries
-phase: verify
+phase: archive
 schema: spec-driven
 isolation: branch
 build_mode: executing-plans
@@ -7,3 +7,4 @@ plan: docs/superpowers/plans/2026-05-28-builtin-spellchecker-dictionaries.md
 verify_mode: lightweight
 verification_report: docs/superpowers/reports/2026-05-28-builtin-spellchecker-dictionaries-verify.md
 branch_status: handled
+verify_result: pass
