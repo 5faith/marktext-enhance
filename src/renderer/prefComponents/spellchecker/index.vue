@@ -55,6 +55,9 @@
       <el-button size="small" @click="handleImportDictionary">
         Import Dictionary
       </el-button>
+      <div class="import-hint">
+        Select either a .dic or .aff file. Both files must be in the same directory.
+      </div>
     </div>
   </div>
 </template>
@@ -212,6 +215,12 @@ export default {
   }
   & .pref-spellchecker-import {
     margin-top: 16px;
+    & .import-hint {
+      margin-top: 8px;
+      color: var(--iconColor);
+      font-size: 12px;
+      line-height: 1.4;
+    }
   }
 }
 .el-table,
