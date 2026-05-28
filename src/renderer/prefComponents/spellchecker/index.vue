@@ -56,7 +56,9 @@
         Import Dictionary
       </el-button>
       <div class="import-hint">
-        Select either a .dic or .aff file. Both files must be in the same directory.
+        Select either a .dic or .aff file. Both files must be in the same
+        directory.
+        <a href="https://github.com/wooorm/dictionaries/" target="_blank">Recommended dictionaries</a>
       </div>
     </div>
   </div>
@@ -134,7 +136,7 @@ export default {
         title: "Select dictionary file (.dic or .aff)",
         filters: [
           { name: "Hunspell Dictionary", extensions: ["dic", "aff"] },
-          { name: "All Files", extensions: ["*"] }
+          { name: "All Files", extensions: ["*"] },
         ],
         properties: ["openFile"],
       });
