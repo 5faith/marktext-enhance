@@ -106,15 +106,14 @@ const getResourcesDictPath = () => {
 
 /**
  * Get the path to the userData dictionaries directory.
- * @returns {string}
+ * @returns {string|null} The path, or null if userDataPath is not set.
  */
 const getUserDataDictPath = () => {
-  // global.marktext.paths.userDataPath is set during bootstrap
   const userDataPath = global.marktext?.paths?.userDataPath
   if (userDataPath) {
     return path.join(userDataPath, 'dictionaries')
   }
-  return ''
+  return null
 }
 
 /**
@@ -313,50 +312,67 @@ export class SpellChecker {
   /**
    * Import a dictionary file pair (.dic and .aff).
    *
-   * @param {string} sourcePath The path to the .dic file to import.
+   * @param {string} sourcePath The path to the .dic or .aff file to import.
    * @returns {Promise<{success: boolean, message: string}>}
    */
   async importDictionary (sourcePath) {
-    // Validate file extension
-    if (!sourcePath.endsWith('.dic')) {
-      return { success: false, message: '仅支持 .dic 格式的词典文件' }
+    const userDataDictPath = getUserDataDictPath()
+    if (!userDataDictPath) {
+      return { success: false, message: 'Cannot get user data directory path' }
     }
 
-    // Check if .aff file exists
-    const affPath = sourcePath.replace(/\.dic$/, '.aff')
+    // Determine if user selected .dic or .aff file
+    const isDic = sourcePath.endsWith('.dic')
+    const isAff = sourcePath.endsWith('.aff')
+
+    if (!isDic && !isAff) {
+      return { success: false, message: 'Only .dic or .aff format dictionary files are supported' }
+    }
+
+    // Determine the .dic and .aff paths
+    let dicPath, affPath
+    if (isDic) {
+      dicPath = sourcePath
+      affPath = sourcePath.replace(/\.dic$/, '.aff')
+    } else {
+      affPath = sourcePath
+      dicPath = sourcePath.replace(/\.aff$/, '.dic')
+    }
+
+    // Check both files exist
+    if (!fs.existsSync(dicPath)) {
+      return { success: false, message: 'Cannot find the corresponding .dic file. Please ensure .dic and .aff files are in the same directory' }
+    }
     if (!fs.existsSync(affPath)) {
-      return { success: false, message: '需要同时提供 .dic 和 .aff 文件' }
+      return { success: false, message: 'Cannot find the corresponding .aff file. Please ensure .dic and .aff files are in the same directory' }
     }
 
     // Validate file sizes
-    const dicStats = fs.statSync(sourcePath)
+    const dicStats = fs.statSync(dicPath)
     if (dicStats.size <= 8192) {
-      return { success: false, message: '词典文件无效或已损坏' }
+      return { success: false, message: '.dic file is invalid or corrupted' }
     }
 
     const affStats = fs.statSync(affPath)
     if (affStats.size <= 100) {
-      return { success: false, message: '词典文件无效或已损坏' }
+      return { success: false, message: '.aff file is invalid or corrupted' }
     }
-
-    // Get userData dictionaries path
-    const userDataDictPath = getUserDataDictPath()
 
     // Ensure directory exists
     if (!fs.existsSync(userDataDictPath)) {
       fs.mkdirSync(userDataDictPath, { recursive: true })
     }
 
-    // Copy files
-    const filename = path.basename(sourcePath)
-    const langCode = filename.replace(/\.dic$/, '')
+    // Extract language code from filename (e.g., "en_US.dic" -> "en_US")
+    const dicFilename = path.basename(dicPath)
+    const langCode = dicFilename.replace(/\.dic$/, '')
     const destDicPath = path.join(userDataDictPath, `${langCode}.dic`)
     const destAffPath = path.join(userDataDictPath, `${langCode}.aff`)
 
-    fs.copyFileSync(sourcePath, destDicPath)
+    fs.copyFileSync(dicPath, destDicPath)
     fs.copyFileSync(affPath, destAffPath)
 
-    return { success: true, message: '词典导入成功' }
+    return { success: true, message: `Dictionary "${langCode}" imported successfully` }
   }
 
   /**
@@ -379,7 +395,7 @@ export class SpellChecker {
     const available = []
 
     // Scan resources/static directory for built-in dictionaries
-    if (fs.existsSync(resourcesDictPath)) {
+    if (resourcesDictPath && fs.existsSync(resourcesDictPath)) {
       const files = fs.readdirSync(resourcesDictPath)
       files.forEach(filename => {
         const match = filename.match(/^([a-z]{2}(?:[-_][A-Z]{2})?)\.dic$/)

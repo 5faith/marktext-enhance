@@ -127,9 +127,9 @@ export default {
       const { dialog } =
         require("electron").remote || require("@electron/remote");
       const result = await dialog.showOpenDialog({
-        title: "Select dictionary file (.dic)",
+        title: "Select dictionary file (.dic or .aff)",
         filters: [
-          { name: "Hunspell Dictionary", extensions: ["dic"] },
+          { name: "Hunspell Dictionary", extensions: ["dic", "aff"] },
           { name: "All Files", extensions: ["*"] }
         ],
         properties: ["openFile"],
@@ -146,7 +146,10 @@ export default {
 
       if (importResult.success) {
         this.$message.success(importResult.message);
-        this.refreshDictionaryList();
+        // Force refresh the dictionary list
+        this.$nextTick(() => {
+          this.refreshDictionaryList();
+        });
       } else {
         this.$message.error(importResult.message);
       }
