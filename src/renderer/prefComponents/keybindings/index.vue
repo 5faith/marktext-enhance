@@ -7,12 +7,12 @@
         all changes (requires a restart). All available and default key binding
         can be found <a class="link" @click="openKeybindingWiki">online</a>.
       </div>
-      <el-table :data="keybindingList" style="width: 100%">
+      <el-table :data="keybindingList" style="width: 100%" border>
         <el-table-column prop="description" label="Description">
         </el-table-column>
         <el-table-column prop="accelerator" label="Key Combination" width="220">
         </el-table-column>
-        <el-table-column fixed="right" label="Options" width="90">
+        <el-table-column label="Options" width="90">
           <template #default="scope">
             <el-button
               @click="handleEditClick(scope.$index, scope.row)"
@@ -20,7 +20,7 @@
               size="small"
               title="Edit"
             >
-              <el-icon><Edit /></el-icon>
+              <i class="el-icon-edit"></i>
             </el-button>
             <el-button
               @click="handleResetClick(scope.$index, scope.row)"
@@ -28,7 +28,7 @@
               size="small"
               title="Reset"
             >
-              <el-icon><RefreshRight /></el-icon>
+              <i class="el-icon-refresh-right"></i>
             </el-button>
             <el-button
               @click="handleUnbindClick(scope.$index, scope.row)"
@@ -36,7 +36,7 @@
               size="small"
               title="Unbind"
             >
-              <el-icon><Delete /></el-icon>
+              <i class="el-icon-delete"></i>
             </el-button>
           </template>
         </el-table-column>
@@ -64,13 +64,13 @@
 </template>
 
 <script>
-import { ipcRenderer, shell } from "electron";
+import notice from "@/services/notification";
 import { setKeyboardLayout } from "@hfelix/electron-localshortcut";
+import { ipcRenderer, shell } from "electron";
 import Compound from "../common/compound";
 import Separator from "../common/separator";
 import KeyInputDialog from "./key-input-dialog.vue";
 import KeybindingConfigurator from "./KeybindingConfigurator";
-import notice from "@/services/notification";
 
 const log = require("electron-log");
 

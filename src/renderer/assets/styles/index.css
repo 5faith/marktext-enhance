@@ -168,6 +168,22 @@ body {
 .el-icon-info-static:hover {
   background: var(--iconColor);
 }
+
+[class^="el-icon-"],
+[class*=" el-icon-"] {
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+}
+.el-icon-edit::before {
+  content: '\270E';
+}
+.el-icon-refresh-right::before {
+  content: '\21BB';
+}
+.el-icon-delete::before {
+  content: '\1F5D1';
+}
 .el-icon-info::after {
   content: 'i';
   color: var(--editorBgColor);
