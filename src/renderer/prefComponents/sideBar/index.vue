@@ -14,7 +14,7 @@
         </template>
         <template #default="{ item }">
           <div class="name">{{ item.category }}</div>
-          <span class="addr">{{ item.reference }}</span>
+          <span class="addr">{{ item.preference }}</span>
         </template>
       </el-autocomplete>
     </section>

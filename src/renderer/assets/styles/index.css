@@ -143,6 +143,22 @@ body {
   overflow: hidden;
 }
 
+[class^="el-icon-"],
+[class*=" el-icon-"] {
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+}
+.el-icon-edit::before {
+  content: '\270E';
+}
+.el-icon-refresh-right::before {
+  content: '\21BB';
+}
+.el-icon-delete::before {
+  content: '\1F5D1';
+}
+
 .el-icon-info {
   display: inline-flex;
   align-items: center;
@@ -159,6 +175,13 @@ body {
   margin-left: 4px;
   transition: background-color .2s;
 }
+.el-icon-info::after {
+  content: 'i';
+  color: var(--editorBgColor);
+  font-size: 0.7em;
+  font-style: italic;
+  line-height: 1;
+}
 .el-icon-info:hover {
   background: var(--themeColor);
 }
@@ -167,30 +190,6 @@ body {
 }
 .el-icon-info-static:hover {
   background: var(--iconColor);
-}
-
-[class^="el-icon-"],
-[class*=" el-icon-"] {
-  display: inline-block;
-  font-style: normal;
-  font-weight: normal;
-}
-.el-icon-edit::before {
-  content: '\270E';
-}
-.el-icon-refresh-right::before {
-  content: '\21BB';
-}
-.el-icon-delete::before {
-  content: '\1F5D1';
-}
-.el-icon-info::after {
-  content: 'i';
-  color: var(--editorBgColor);
-  font-size: 0.7em;
-  font-style: italic;
-  line-height: 1;
-  margin-top: -1px;
 }
 
 .text-overflow {

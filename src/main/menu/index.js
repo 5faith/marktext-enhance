@@ -213,7 +213,134 @@ class AppMenu {
         this.activeWindowId = windowId
       }
     }
-  },
+  }
+
+  /**
+   * Updates all window menus.
+   *
+   * NOTE: We need this method to add or remove menu items at runtime.
+   *
+   * @param {[string[]]} recentUsedDocuments
+   */
+  updateAppMenu (recentUsedDocuments) {
+    if (!recentUsedDocuments) {
+      recentUsedDocuments = this.getRecentlyUsedDocuments()
+    }
+
+    // "we don't support changing menu object after calling setMenu, the behavior
+    // is undefined if user does that." That mean we have to recreate the editor
+    // application menu each time.
+
+    // rebuild all window menus
+    this.windowMenus.forEach((value, key) => {
+      const { menu: oldMenu, type } = value
+      if (type !== MenuType.EDITOR) return
+
+      const { menu: newMenu } = this._buildEditorMenu(false, recentUsedDocuments)
+
+      // all other menu items are set automatically
+      updateMenuItem(oldMenu, newMenu, 'sourceCodeModeMenuItem')
+      updateMenuItem(oldMenu, newMenu, 'typewriterModeMenuItem')
+      updateMenuItem(oldMenu, newMenu, 'focusModeMenuItem')
+      updateMenuItem(oldMenu, newMenu, 'sideBarMenuItem')
+      updateMenuItem(oldMenu, newMenu, 'tabBarMenuItem')
+
+      // update window menu
+      value.menu = newMenu
+
+      // update application menu if necessary
+      const { activeWindowId } = this
+      if (activeWindowId === key) {
+        this._setApplicationMenu(newMenu)
+      }
+    })
+  }
+
+  /**
+   * Update line ending menu items.
+   *
+   * @param {number} windowId The window id.
+   * @param {string} lineEnding Either >lf< or >crlf<.
+   */
+  updateLineEndingMenu (windowId, lineEnding) {
+    const menus = this.getWindowMenuById(windowId)
+    if (!menus) return
+    const crlfMenu = menus.getMenuItemById('crlfLineEndingMenuEntry')
+    const lfMenu = menus.getMenuItemById('lfLineEndingMenuEntry')
+    if (lineEnding === 'crlf') {
+      crlfMenu.checked = true
+    } else {
+      lfMenu.checked = true
+    }
+  }
+
+  /**
+   * Update always on top menu item.
+   *
+   * @param {number} windowId The window id.
+   * @param {boolean} lineEnding Always on top.
+   */
+  updateAlwaysOnTopMenu (windowId, flag) {
+    const menus = this.getWindowMenuById(windowId)
+    if (!menus) return
+    const menu = menus.getMenuItemById('alwaysOnTopMenuItem')
+    menu.checked = flag
+  }
+
+  /**
+   * Update all theme entries from editor menus to the selected one.
+   */
+  updateThemeMenu = theme => {
+    this.windowMenus.forEach(value => {
+      const { menu, type } = value
+      if (type !== MenuType.EDITOR) {
+        return
+      }
+
+      const themeMenus = menu.getMenuItemById('themeMenu')
+      if (!themeMenus) {
+        return
+      }
+
+      themeMenus.submenu.items.forEach(item => (item.checked = false))
+      themeMenus.submenu.items
+        .forEach(item => {
+          if (item.id && item.id === theme) {
+            item.checked = true
+          }
+        })
+    })
+  }
+
+  /**
+   * Update all auto save entries from editor menus to the given state.
+   */
+  updateAutoSaveMenu = autoSave => {
+    this.windowMenus.forEach(value => {
+      const { menu, type } = value
+      if (type !== MenuType.EDITOR) {
+        return
+      }
+
+      const autoSaveMenu = menu.getMenuItemById('autoSaveMenuItem')
+      if (!autoSaveMenu) {
+        return
+      }
+      autoSaveMenu.checked = autoSave
+    })
+  }
+
+  /**
+   * Append misc shortcuts the the given shortcut map.
+   *
+   * @param {*} lineEnding The shortcut map.
+   */
+  _appendMiscShortcuts = shortcutMap => {
+    shortcutMap.push({
+      accelerator: this._keybindings.getAccelerator('tabs.cycle-forward'),
+      click: (menuItem, win) => {
+        win.webContents.send('mt::tabs-cycle-right')
+      },
       id: null
     })
     shortcutMap.push({
