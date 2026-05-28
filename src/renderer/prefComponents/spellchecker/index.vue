@@ -14,14 +14,18 @@
           description="Hide marks for spelling errors"
           :bool="spellcheckerNoUnderline"
           :disable="!spellcheckerEnabled"
-          :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
+          :onChange="
+            (value) => onSelectChange('spellcheckerNoUnderline', value)
+          "
         ></bool>
         <bool
           v-show="isOsx"
           description="Automatically detect document language (requires showing marks for spelling errors)"
           :bool="spellcheckerAutoDetectLanguage"
           :disable="!spellcheckerEnabled"
-          :onChange="value => onSelectChange('spellcheckerAutoDetectLanguage', value)"
+          :onChange="
+            (value) => onSelectChange('spellcheckerAutoDetectLanguage', value)
+          "
         ></bool>
       </template>
     </compound>
@@ -33,242 +37,250 @@
       :value="spellcheckerLanguage"
       :options="availableDictionaries"
       :disable="!spellcheckerEnabled"
-      :onChange="value => onSelectChange('spellcheckerLanguage', value)"
+      :onChange="(value) => onSelectChange('spellcheckerLanguage', value)"
     ></cur-select>
-    <div
-      v-if="isOsx && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through "Language & Region" in your system preferences pane.
+    <div v-if="isOsx && spellcheckerEnabled" class="description">
+      Additional languages may be added through "Language & Region" in your
+      system preferences pane, or by importing .dic and .aff files.
     </div>
-    <div
-      v-if="isWindows && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through "Language" in your "Time & language" settings.
+    <div v-if="isWindows && spellcheckerEnabled" class="description">
+      Additional languages may be added through "Language" in your "Time &
+      language" settings, or by importing .dic and .aff files.
     </div>
-    <div
-      v-if="isLinux && spellcheckerEnabled"
-      class="description"
-    >
-      Additional languages may be added through your system settings.
+    <div v-if="isLinux && spellcheckerEnabled" class="description">
+      Additional languages may be added through your system settings, or by
+      importing .dic and .aff files.
     </div>
     <div class="pref-spellchecker-import" v-if="!isOsx">
       <el-button size="small" @click="handleImportDictionary">
-        导入词典
+        Import Dictionary
       </el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { usePreferencesStore } from '@/stores'
-import Compound from '../common/compound'
-import CurSelect from '../common/select'
-import Bool from '../common/bool'
-import Separator from '../common/separator'
-import { isOsx, isLinux, isWindows } from '@/util'
-import { SpellChecker } from '@/spellchecker'
-import { getLanguageName } from '@/spellchecker/languageMap'
+import { SpellChecker } from "@/spellchecker";
+import { getLanguageName } from "@/spellchecker/languageMap";
+import { usePreferencesStore } from "@/stores";
+import { isLinux, isOsx, isWindows } from "@/util";
+import Bool from "../common/bool";
+import Compound from "../common/compound";
+import CurSelect from "../common/select";
+import Separator from "../common/separator";
 
 export default {
   components: {
     Bool,
     Compound,
     CurSelect,
-    Separator
+    Separator,
   },
-  data () {
-    this.isOsx = isOsx
-    this.isLinux = isLinux
-    this.isWindows = isWindows
+  data() {
+    this.isOsx = isOsx;
+    this.isLinux = isLinux;
+    this.isWindows = isWindows;
     return {
       availableDictionaries: [],
-      spellchecker: null
-    }
+      spellchecker: null,
+    };
   },
   computed: {
-    spellcheckerEnabled () { return usePreferencesStore().spellcheckerEnabled },
-    spellcheckerNoUnderline () { return usePreferencesStore().spellcheckerNoUnderline },
-    spellcheckerAutoDetectLanguage () { return usePreferencesStore().spellcheckerAutoDetectLanguage },
-    spellcheckerLanguage () { return usePreferencesStore().spellcheckerLanguage }
+    spellcheckerEnabled() {
+      return usePreferencesStore().spellcheckerEnabled;
+    },
+    spellcheckerNoUnderline() {
+      return usePreferencesStore().spellcheckerNoUnderline;
+    },
+    spellcheckerAutoDetectLanguage() {
+      return usePreferencesStore().spellcheckerAutoDetectLanguage;
+    },
+    spellcheckerLanguage() {
+      return usePreferencesStore().spellcheckerLanguage;
+    },
   },
-  created () {
+  created() {
     this.$nextTick(() => {
-      this.refreshDictionaryList()
-    })
+      this.refreshDictionaryList();
+    });
   },
   methods: {
-    getAvailableDictionaries () {
+    getAvailableDictionaries() {
       // Get available dictionaries from Electron's built-in spell checker
       if (!this.spellchecker) {
         // Create a new spell checker instance to get available dictionaries
-        this.spellchecker = new SpellChecker(false)
+        this.spellchecker = new SpellChecker(false);
       }
 
-      const dictionaries = this.spellchecker.getAvailableDictionaries()
-      return dictionaries.map(item => {
+      const dictionaries = this.spellchecker.getAvailableDictionaries();
+      return dictionaries.map((item) => {
         return {
           value: item,
-          label: getLanguageName(item)
-        }
-      })
+          label: getLanguageName(item),
+        };
+      });
     },
-    refreshDictionaryList () {
-      this.availableDictionaries = this.getAvailableDictionaries()
+    refreshDictionaryList() {
+      this.availableDictionaries = this.getAvailableDictionaries();
     },
-    async handleImportDictionary () {
-      const { dialog } = require('electron').remote || require('@electron/remote')
+    async handleImportDictionary() {
+      const { dialog } =
+        require("electron").remote || require("@electron/remote");
       const result = await dialog.showOpenDialog({
-        title: '选择词典文件',
+        title: "Select dictionary file (.dic)",
         filters: [
-          { name: 'Hunspell Dictionary', extensions: ['bdic'] }
+          { name: "Hunspell Dictionary", extensions: ["dic"] },
+          { name: "All Files", extensions: ["*"] }
         ],
-        properties: ['openFile']
-      })
+        properties: ["openFile"],
+      });
 
       if (result.canceled || !result.filePaths.length) {
-        return
+        return;
       }
 
-      const filePath = result.filePaths[0]
-      const spellchecker = new SpellChecker(false)
+      const filePath = result.filePaths[0];
+      const spellchecker = new SpellChecker(false);
 
-      const importResult = await spellchecker.importDictionary(filePath)
+      const importResult = await spellchecker.importDictionary(filePath);
 
       if (importResult.success) {
-        this.$message.success(importResult.message)
-        this.refreshDictionaryList()
+        this.$message.success(importResult.message);
+        this.refreshDictionaryList();
       } else {
-        this.$message.error(importResult.message)
+        this.$message.error(importResult.message);
       }
     },
-    ensureDictLanguage () {
-      const { spellcheckerLanguage } = this
+    ensureDictLanguage() {
+      const { spellcheckerLanguage } = this;
       if (!this.spellchecker) {
-        this.spellchecker = new SpellChecker(false)
+        this.spellchecker = new SpellChecker(false);
       }
 
-      const dicts = this.spellchecker.getAvailableDictionaries()
-      const index = dicts.findIndex(d => d === spellcheckerLanguage)
+      const dicts = this.spellchecker.getAvailableDictionaries();
+      const index = dicts.findIndex((d) => d === spellcheckerLanguage);
       if (index === -1 && dicts.length >= 1) {
         // Language is not supported, prefer OS language.
-        let lang = process.env.LANG
-        lang = lang ? lang.split('.')[0] : null
+        let lang = process.env.LANG;
+        lang = lang ? lang.split(".")[0] : null;
         if (lang) {
-          lang = lang.replace(/_/g, '-')
-          if (dicts.findIndex(d => d === lang) === -1) {
-            lang = null
+          lang = lang.replace(/_/g, "-");
+          if (dicts.findIndex((d) => d === lang) === -1) {
+            lang = null;
           }
         }
-        this.onSelectChange('spellcheckerLanguage', lang || dicts[0])
+        this.onSelectChange("spellcheckerLanguage", lang || dicts[0]);
       }
     },
 
-    handleSpellcheckerEnabled (value) {
+    handleSpellcheckerEnabled(value) {
       if (value) {
-        this.ensureDictLanguage()
+        this.ensureDictLanguage();
       }
-      this.onSelectChange('spellcheckerEnabled', value)
+      this.onSelectChange("spellcheckerEnabled", value);
     },
-    onSelectChange (type, value) {
-      usePreferencesStore().setSinglePreference({ type, value })
-    }
-  }
-}
+    onSelectChange(type, value) {
+      usePreferencesStore().setSinglePreference({ type, value });
+    },
+  },
+};
 </script>
 
 <style scoped>
-  .pref-spellchecker {
-    & div.description {
-      margin-top: 10px;
-      margin-bottom: 2px;
-      color: var(--iconColor);
-      font-size: 14px;
-    }
-    & h6.title {
-      font-weight: 400;
-      font-size: 1.1em;
-    }
-    & .pref-spellchecker-import {
-      margin-top: 16px;
-    }
+.pref-spellchecker {
+  & div.description {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    color: var(--iconColor);
+    font-size: 14px;
   }
-  .el-table, .el-table__expanded-cell {
-    background: var(--editorBgColor);
+  & h6.title {
+    font-weight: 400;
+    font-size: 1.1em;
   }
-  .el-table button {
-    padding: 1px 2px;
-    margin: 5px 10px;
-    color: var(--themeColor);
-    background: none;
-    border: none;
+  & .pref-spellchecker-import {
+    margin-top: 16px;
   }
-  .el-table button:hover,
-  .el-table button:active {
-    opacity: 0.9;
-    background: none;
-    border: none;
+}
+.el-table,
+.el-table__expanded-cell {
+  background: var(--editorBgColor);
+}
+.el-table button {
+  padding: 1px 2px;
+  margin: 5px 10px;
+  color: var(--themeColor);
+  background: none;
+  border: none;
+}
+.el-table button:hover,
+.el-table button:active {
+  opacity: 0.9;
+  background: none;
+  border: none;
+}
+.dictionary-group {
+  display: flex;
+  & button.el-button {
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    margin-left: 6px;
   }
-  .dictionary-group {
-    display: flex;
-    & button.el-button {
-      height: 30px;
-      width: 30px;
-      padding: 0;
-      margin-left: 6px;
-    }
-
-  }
+}
 </style>
 <style>
-  .pref-spellchecker .el-table table {
-    margin: 0;
-  }
-  .pref-spellchecker .el-table th,
-  .pref-spellchecker .el-table tr {
-    background: var(--editorBgColor);
-  }
-  .pref-spellchecker .el-table td,
-  .pref-spellchecker .el-table th.is-leaf {
-    border: 1px solid var(--tableBorderColor);
-  }
-  .pref-spellchecker .el-table--border::after,
-  .pref-spellchecker .el-table--group::after,
-  .pref-spellchecker .el-table::before,
-  .pref-spellchecker .el-table__fixed-right::before,
-  .pref-spellchecker .el-table__fixed::before {
-    background: var(--tableBorderColor);
-  }
-  .pref-spellchecker .el-table__body tr.hover-row.current-row>td,
-  .pref-spellchecker .el-table__body tr.hover-row.el-table__row--striped.current-row>td,
-  .pref-spellchecker .el-table__body tr.hover-row.el-table__row--striped>td,
-  .pref-spellchecker .el-table__body tr.hover-row>td {
-    background: var(--selectionColor);
-  }
+.pref-spellchecker .el-table table {
+  margin: 0;
+}
+.pref-spellchecker .el-table th,
+.pref-spellchecker .el-table tr {
+  background: var(--editorBgColor);
+}
+.pref-spellchecker .el-table td,
+.pref-spellchecker .el-table th.is-leaf {
+  border: 1px solid var(--tableBorderColor);
+}
+.pref-spellchecker .el-table--border::after,
+.pref-spellchecker .el-table--group::after,
+.pref-spellchecker .el-table::before,
+.pref-spellchecker .el-table__fixed-right::before,
+.pref-spellchecker .el-table__fixed::before {
+  background: var(--tableBorderColor);
+}
+.pref-spellchecker .el-table__body tr.hover-row.current-row > td,
+.pref-spellchecker
+  .el-table__body
+  tr.hover-row.el-table__row--striped.current-row
+  > td,
+.pref-spellchecker .el-table__body tr.hover-row.el-table__row--striped > td,
+.pref-spellchecker .el-table__body tr.hover-row > td {
+  background: var(--selectionColor);
+}
 
- .pref-spellchecker li.el-select-dropdown__item {
-    color: var(--editorColor);
-    height: 30px;
+.pref-spellchecker li.el-select-dropdown__item {
+  color: var(--editorColor);
+  height: 30px;
+}
+.pref-spellchecker li.el-select-dropdown__item.hover,
+li.el-select-dropdown__item:hover {
+  background: var(--floatHoverColor);
+}
+.pref-spellchecker div.el-select-dropdown {
+  background: var(--floatBgColor);
+  border-color: var(--floatBorderColor);
+  & .popper__arrow {
+    display: none;
   }
-  .pref-spellchecker li.el-select-dropdown__item.hover, li.el-select-dropdown__item:hover {
-    background: var(--floatHoverColor);
-  }
-  .pref-spellchecker div.el-select-dropdown {
-    background: var(--floatBgColor);
-    border-color: var(--floatBorderColor);
-    & .popper__arrow {
-      display: none;
-    }
-  }
-  .pref-spellchecker input.el-input__inner {
-    height: 30px;
-    background: transparent;
-    color: var(--editorColor);
-    border-color: var(--editorColor10);
-  }
-  .pref-spellchecker .el-input__icon,
-  .pref-spellchecker .el-input__inner {
-    line-height: 30px;
-  }
+}
+.pref-spellchecker input.el-input__inner {
+  height: 30px;
+  background: transparent;
+  color: var(--editorColor);
+  border-color: var(--editorColor10);
+}
+.pref-spellchecker .el-input__icon,
+.pref-spellchecker .el-input__inner {
+  line-height: 30px;
+}
 </style>

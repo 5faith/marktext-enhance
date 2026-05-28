@@ -57,11 +57,8 @@ export default (spellchecker, selectedWord, wordSuggestions, replaceCallback) =>
 
       spellingSubmenu.push(new RemoteMenuItem({
         label: 'Add to Dictionary',
-        click (menuItem, targetWindow) {
-          // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          if (targetWindow && targetWindow.webContents) {
-            targetWindow.webContents.replaceMisspelling(selectedWord)
-          }
+        click () {
+          // Add word to dictionary using electron-hunspell
           spellchecker.addToDictionary(selectedWord)
             .catch(error => {
               log.error(`Error while adding "${selectedWord}" to dictionary.`)
@@ -73,11 +70,8 @@ export default (spellchecker, selectedWord, wordSuggestions, replaceCallback) =>
       // Ignore word for current runtime for all languages.
       spellingSubmenu.push(new RemoteMenuItem({
         label: 'Ignore',
-        click (menuItem, targetWindow) {
-          // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          if (targetWindow && targetWindow.webContents) {
-            targetWindow.webContents.replaceMisspelling(selectedWord)
-          }
+        click () {
+          // Ignore word using electron-hunspell
           spellchecker.ignoreWord(selectedWord)
         }
       }))
@@ -87,11 +81,8 @@ export default (spellchecker, selectedWord, wordSuggestions, replaceCallback) =>
         label: 'Remove from Dictionary',
         // NOTE: We cannot validate that the word is inside the user dictionary.
         enabled: !!selectedWord && selectedWord.length >= 2,
-        click (menuItem, targetWindow) {
-          // NOTE: Need to notify Chromium to invalidate the spelling underline.
-          if (targetWindow && targetWindow.webContents) {
-            targetWindow.webContents.replaceMisspelling(selectedWord)
-          }
+        click () {
+          // Remove word from dictionary using electron-hunspell
           spellchecker.removeFromDictionary(selectedWord)
             .catch(error => {
               log.error(`Error while removing "${selectedWord}" from dictionary.`)

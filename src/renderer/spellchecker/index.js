@@ -1,9 +1,10 @@
 import { cloneObj } from '@/util'
 import fs from 'fs'
 import path from 'path'
+import { SpellCheckerProvider, attachSpellCheckProvider } from 'electron-hunspell'
 
 // Source: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/common/model/wordHelper.ts
-// /(-?\d*\.\d\w*)|([^\`\~\!\@\#\$\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/
+// /(-?\d*\.\d\w*)|([^\`\~\!\@\#\$\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/?\s]+)/
 /* eslint-disable no-useless-escape */
 const WORD_SEPARATORS = /(?:[`~!@#$%^&*()-=+[{\]}\\|;:'",\.<>\/?\s])/g
 const WORD_DEFINITION = /(?:-?\d*\.\d\w*)|(?:[^`~!@#$%^&*()-=+[{\]}\\|;:'",\.<>\/?\s]+)/g
@@ -61,17 +62,6 @@ export const validateLineCursor = selection => {
 }
 
 /**
- * Get the webContents from the current window.
- * @returns {Electron.WebContents|null}
- */
-const getWebContents = () => {
-  if (global.marktext && global.marktext.window) {
-    return global.marktext.window.webContents
-  }
-  return null
-}
-
-/**
  * Returns a list of local available Hunspell dictionaries.
  * @deprecated Use getAvailableDictionaries instead
  * @returns {string[]} List of available Hunspell dictionary language codes.
@@ -101,11 +91,38 @@ export const getDictionaryPath = () => {
 }
 
 /**
- * High level spell checker API using Electron's built-in spellchecker.
+ * Get the path to the resources hunspell_dictionaries directory.
+ * @returns {string}
+ */
+const getResourcesDictPath = () => {
+  // __static is defined in vite.config.js:
+  //   Dev mode: <project>/static
+  //   Production: <app>/resources
+  if (typeof __static !== 'undefined') {
+    return path.join(__static, 'dictionaries')
+  }
+  return path.join(process.resourcesPath || '', 'hunspell_dictionaries')
+}
+
+/**
+ * Get the path to the userData dictionaries directory.
+ * @returns {string}
+ */
+const getUserDataDictPath = () => {
+  // global.marktext.paths.userDataPath is set during bootstrap
+  const userDataPath = global.marktext?.paths?.userDataPath
+  if (userDataPath) {
+    return path.join(userDataPath, 'dictionaries')
+  }
+  return ''
+}
+
+/**
+ * High level spell checker API using electron-hunspell.
  *
  * Language providers:
- *  - macOS: NSSpellChecker (default) or Hunspell
- *  - Linux and Windows: Hunspell
+ *  - Uses hunspell-asm (WebAssembly) for cross-platform spell checking
+ *  - Supports .dic and .aff dictionary formats directly
  */
 export class SpellChecker {
   /**
@@ -117,39 +134,57 @@ export class SpellChecker {
     this.isEnabled = false
     this.fallbackLang = null
     this._lang = ''
-    this.isHunspell = false // Always false for Electron built-in
+    this.isHunspell = false // Always false for electron-hunspell (not Electron built-in)
 
-    // Initialize spell check provider. If spell check is not enabled don't
-    // initialize the handler.
-    if (enabled) {
-      this._initSpellchecker()
-    }
+    // electron-hunspell instances
+    this._provider = null
+    this._attached = null
+    this._loadedDictionaries = new Set()
+    this._initPromise = null
+
+    // NOTE: Do NOT call _initSpellchecker() here without await.
+    // Initialization is deferred to init() / enableSpellchecker() which await it.
   }
 
-  _initSpellchecker () {
-    const webContents = getWebContents()
-    if (!webContents) {
-      return
+  async _initSpellchecker () {
+    if (this._initPromise) {
+      return this._initPromise
     }
 
-    // Enable the spell checker on the session
-    webContents.session.setSpellCheckerEnabled(true)
+    this._initPromise = (async () => {
+      // Initialize electron-hunspell provider
+      // NOTE: attachSpellCheckProvider uses webFrame (renderer built-in),
+      // NOT webContents. No need to check global.marktext.window.
+      this._provider = new SpellCheckerProvider()
+      await this._provider.initialize()
 
-    // Check available languages and pick a valid one
-    const available = webContents.session.availableSpellCheckerLanguages || []
-    let lang = 'en-US'
-    if (!available.includes(lang)) {
-      lang = available[0] || ''
-    }
+      // Attach provider to webFrame
+      this._attached = await attachSpellCheckProvider(this._provider)
 
-    if (lang) {
-      try {
-        webContents.session.setSpellCheckerLanguages([lang])
-        this._lang = lang
-        this.isEnabled = true
-      } catch (e) {
-        console.error('Failed to init spell checker:', e.message)
-      }
+      // Load default dictionary (en_US)
+      await this._loadDefaultDictionary()
+
+      this.isEnabled = true
+    })()
+
+    await this._initPromise
+  }
+
+  /**
+   * Load the default en_US dictionary from resources.
+   */
+  async _loadDefaultDictionary () {
+    const resourcesDictPath = getResourcesDictPath()
+    const dicPath = path.join(resourcesDictPath, 'en_US.dic')
+    const affPath = path.join(resourcesDictPath, 'en_US.aff')
+
+    if (fs.existsSync(dicPath) && fs.existsSync(affPath)) {
+      const dicBuffer = fs.readFileSync(dicPath)
+      const affBuffer = fs.readFileSync(affPath)
+
+      await this._provider.loadDictionary('en-US', dicBuffer, affBuffer)
+      this._loadedDictionaries.add('en-US')
+      this._lang = 'en-US'
     }
   }
 
@@ -158,8 +193,8 @@ export class SpellChecker {
    *
    * @param {string} lang 4-letter language ISO-code.
    * @param {boolean} automaticallyIdentifyLanguages Whether we should try to identify the typed language.
-   * @param {boolean} isPassiveMode Should we highlight misspelled words? (Not supported in Electron's spellchecker)
-   * @param {[HTMLElement]} container The optional container (ignored - not needed for Electron spellchecker)
+   * @param {boolean} isPassiveMode Should we highlight misspelled words? (ignored)
+   * @param {[HTMLElement]} container The optional container (ignored)
    * @returns {string} Returns current spell checker language.
    */
   async init (lang = '', _automaticallyIdentifyLanguages = false, _isPassiveMode = false, _container = null) {
@@ -167,7 +202,7 @@ export class SpellChecker {
       return this.lang
     }
 
-    this._initSpellchecker()
+    await this._initSpellchecker()
 
     if (!lang && !_automaticallyIdentifyLanguages) {
       throw new Error('Init: Either language or automatic language detection must be set.')
@@ -191,9 +226,6 @@ export class SpellChecker {
   /**
    * Enable spell checker.
    *
-   * NOTE: Using `undefined` will use the existing values.
-   * NOTE: When spell checker is already enabled this method has no effect.
-   *
    * @param {[string]} lang 4-letter language ISO-code.
    * @param {[boolean]} automaticallyIdentifyLanguages Whether we should try to identify the typed language. (ignored)
    * @param {[boolean]} isPassiveMode Should we highlight misspelled words? (ignored)
@@ -203,13 +235,8 @@ export class SpellChecker {
       return true
     }
 
-    const webContents = getWebContents()
-    if (!webContents) {
-      return false
-    }
-
     try {
-      webContents.session.setSpellCheckerEnabled(true)
+      await this._initSpellchecker()
 
       if (lang) {
         await this._switchLanguage(lang)
@@ -236,9 +263,8 @@ export class SpellChecker {
       return
     }
 
-    const webContents = getWebContents()
-    if (webContents) {
-      webContents.session.setSpellCheckerEnabled(false)
+    if (this._attached) {
+      this._attached.unsubscribe()
     }
     this.isEnabled = false
   }
@@ -249,43 +275,28 @@ export class SpellChecker {
    * @param {string} word The word to add.
    */
   async addToDictionary (word) {
-    if (!this.isEnabled) {
+    if (!this.isEnabled || !this._provider) {
       return false
     }
 
-    const webContents = getWebContents()
-    if (webContents) {
-      try {
-        await webContents.session.addWordToSpellCheckerDictionary(word)
-        return true
-      } catch (error) {
-        console.error('Failed to add word to dictionary:', error)
-        return false
-      }
+    try {
+      await this._provider.addWord(this._lang, word)
+      return true
+    } catch (error) {
+      console.error('Failed to add word to dictionary:', error)
+      return false
     }
-    return false
   }
 
   /**
    * Remove a word from the user dictionary.
+   * Note: electron-hunspell doesn't support removing words, this is a no-op.
    *
    * @param {string} word The word to remove.
    */
   async removeFromDictionary (word) {
-    if (!this.isEnabled) {
-      return false
-    }
-
-    const webContents = getWebContents()
-    if (webContents) {
-      try {
-        await webContents.session.removeWordFromSpellCheckerDictionary(word)
-        return true
-      } catch (error) {
-        console.error('Failed to remove word from dictionary:', error)
-        return false
-      }
-    }
+    // electron-hunspell doesn't support removing words from dictionary
+    // This is a limitation of the hunspell-asm implementation
     return false
   }
 
@@ -295,43 +306,55 @@ export class SpellChecker {
    * @param {string} word The word to ignore.
    */
   ignoreWord (_word) {
-    // Electron doesn't support ignore word, but we can add it to dictionary temporarily
-    // For now, this is a no-op as Electron spellchecker doesn't have ignore list
+    // electron-hunspell doesn't have a built-in ignore list
+    // For now, this is a no-op
   }
 
   /**
-   * Import a dictionary file.
+   * Import a dictionary file pair (.dic and .aff).
    *
-   * @param {string} sourcePath The path to the .bdic file to import.
+   * @param {string} sourcePath The path to the .dic file to import.
    * @returns {Promise<{success: boolean, message: string}>}
    */
   async importDictionary (sourcePath) {
     // Validate file extension
-    if (!sourcePath.endsWith('.bdic')) {
-      return { success: false, message: '仅支持 .bdic 格式的词典文件' }
+    if (!sourcePath.endsWith('.dic')) {
+      return { success: false, message: '仅支持 .dic 格式的词典文件' }
     }
 
-    // Validate file size
-    const stats = fs.statSync(sourcePath)
-    if (stats.size <= 8192) {
+    // Check if .aff file exists
+    const affPath = sourcePath.replace(/\.dic$/, '.aff')
+    if (!fs.existsSync(affPath)) {
+      return { success: false, message: '需要同时提供 .dic 和 .aff 文件' }
+    }
+
+    // Validate file sizes
+    const dicStats = fs.statSync(sourcePath)
+    if (dicStats.size <= 8192) {
+      return { success: false, message: '词典文件无效或已损坏' }
+    }
+
+    const affStats = fs.statSync(affPath)
+    if (affStats.size <= 100) {
       return { success: false, message: '词典文件无效或已损坏' }
     }
 
     // Get userData dictionaries path
-    const userDataDictPath = path.join(
-      global.marktext?.paths?.userDataPath || '',
-      'dictionaries'
-    )
+    const userDataDictPath = getUserDataDictPath()
 
     // Ensure directory exists
     if (!fs.existsSync(userDataDictPath)) {
       fs.mkdirSync(userDataDictPath, { recursive: true })
     }
 
-    // Copy file
+    // Copy files
     const filename = path.basename(sourcePath)
-    const destPath = path.join(userDataDictPath, filename)
-    fs.copyFileSync(sourcePath, destPath)
+    const langCode = filename.replace(/\.dic$/, '')
+    const destDicPath = path.join(userDataDictPath, `${langCode}.dic`)
+    const destAffPath = path.join(userDataDictPath, `${langCode}.aff`)
+
+    fs.copyFileSync(sourcePath, destDicPath)
+    fs.copyFileSync(affPath, destAffPath)
 
     return { success: true, message: '词典导入成功' }
   }
@@ -342,10 +365,7 @@ export class SpellChecker {
    * @returns {string} The path to user dictionaries directory.
    */
   getUserDictionariesPath () {
-    return path.join(
-      global.marktext?.paths?.userDataPath || '',
-      'dictionaries'
-    )
+    return getUserDataDictPath()
   }
 
   /**
@@ -353,36 +373,41 @@ export class SpellChecker {
    * @returns {string[]} Available dictionary languages.
    */
   getAvailableDictionaries () {
-    const webContents = getWebContents()
-    if (!webContents) {
-      return []
-    }
+    const resourcesDictPath = getResourcesDictPath()
+    const userDictPath = getUserDataDictPath()
 
-    const available = webContents.session.availableSpellCheckerLanguages || []
+    const available = []
 
-    // Scan userData/dictionaries/ for user-imported dictionaries
-    const userDataDictPath = path.join(
-      global.marktext?.paths?.userDataPath || '',
-      'dictionaries'
-    )
-
-    const userDicts = []
-    if (fs.existsSync(userDataDictPath)) {
-      const files = fs.readdirSync(userDataDictPath)
+    // Scan resources/static directory for built-in dictionaries
+    if (fs.existsSync(resourcesDictPath)) {
+      const files = fs.readdirSync(resourcesDictPath)
       files.forEach(filename => {
-        const match = filename.match(/^([a-z]{2}(?:[-][A-Z]{2})?)\.bdic$/)
-        if (match && match[1] && !available.includes(match[1])) {
-          userDicts.push(match[1])
+        const match = filename.match(/^([a-z]{2}(?:[-_][A-Z]{2})?)\.dic$/)
+        if (match && match[1]) {
+          const langCode = match[1].replace('_', '-')
+          available.push(langCode)
         }
       })
     }
 
-    return [...new Set([...available, ...userDicts])]
+    // Scan userData/dictionaries/ for user-imported dictionaries
+    if (userDictPath && fs.existsSync(userDictPath)) {
+      const files = fs.readdirSync(userDictPath)
+      files.forEach(filename => {
+        const match = filename.match(/^([a-z]{2}(?:[-_][A-Z]{2})?)\.dic$/)
+        if (match && match[1] && !available.includes(match[1])) {
+          const langCode = match[1].replace('_', '-')
+          available.push(langCode)
+        }
+      })
+    }
+
+    return [...new Set(available)]
   }
 
   /**
    * Is the spellchecker trying to detect the typed language automatically?
-   * Note: Electron spellchecker does not support automatic language detection.
+   * Note: electron-hunspell does not support automatic language detection.
    */
   get automaticallyIdentifyLanguages () {
     return false
@@ -392,13 +417,13 @@ export class SpellChecker {
    * Is the spellchecker trying to detect the typed language automatically?
    */
   set automaticallyIdentifyLanguages (value) {
-    // Electron spellchecker does not support automatic language detection
+    // electron-hunspell does not support automatic language detection
     // No-op
   }
 
   /**
    * Returns true if not misspelled words should be highlighted.
-   * Note: Electron spellchecker always highlights misspelled words.
+   * Note: electron-hunspell always highlights misspelled words.
    */
   get isPassiveMode () {
     return false
@@ -408,7 +433,7 @@ export class SpellChecker {
    * Should we highlight misspelled words.
    */
   set isPassiveMode (value) {
-    // Electron spellchecker always highlights misspelled words
+    // electron-hunspell always highlights misspelled words
     // No-op
   }
 
@@ -423,12 +448,7 @@ export class SpellChecker {
    * Whether the spell checker is in an invalid state and therefore deactivated.
    */
   get isInvalidState () {
-    if (!this.isEnabled) {
-      return false
-    }
-
-    const webContents = getWebContents()
-    return !webContents || !webContents.session.isSpellCheckerEnabled
+    return !this.isEnabled || !this._provider || !this._attached
   }
 
   /**
@@ -456,32 +476,39 @@ export class SpellChecker {
   /**
    * Is the given word misspelled.
    *
-   * NOTE: Electron's spellchecker doesn't expose a direct API for checking
-   * individual words. This method relies on context menu data from the renderer.
-   * For standalone checking, it always returns false.
-   *
-   * @param {string} _word The word to check (unused - requires context menu data).
+   * @param {string} word The word to check.
+   * @returns {boolean} True if the word is misspelled.
    */
-  isMisspelled (_word) {
-    if (!this.isEnabled) {
+  async isMisspelled (word) {
+    if (!this.isEnabled || !this._provider) {
       return false
     }
-    // Electron doesn't expose isMisspelled directly
-    // This would need to be called with context menu data from the renderer
-    return false
+
+    try {
+      const result = await this._provider.spell(word)
+      return !result // spell() returns true if correct, false if misspelled
+    } catch (e) {
+      return false
+    }
   }
 
   /**
-   * Get corrections.
+   * Get corrections for a misspelled word.
    *
-   * NOTE: Electron's spellchecker doesn't expose suggestions directly.
-   * This method relies on context menu data from the renderer.
-   *
-   * @param {string} _word The word to get suggestion for (unused - requires context menu data).
-   * @returns {string[]} A array of suggestions.
+   * @param {string} word The word to get suggestions for.
+   * @returns {string[]} An array of suggestions.
    */
-  async getWordSuggestion (_word) {
-    return []
+  async getWordSuggestion (word) {
+    if (!this.isEnabled || !this._provider) {
+      return []
+    }
+
+    try {
+      const suggestions = await this._provider.getSuggestion(word)
+      return Array.isArray(suggestions) ? suggestions : []
+    } catch (e) {
+      return []
+    }
   }
 
   /**
@@ -549,27 +576,93 @@ export class SpellChecker {
    * @returns {string|null} Return the language on success or null.
    */
   async _switchLanguage (lang) {
-    const webContents = getWebContents()
-    if (!webContents) {
+    if (!this._provider || !this._attached) {
       return null
     }
 
-    const available = webContents.session.availableSpellCheckerLanguages || []
-    if (!available.includes(lang)) {
-      // Try to find a fallback: en-US > en > first available
-      const fallback = available.find(l => l.startsWith('en')) || available[0]
-      if (!fallback) {
-        return null
+    // Check if dictionary is already loaded
+    if (!this._loadedDictionaries.has(lang)) {
+      // Try to load the dictionary
+      const loaded = await this._loadDictionary(lang)
+      if (!loaded) {
+        // Try fallback: en-US > en > first available
+        const available = this.getAvailableDictionaries()
+        const fallback = available.find(l => l.startsWith('en')) || available[0]
+        if (!fallback) {
+          return null
+        }
+        lang = fallback
+
+        if (!this._loadedDictionaries.has(lang)) {
+          const loaded = await this._loadDictionary(lang)
+          if (!loaded) {
+            return null
+          }
+        }
       }
-      lang = fallback
     }
 
     try {
-      webContents.session.setSpellCheckerLanguages([lang])
+      await this._attached.switchLanguage(lang)
       this._lang = lang
       return this._lang
     } catch (e) {
       return null
+    }
+  }
+
+  /**
+   * Load a dictionary from disk.
+   *
+   * @param {string} lang Language code (e.g., "en-US")
+   * @returns {boolean} True if dictionary was loaded successfully
+   */
+  async _loadDictionary (lang) {
+    if (!this._provider) {
+      return false
+    }
+
+    // Convert language code to filename format (e.g., "en-US" -> "en_US")
+    const filename = lang.replace('-', '_')
+
+    // Check resources directory first
+    const resourcesDictPath = getResourcesDictPath()
+    let dicPath = path.join(resourcesDictPath, `${filename}.dic`)
+    let affPath = path.join(resourcesDictPath, `${filename}.aff`)
+
+    // If not found, try with hyphen format
+    if (!fs.existsSync(dicPath) || !fs.existsSync(affPath)) {
+      dicPath = path.join(resourcesDictPath, `${lang}.dic`)
+      affPath = path.join(resourcesDictPath, `${lang}.aff`)
+    }
+
+    // If not in resources, check userData directory
+    if (!fs.existsSync(dicPath) || !fs.existsSync(affPath)) {
+      const userDictPath = getUserDataDictPath()
+      dicPath = path.join(userDictPath, `${filename}.dic`)
+      affPath = path.join(userDictPath, `${filename}.aff`)
+
+      // If not found, try with hyphen format
+      if (!fs.existsSync(dicPath) || !fs.existsSync(affPath)) {
+        dicPath = path.join(userDictPath, `${lang}.dic`)
+        affPath = path.join(userDictPath, `${lang}.aff`)
+      }
+    }
+
+    if (!fs.existsSync(dicPath) || !fs.existsSync(affPath)) {
+      return false
+    }
+
+    try {
+      const dicBuffer = fs.readFileSync(dicPath)
+      const affBuffer = fs.readFileSync(affPath)
+
+      await this._provider.loadDictionary(lang, dicBuffer, affBuffer)
+      this._loadedDictionaries.add(lang)
+      return true
+    } catch (e) {
+      console.error(`Failed to load dictionary for ${lang}:`, e.message)
+      return false
     }
   }
 

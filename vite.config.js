@@ -80,7 +80,8 @@ export default defineConfig(({ command }) => {
         'child_process': resolve(__dirname, 'src/renderer/shims/child_process.js'),
         'os': resolve(__dirname, 'src/renderer/shims/os.js'),
         'crypto': resolve(__dirname, 'src/renderer/shims/crypto.js'),
-        'electron': resolve(__dirname, 'src/renderer/shims/electron.js')
+        'electron': resolve(__dirname, 'src/renderer/shims/electron.js'),
+        'electron-hunspell': resolve(__dirname, 'src/renderer/shims/electron-hunspell.js')
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
       dedupe: ['vue']
@@ -233,10 +234,10 @@ export default defineConfig(({ command }) => {
     assetsInclude: ["**/*.md", "**/*.html"],
     optimizeDeps: {
       include: ['snapsvg', 'path-browserify'],
-      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep']
+      exclude: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'vscode-ripgrep', 'electron-hunspell', 'hunspell-asm', 'emscripten-wasm-loader']
     },
     ssr: {
-      external: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker']
+      external: ['keytar', 'fontmanager-redux', 'native-keymap', 'ced', 'cld', '@hfelix/spellchecker', 'keyboard-layout', 'electron-log', 'fs-extra', 'graceful-fs', 'chokidar', '@hfelix/electron-spellchecker', 'electron-hunspell', 'hunspell-asm', 'emscripten-wasm-loader']
     }
   }
 })

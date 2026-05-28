@@ -183,21 +183,18 @@ export default {
     // Helper to ignore changes when the spell check provider was changed in settings.
     this.spellcheckerIgnorChanges = false
 
-    return {
-      selectionChange: null,
-      editor: null,
-      pathname: '',
-      isShowClose: false,
-      dialogTableVisible: false,
-      imageViewerVisible: false,
-      tableChecker: {
-        rows: 4,
-        columns: 3
-      },
-      // Store spell check suggestions from Electron's context-menu event
-      lastSpellcheckSuggestions: [],
-      lastMisspelledWord: ''
-    }
+      return {
+        selectionChange: null,
+        editor: null,
+        pathname: '',
+        isShowClose: false,
+        dialogTableVisible: false,
+        imageViewerVisible: false,
+        tableChecker: {
+          rows: 4,
+          columns: 3
+        }
+      }
   },
 
   watch: {
@@ -622,15 +619,8 @@ export default {
         this.initSpellchecker()
       }
 
-      // Listen for Electron's context-menu event to get spell check suggestions
-      // This is needed for the built-in spell checker to provide suggestions
-      const { getCurrentWindow } = require('@electron/remote')
-      const win = getCurrentWindow()
-      win.webContents.on('context-menu', (event, params) => {
-        // Store spell check suggestions for use in our custom context menu
-        this.lastSpellcheckSuggestions = params.dictionarySuggestions || []
-        this.lastMisspelledWord = params.misspelledWord || ''
-      })
+      // Note: electron-hunspell handles spell checking through webFrame.setSpellCheckProvider
+      // No need to listen for context-menu events for suggestions
 
       if (typewriter) {
         this.scrollToCursor()
@@ -730,7 +720,7 @@ export default {
         useEditorStore().selectionFormats(formats)
       })
 
-      this.editor.on('contextmenu', (event, selection) => {
+      this.editor.on('contextmenu', async (event, selection) => {
         const { isEnabled } = this.spellchecker
 
         // NOTE: Right clicking on a misspelled word select the whole word
@@ -746,18 +736,21 @@ export default {
             // Translate offsets into a cursor with the given line.
             const wordRange = offsetToWordCursor(selection, left, right)
 
-            // Use spell suggestions from Electron's context-menu event
-            const wordSuggestions = this.lastSpellcheckSuggestions || []
-            const misspelledWord = this.lastMisspelledWord
-
-            // Check if this word matches the misspelled word from the last context-menu event
-            if (misspelledWord && word === misspelledWord && wordSuggestions.length > 0) {
-              const replaceCallback = replacement => {
-                // wordRange := replace this range with the replacement
-                this.editor.replaceWordInline(selection, wordRange, replacement, true)
+            // Use electron-hunspell to check if word is misspelled and get suggestions
+            try {
+              const isMisspelled = await this.spellchecker.isMisspelled(word)
+              if (isMisspelled) {
+                const wordSuggestions = await this.spellchecker.getWordSuggestion(word)
+                const replaceCallback = replacement => {
+                  // wordRange := replace this range with the replacement
+                  this.editor.replaceWordInline(selection, wordRange, replacement, true)
+                }
+                showContextMenu(event, selection, this.spellchecker, word, wordSuggestions || [], replaceCallback)
+              } else {
+                showContextMenu(event, selection, this.spellchecker, word, null, null)
               }
-              showContextMenu(event, selection, this.spellchecker, word, wordSuggestions, replaceCallback)
-            } else {
+            } catch (e) {
+              // Fallback: show context menu without spelling
               showContextMenu(event, selection, this.spellchecker, word, null, null)
             }
             return
