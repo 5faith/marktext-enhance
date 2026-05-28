@@ -1,0 +1,6 @@
+change: builtin-spellchecker-dictionaries
+phase: build
+schema: spec-driven
+isolation: branch
+build_mode: executing-plans
+plan: docs/superpowers/plans/2026-05-28-builtin-spellchecker-dictionaries.md
