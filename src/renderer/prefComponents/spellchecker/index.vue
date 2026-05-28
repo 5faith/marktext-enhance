@@ -53,6 +53,11 @@
     >
       Additional languages may be added through your system settings.
     </div>
+    <div class="pref-spellchecker-import" v-if="!isOsx">
+      <el-button size="small" @click="handleImportDictionary">
+        导入词典
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -112,6 +117,32 @@ export default {
     refreshDictionaryList () {
       this.availableDictionaries = this.getAvailableDictionaries()
     },
+    async handleImportDictionary () {
+      const { dialog } = require('electron').remote || require('@electron/remote')
+      const result = await dialog.showOpenDialog({
+        title: '选择词典文件',
+        filters: [
+          { name: 'Hunspell Dictionary', extensions: ['bdic'] }
+        ],
+        properties: ['openFile']
+      })
+
+      if (result.canceled || !result.filePaths.length) {
+        return
+      }
+
+      const filePath = result.filePaths[0]
+      const spellchecker = new SpellChecker(false)
+
+      const importResult = await spellchecker.importDictionary(filePath)
+
+      if (importResult.success) {
+        this.$message.success(importResult.message)
+        this.refreshDictionaryList()
+      } else {
+        this.$message.error(importResult.message)
+      }
+    },
     ensureDictLanguage () {
       const { spellcheckerLanguage } = this
       if (!this.spellchecker) {
@@ -158,6 +189,9 @@ export default {
     & h6.title {
       font-weight: 400;
       font-size: 1.1em;
+    }
+    & .pref-spellchecker-import {
+      margin-top: 16px;
     }
   }
   .el-table, .el-table__expanded-cell {

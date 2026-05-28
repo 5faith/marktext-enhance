@@ -23,10 +23,10 @@
 
 ## 5. 更新偏好设置 UI
 
-- [ ] 5.1 在 `src/renderer/prefComponents/spellchecker/index.vue` 中添加"导入词典"按钮
-- [ ] 5.2 实现文件选择器，过滤 `.bdic` 格式
-- [ ] 5.3 调用导入方法并处理成功/失败提示
-- [ ] 5.4 导入成功后刷新语言选择下拉框
+- [x] 5.1 在 `src/renderer/prefComponents/spellchecker/index.vue` 中添加"导入词典"按钮
+- [x] 5.2 实现文件选择器，过滤 `.bdic` 格式
+- [x] 5.3 调用导入方法并处理成功/失败提示
+- [x] 5.4 导入成功后刷新语言选择下拉框
 
 ## 6. 测试验证
 
