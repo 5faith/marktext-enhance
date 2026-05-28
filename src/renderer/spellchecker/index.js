@@ -1,4 +1,6 @@
 import { cloneObj } from '@/util'
+import fs from 'fs'
+import path from 'path'
 
 // Source: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/common/model/wordHelper.ts
 // /(-?\d*\.\d\w*)|([^\`\~\!\@\#\$\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/
@@ -133,11 +135,22 @@ export class SpellChecker {
     // Enable the spell checker on the session
     webContents.session.setSpellCheckerEnabled(true)
 
-    // Set default language
-    this._lang = 'en-US'
-    webContents.session.setSpellCheckerLanguages([this._lang])
+    // Check available languages and pick a valid one
+    const available = webContents.session.availableSpellCheckerLanguages || []
+    let lang = 'en-US'
+    if (!available.includes(lang)) {
+      lang = available[0] || ''
+    }
 
-    this.isEnabled = true
+    if (lang) {
+      try {
+        webContents.session.setSpellCheckerLanguages([lang])
+        this._lang = lang
+        this.isEnabled = true
+      } catch (e) {
+        console.error('Failed to init spell checker:', e.message)
+      }
+    }
   }
 
   /**
@@ -296,7 +309,26 @@ export class SpellChecker {
       return []
     }
 
-    return webContents.session.availableSpellCheckerLanguages || []
+    const available = webContents.session.availableSpellCheckerLanguages || []
+
+    // Scan userData/dictionaries/ for user-imported dictionaries
+    const userDataDictPath = path.join(
+      global.marktext?.paths?.userDataPath || '',
+      'dictionaries'
+    )
+
+    const userDicts = []
+    if (fs.existsSync(userDataDictPath)) {
+      const files = fs.readdirSync(userDataDictPath)
+      files.forEach(filename => {
+        const match = filename.match(/^([a-z]{2}(?:[-][A-Z]{2})?)\.bdic$/)
+        if (match && match[1] && !available.includes(match[1])) {
+          userDicts.push(match[1])
+        }
+      })
+    }
+
+    return [...new Set([...available, ...userDicts])]
   }
 
   /**
@@ -471,6 +503,16 @@ export class SpellChecker {
     const webContents = getWebContents()
     if (!webContents) {
       return null
+    }
+
+    const available = webContents.session.availableSpellCheckerLanguages || []
+    if (!available.includes(lang)) {
+      // Try to find a fallback: en-US > en > first available
+      const fallback = available.find(l => l.startsWith('en')) || available[0]
+      if (!fallback) {
+        return null
+      }
+      lang = fallback
     }
 
     try {

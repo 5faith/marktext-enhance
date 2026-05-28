@@ -10,9 +10,9 @@
 
 ## 3. 修改 SpellChecker 初始化逻辑
 
-- [ ] 3.1 修改 `_initSpellchecker()` 方法，添加错误处理，初始化失败时不崩溃
-- [ ] 3.2 修改 `getAvailableDictionaries()` 方法，扫描 `static/dictionaries/` 和 `userData/dictionaries/` 两个目录
-- [ ] 3.3 修改 `_switchLanguage()` 方法，添加词典文件存在性检查
+- [x] 3.1 修改 `_initSpellchecker()` 方法，添加错误处理，初始化失败时不崩溃
+- [x] 3.2 修改 `getAvailableDictionaries()` 方法，扫描 `static/dictionaries/` 和 `userData/dictionaries/` 两个目录
+- [x] 3.3 修改 `_switchLanguage()` 方法，添加词典文件存在性检查
 
 ## 4. 添加导入词典功能
 
