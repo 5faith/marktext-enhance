@@ -124,8 +124,7 @@ export default {
       this.availableDictionaries = this.getAvailableDictionaries();
     },
     async handleImportDictionary() {
-      const { dialog } =
-        require("electron").remote || require("@electron/remote");
+      const { dialog } = require("@electron/remote");
       const result = await dialog.showOpenDialog({
         title: "Select dictionary file (.dic or .aff)",
         filters: [
@@ -142,16 +141,19 @@ export default {
       const filePath = result.filePaths[0];
       const spellchecker = new SpellChecker(false);
 
-      const importResult = await spellchecker.importDictionary(filePath);
+      try {
+        const importResult = await spellchecker.importDictionary(filePath);
 
-      if (importResult.success) {
-        this.$message.success(importResult.message);
-        // Force refresh the dictionary list
-        this.$nextTick(() => {
-          this.refreshDictionaryList();
-        });
-      } else {
-        this.$message.error(importResult.message);
+        if (importResult.success) {
+          this.$message.success(importResult.message);
+          this.$nextTick(() => {
+            this.refreshDictionaryList();
+          });
+        } else {
+          this.$message.error(importResult.message);
+        }
+      } catch (err) {
+        this.$message.error("Import failed: " + err.message);
       }
     },
     ensureDictLanguage() {
