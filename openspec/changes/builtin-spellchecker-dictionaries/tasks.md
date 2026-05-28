@@ -19,7 +19,7 @@
 - [x] 4.1 在 `src/renderer/spellchecker/index.js` 中添加 `importDictionary()` 方法
 - [x] 4.2 实现词典文件验证逻辑（扩展名、文件大小）
 - [x] 4.3 实现词典文件复制到 `userData/dictionaries/` 目录
-- [ ] 4.4 添加词典列表刷新功能
+- [x] 4.4 添加词典列表刷新功能
 
 ## 5. 更新偏好设置 UI
 
