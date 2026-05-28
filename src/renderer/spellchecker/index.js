@@ -300,6 +300,55 @@ export class SpellChecker {
   }
 
   /**
+   * Import a dictionary file.
+   *
+   * @param {string} sourcePath The path to the .bdic file to import.
+   * @returns {Promise<{success: boolean, message: string}>}
+   */
+  async importDictionary (sourcePath) {
+    // Validate file extension
+    if (!sourcePath.endsWith('.bdic')) {
+      return { success: false, message: '仅支持 .bdic 格式的词典文件' }
+    }
+
+    // Validate file size
+    const stats = fs.statSync(sourcePath)
+    if (stats.size <= 8192) {
+      return { success: false, message: '词典文件无效或已损坏' }
+    }
+
+    // Get userData dictionaries path
+    const userDataDictPath = path.join(
+      global.marktext?.paths?.userDataPath || '',
+      'dictionaries'
+    )
+
+    // Ensure directory exists
+    if (!fs.existsSync(userDataDictPath)) {
+      fs.mkdirSync(userDataDictPath, { recursive: true })
+    }
+
+    // Copy file
+    const filename = path.basename(sourcePath)
+    const destPath = path.join(userDataDictPath, filename)
+    fs.copyFileSync(sourcePath, destPath)
+
+    return { success: true, message: '词典导入成功' }
+  }
+
+  /**
+   * Get user dictionaries path.
+   *
+   * @returns {string} The path to user dictionaries directory.
+   */
+  getUserDictionariesPath () {
+    return path.join(
+      global.marktext?.paths?.userDataPath || '',
+      'dictionaries'
+    )
+  }
+
+  /**
    * Returns a list of available dictionaries.
    * @returns {string[]} Available dictionary languages.
    */
