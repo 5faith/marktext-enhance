@@ -5,7 +5,7 @@
 
 ## 2. 配置本地词典加载
 
-- [ ] 2.1 在 `editor.js` 中添加 `setSpellCheckerDictionaryDownloadURL` 配置，指向本地 `file://` 路径
+- [x] 2.1 在 `editor.js` 中添加 `setSpellCheckerDictionaryDownloadURL` 配置，指向本地 `file://` 路径
 - [ ] 2.2 测试离线环境下拼写检查器能正常初始化
 
 ## 3. 修改 SpellChecker 初始化逻辑

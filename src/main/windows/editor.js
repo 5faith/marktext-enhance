@@ -72,6 +72,11 @@ class EditorWindow extends BaseWindow {
     remoteEnable(win.webContents)
     this.id = win.id
 
+    // Use local Hunspell dictionary instead of downloading from CDN
+    win.webContents.session.setSpellCheckerDictionaryDownloadURL(
+      `file://${path.join(__static, 'dictionaries')}/`
+    )
+
     // Create a menu for the current window
     appMenu.addEditorMenu(win, { sourceCodeModeEnabled })
 
