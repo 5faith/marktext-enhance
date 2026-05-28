@@ -68,6 +68,7 @@ import Bool from "../common/bool";
 import Compound from "../common/compound";
 import CurSelect from "../common/select";
 import Separator from "../common/separator";
+import notice from "@/services/notification";
 
 export default {
   components: {
@@ -124,7 +125,8 @@ export default {
       this.availableDictionaries = this.getAvailableDictionaries();
     },
     async handleImportDictionary() {
-      const { dialog } = require("@electron/remote");
+      const { dialog } =
+        require("electron").remote || require("@electron/remote");
       const result = await dialog.showOpenDialog({
         title: "Select dictionary file (.dic or .aff)",
         filters: [
@@ -141,19 +143,24 @@ export default {
       const filePath = result.filePaths[0];
       const spellchecker = new SpellChecker(false);
 
-      try {
-        const importResult = await spellchecker.importDictionary(filePath);
+      const importResult = await spellchecker.importDictionary(filePath);
 
-        if (importResult.success) {
-          this.$message.success(importResult.message);
-          this.$nextTick(() => {
-            this.refreshDictionaryList();
-          });
-        } else {
-          this.$message.error(importResult.message);
-        }
-      } catch (err) {
-        this.$message.error("Import failed: " + err.message);
+      if (importResult.success) {
+        notice.notify({
+          title: "Import Dictionary",
+          type: "info",
+          message: importResult.message,
+        });
+        // Force refresh the dictionary list
+        this.$nextTick(() => {
+          this.refreshDictionaryList();
+        });
+      } else {
+        notice.notify({
+          title: "Import Dictionary",
+          type: "warning",
+          message: importResult.message,
+        });
       }
     },
     ensureDictLanguage() {
