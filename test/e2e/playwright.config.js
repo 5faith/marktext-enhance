@@ -1,5 +1,3 @@
-const { stopDevServer } = require('./helpers')
-
 const config = {
   workers: 1,
   use: {
@@ -7,8 +5,6 @@ const config = {
     viewport: { width: 1280, height: 720 },
     timeout: 30000
   },
-  globalTeardown: async () => {
-    stopDevServer()
-  }
+  globalTeardown: require.resolve('./global-teardown.js')
 }
 module.exports = config
