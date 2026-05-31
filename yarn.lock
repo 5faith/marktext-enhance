@@ -1389,10 +1389,11 @@
     diff "^5.0.0"
     parse5-sax-parser "^7.0.0"
 
-"@marktext/file-icons@file:../marktext-file-icons":
+"@marktext/file-icons@https://github.com/5faith/marktext-file-icons#1.0.6":
   version "1.0.6"
+  resolved "https://github.com/5faith/marktext-file-icons#240949a4c8031317aa7c59d2e5ec3edf707249c9"
   dependencies:
-    file-icons "file:C:/Users/Administrator/AppData/Local/Yarn/Cache/v6/npm-@marktext-file-icons-1.0.6-4955d201-a0a9-474a-9f0a-8e6343378dea-1779979915713/node_modules/@marktext/file-icons-atom"
+    file-icons "github:file-icons/atom"
 
 "@mixmark-io/domino@^2.2.0":
   version "2.2.0"
@@ -5570,8 +5571,9 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
-"file-icons@file:../file-icons-atom":
+"file-icons@github:file-icons/atom":
   version "2.1.47"
+  resolved "https://codeload.github.com/file-icons/atom/tar.gz/28520868aee66e576145a0b18aa2cde5444a897a"
   dependencies:
     atom-fs v0.2.1
     lru-cache "^5.1.1"
