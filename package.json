@@ -1,12 +1,15 @@
 {
   "name": "marktext",
-  "version": "0.17.1",
+  "version": "1.0.0",
   "homepage": "https://marktext.app/",
   "description": "Next generation markdown editor",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "release": "echo 'Please run \"build\" or \"release:{linux,mac,win}\"' && exit 1",
+    "release:linux": "vite build && electron-builder --linux",
+    "release:mac": "vite build && electron-builder --mac",
+    "release:win": "vite build && electron-builder --win",
     "build": "vite build && electron-builder",
     "build:bin": "vite build && electron-builder --dir",
     "build:clean": "rimraf dist",

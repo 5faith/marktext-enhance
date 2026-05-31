@@ -1,6 +1,9 @@
 productName: "MarkText"
 appId: "com.github.marktext.marktext"
 
+publish:
+  provider: github
+
 asar: true
 asarUnpack:
 - "**/*.node"
