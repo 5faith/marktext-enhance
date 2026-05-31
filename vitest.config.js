@@ -9,11 +9,12 @@ export default defineConfig({
       '@': resolve(__dirname, 'src/renderer'),
       'common': resolve(__dirname, 'src/common'),
       'muya': resolve(__dirname, 'src/muya'),
-      'vue': 'vue/dist/vue.esm-bundler.js'
+      'vue': 'vue/dist/vue.esm-bundler.js',
+      'dompurify': resolve(__dirname, 'test/unit/__mocks__/dompurify.js')
     }
   },
   test: {
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
     include: ['test/unit/specs/**/*.spec.js'],
     coverage: {
