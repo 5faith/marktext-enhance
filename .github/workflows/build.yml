@@ -68,6 +68,9 @@ jobs:
           path: ${{ env.HOME }}/.cache/electron-builder
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
+      - name: Install Python setuptools
+        run: pip install setuptools
+
       - name: Install dependencies
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: yarn install --check-files --frozen-lockfile
@@ -134,6 +137,9 @@ jobs:
         with:
           path: ${{ env.LOCALAPPDATA }}\electron-builder\cache
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '\yarn.lock')) }}
+
+      - name: Install Python setuptools
+        run: pip install setuptools
 
       - name: Install dependencies
         # Windows worker fail sometimes because a module cannot be found.
