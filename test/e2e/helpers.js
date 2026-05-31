@@ -101,6 +101,8 @@ const launchElectron = async userArgs => {
   if (isCI) {
     args.push('--no-sandbox')
     args.push('--disable-gpu')
+    args.push('--disable-software-rasterizer')
+    args.push('--disable-dev-shm-usage')
   }
 
   args.push(...userArgs)
@@ -108,15 +110,15 @@ const launchElectron = async userArgs => {
   const app = await _electron.launch({
     executablePath,
     args,
-    timeout: isCI ? 60000 : 30000,
+    timeout: isCI ? 120000 : 60000,
     env: {
       ...process.env,
       VITE_DEV_SERVER_URL: process.env.VITE_DEV_SERVER_URL || 'http://localhost:9091'
     }
   })
-  const page = await app.firstWindow()
+  const page = await app.firstWindow({ timeout: isCI ? 60000 : 30000 })
   await page.waitForLoadState('domcontentloaded')
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 1000))
   return { app, page }
 }
 
