@@ -10,6 +10,9 @@ on:
     paths-ignore:
       - "docs/**"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   unix:
     runs-on: ${{ matrix.os }}
@@ -18,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-13, ubuntu-latest]
+        os: [macos-15, ubuntu-latest]
 
     env:
       DISPLAY: ":99.0"
@@ -33,10 +36,9 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 22
           check-latest: true
           cache: yarn
-          cache-dependency-path: yarn.lock
 
       - name: Install build dependencies
         if: runner.os == 'Linux'
@@ -100,10 +102,9 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 22
           check-latest: true
           cache: yarn
-          cache-dependency-path: yarn.lock
 
       # Workaround: Fix native build failure due to outdated node-gyp version.
       - name: Fix node-gyp
