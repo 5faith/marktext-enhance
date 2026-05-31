@@ -68,6 +68,11 @@ jobs:
           path: ${{ env.HOME }}/.cache/electron-builder
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install Python setuptools
         run: pip install setuptools
 
@@ -137,6 +142,11 @@ jobs:
         with:
           path: ${{ env.LOCALAPPDATA }}\electron-builder\cache
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '\yarn.lock')) }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Install Python setuptools
         run: pip install setuptools
