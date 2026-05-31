@@ -18,7 +18,6 @@ thumbs.db
 
 node_modules
 /dist
-yarn.lock
 
 # local env files
 .env.local
