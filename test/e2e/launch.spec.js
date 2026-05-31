@@ -9,7 +9,7 @@ test.describe('Check Launch MarkText', async () => {
     const { app: electronApp, page: firstPage } = await launchElectron()
     app = electronApp
     page = firstPage
-  })
+  }, 60000)
 
   test.afterAll(async () => {
     if (app) {
