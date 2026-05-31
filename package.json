@@ -19,7 +19,7 @@
     "postinstall": "node .electron-vue/postinstall.js && cd node_modules/@marktext/file-icons && npm install --no-save && npx rollup -c --environment BUILD:production && cd ../.. && yarn run rebuild && yarn run lint:fix",
     "test": "yarn run unit && yarn run e2e",
     "test:specs": "node -r esm test/specs/commonMark/run.spec.js && node -r esm test/specs/gfm/run.spec.js",
-    "unit": "cross-env NODE_ENV=test ELECTRON_DISABLE_SECURITY_WARNINGS=true karma start test/unit/karma.conf.js",
+    "unit": "cross-env NODE_ENV=test vitest run",
     "preinstall": "node .electron-vue/preinstall.js",
     "build:muya": "cd src/muya && vite build",
     "release:muya": "yarn run build:muya && cd src/muya && yarn publish",
@@ -154,7 +154,8 @@
     "vite": "^5.0",
     "vite-plugin-electron": "^0.28",
     "vite-plugin-electron-renderer": "^0.14",
-    "vite-plugin-svg-icons": "^2.0"
+    "vite-plugin-svg-icons": "^2.0",
+    "vitest": "^4.1.7"
   },
   "resolutions": {
     "cld": "^2.7.1",
