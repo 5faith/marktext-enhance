@@ -7918,10 +7918,10 @@ napi-build-utils@^2.0.0:
   resolved "https://registry.npmmirror.com/napi-build-utils/-/napi-build-utils-2.0.0.tgz#13c22c0187fcfccce1461844136372a47ddc027e"
   integrity sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==
 
-native-keymap@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmmirror.com/native-keymap/-/native-keymap-3.3.0.tgz#927ca6afcf4ebd986b5dc1bddfab4270e750915d"
-  integrity sha512-nvhI1Cdr+ywhpqqGdM+JM8EjMYA1s6SW8EqhWNKtffHU07JcTKDhd8N3o0TLSFn8y2YuRFoOwfAIzdTU6TVhDA==
+native-keymap@3.3.9:
+  version "3.3.9"
+  resolved "https://registry.npmmirror.com/native-keymap/-/native-keymap-3.3.9.tgz#e8b60e1c2e9c5f68748bcb54305041abbf3e5662"
+  integrity sha512-d/ydQ5x+GM5W0dyAjFPwexhtc9CDH1g/xWZESS5CXk16ThyFzSBLvlBJq1+FyzUIFf/F2g1MaHdOpa6G9150YQ==
 
 natural-compare@^1.4.0:
   version "1.4.0"

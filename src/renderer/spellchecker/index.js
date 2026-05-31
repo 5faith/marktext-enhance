@@ -129,7 +129,7 @@ export class SpellChecker {
    *
    * @param {boolean} enabled Whether spell checking is enabled.
    */
-  constructor (enabled = true) {
+  constructor (_enabled = true) {
     this.isEnabled = false
     this.fallbackLang = null
     this._lang = ''
@@ -293,7 +293,7 @@ export class SpellChecker {
    *
    * @param {string} word The word to remove.
    */
-  async removeFromDictionary (word) {
+  async removeFromDictionary (_word) {
     // electron-hunspell doesn't support removing words from dictionary
     // This is a limitation of the hunspell-asm implementation
     return false

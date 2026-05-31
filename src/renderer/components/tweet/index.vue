@@ -66,68 +66,68 @@
 </template>
 
 <script setup>
-import { ref, nextTick, useTemplateRef, onMounted, onBeforeUnmount } from "vue";
-import { shell } from "electron";
-import bus from "../../bus";
+import { ref, nextTick, useTemplateRef, onMounted, onBeforeUnmount } from 'vue'
+import { shell } from 'electron'
+import bus from '../../bus'
 
 // State
-const showTweetDialog = ref(false);
-const value = ref("");
-const selectedFace = ref("smile");
+const showTweetDialog = ref(false)
+const value = ref('')
+const selectedFace = ref('smile')
 
 // Template refs
-const textarea = useTemplateRef("textarea");
+const textarea = useTemplateRef('textarea')
 
 // Methods
 const showDialog = () => {
-  showTweetDialog.value = true;
-  value.value = "";
-  bus.emit("editor-blur");
+  showTweetDialog.value = true
+  value.value = ''
+  bus.emit('editor-blur')
   nextTick(() => {
     if (textarea.value) {
-      textarea.value.focus();
+      textarea.value.focus()
     }
-  });
-};
+  })
+}
 
 const faceClick = (name) => {
-  selectedFace.value = name;
-};
+  selectedFace.value = name
+}
 
 const reportViaGithub = () => {
-  shell.openExternal("https://github.com/5faith/marktext-enhance/issues/new");
-};
+  shell.openExternal('https://github.com/5faith/marktext-enhance/issues/new')
+}
 
 const reportViaTwitter = () => {
-  const currentValue = value.value;
-  const currentFace = selectedFace.value;
-  if (!currentValue) return;
-  const origin = "https://twitter.com/intent/tweet";
+  const currentValue = value.value
+  const currentFace = selectedFace.value
+  if (!currentValue) return
+  const origin = 'https://twitter.com/intent/tweet'
 
   const params = {
-    via: "marktextme",
-    url: encodeURI("https://github.com/5faith/marktext-enhance/"),
-    text: currentValue,
-  };
+    via: 'marktextme',
+    url: encodeURI('https://github.com/5faith/marktext-enhance/'),
+    text: currentValue
+  }
 
-  if (currentFace === "smile") params.hashtags = "happyMarkText";
+  if (currentFace === 'smile') params.hashtags = 'happyMarkText'
 
   shell.openExternal(
     `${origin}?${Object.keys(params)
       .map((key) => `${key}=${params[key]}`)
-      .join("&")}`,
-  );
-  showTweetDialog.value = false;
-};
+      .join('&')}`
+  )
+  showTweetDialog.value = false
+}
 
 // Lifecycle
 onMounted(() => {
-  bus.on("tweetDialog", showDialog);
-});
+  bus.on('tweetDialog', showDialog)
+})
 
 onBeforeUnmount(() => {
-  bus.off("tweetDialog", showDialog);
-});
+  bus.off('tweetDialog', showDialog)
+})
 </script>
 
 <style>

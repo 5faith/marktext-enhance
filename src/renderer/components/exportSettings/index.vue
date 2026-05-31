@@ -267,81 +267,81 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import fs from "fs";
-import fsPromises from "fs/promises";
-import path from "path";
-import { isDirectory, isFile } from "common/filesystem";
-import bus from "../../bus";
-import Bool from "@/prefComponents/common/bool";
-import CurSelect from "@/prefComponents/common/select";
-import FontTextBox from "@/prefComponents/common/fontTextBox";
-import Range from "@/prefComponents/common/range";
-import TextBox from "@/prefComponents/common/textBox";
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import fs from 'fs'
+import fsPromises from 'fs/promises'
+import path from 'path'
+import { isDirectory, isFile } from 'common/filesystem'
+import bus from '../../bus'
+import Bool from '@/prefComponents/common/bool'
+import CurSelect from '@/prefComponents/common/select'
+import FontTextBox from '@/prefComponents/common/fontTextBox'
+import Range from '@/prefComponents/common/range'
+import TextBox from '@/prefComponents/common/textBox'
 import {
   pageSizeList,
   headerFooterTypes,
   headerFooterStyles as _headerFooterStyles,
-  exportThemeList,
-} from "./exportOptions";
+  exportThemeList
+} from './exportOptions'
 
 // State
-const exportType = ref("");
-const themesLoaded = ref(false);
+const exportType = ref('')
+const themesLoaded = ref(false)
 
-const isPrintable = ref(true);
-const showExportSettingsDialog = ref(false);
-const activeName = ref("info");
-const htmlTitle = ref("");
-const pageSize = ref("A4");
-const pageSizeWidth = ref(210);
-const pageSizeHeight = ref(297);
-const isLandscape = ref(false);
-const pageMarginTop = ref(20);
-const pageMarginRight = ref(15);
-const pageMarginBottom = ref(20);
-const pageMarginLeft = ref(15);
-const fontSettingsOverwrite = ref(false);
-const fontFamily = ref("Default");
-const fontSize = ref(14);
-const lineHeight = ref(1.5);
-const autoNumberingHeadings = ref(false);
-const showFrontMatter = ref(false);
-const theme = ref("default");
-const themeList = ref([...exportThemeList]);
-const headerType = ref(0);
-const headerTextLeft = ref("");
-const headerTextCenter = ref("");
-const headerTextRight = ref("");
-const footerType = ref(0);
-const footerTextLeft = ref("");
-const footerTextCenter = ref("");
-const footerTextRight = ref("");
-const headerFooterCustomize = ref(false);
-const headerFooterStyled = ref(true);
-const headerFooterFontSize = ref(12);
-const tocTitle = ref("");
-const tocIncludeTopHeading = ref(true);
+const isPrintable = ref(true)
+const showExportSettingsDialog = ref(false)
+const activeName = ref('info')
+const htmlTitle = ref('')
+const pageSize = ref('A4')
+const pageSizeWidth = ref(210)
+const pageSizeHeight = ref(297)
+const isLandscape = ref(false)
+const pageMarginTop = ref(20)
+const pageMarginRight = ref(15)
+const pageMarginBottom = ref(20)
+const pageMarginLeft = ref(15)
+const fontSettingsOverwrite = ref(false)
+const fontFamily = ref('Default')
+const fontSize = ref(14)
+const lineHeight = ref(1.5)
+const autoNumberingHeadings = ref(false)
+const showFrontMatter = ref(false)
+const theme = ref('default')
+const themeList = ref([...exportThemeList])
+const headerType = ref(0)
+const headerTextLeft = ref('')
+const headerTextCenter = ref('')
+const headerTextRight = ref('')
+const footerType = ref(0)
+const footerTextLeft = ref('')
+const footerTextCenter = ref('')
+const footerTextRight = ref('')
+const headerFooterCustomize = ref(false)
+const headerFooterStyled = ref(true)
+const headerFooterFontSize = ref(12)
+const tocTitle = ref('')
+const tocIncludeTopHeading = ref(true)
 
 // Methods
 const showDialog = (type) => {
-  exportType.value = type;
-  isPrintable.value = type !== "styledHtml";
+  exportType.value = type
+  isPrintable.value = type !== 'styledHtml'
   if (
     !isPrintable.value &&
-    (activeName.value === "header" || activeName.value === "page")
+    (activeName.value === 'header' || activeName.value === 'page')
   ) {
-    activeName.value = "info";
+    activeName.value = 'info'
   }
 
-  showExportSettingsDialog.value = true;
-  bus.emit("editor-blur");
+  showExportSettingsDialog.value = true
+  bus.emit('editor-blur')
 
   if (!themesLoaded.value) {
-    themesLoaded.value = true;
-    loadThemesFromDisk();
+    themesLoaded.value = true
+    loadThemesFromDisk()
   }
-};
+}
 
 const handleClicked = () => {
   const options = {
@@ -356,21 +356,21 @@ const handleClicked = () => {
     pageMarginLeft: pageMarginLeft.value,
     autoNumberingHeadings: autoNumberingHeadings.value,
     showFrontMatter: showFrontMatter.value,
-    theme: theme.value === "default" ? null : theme.value,
+    theme: theme.value === 'default' ? null : theme.value,
     tocTitle: tocTitle.value,
-    tocIncludeTopHeading: tocIncludeTopHeading.value,
-  };
+    tocIncludeTopHeading: tocIncludeTopHeading.value
+  }
 
   if (!isPrintable.value) {
-    options.htmlTitle = htmlTitle.value;
+    options.htmlTitle = htmlTitle.value
   }
 
   if (fontSettingsOverwrite.value) {
     Object.assign(options, {
       fontSize: fontSize.value,
       lineHeight: lineHeight.value,
-      fontFamily: fontFamily.value === "Default" ? null : fontFamily.value,
-    });
+      fontFamily: fontFamily.value === 'Default' ? null : fontFamily.value
+    })
   }
 
   if (headerType.value !== 0) {
@@ -379,9 +379,9 @@ const handleClicked = () => {
         type: headerType.value,
         left: headerTextLeft.value,
         center: headerTextCenter.value,
-        right: headerTextRight.value,
-      },
-    });
+        right: headerTextRight.value
+      }
+    })
   }
 
   if (footerType.value !== 0) {
@@ -390,21 +390,21 @@ const handleClicked = () => {
         type: footerType.value,
         left: footerTextLeft.value,
         center: footerTextCenter.value,
-        right: footerTextRight.value,
-      },
-    });
+        right: footerTextRight.value
+      }
+    })
   }
 
   if (headerFooterCustomize.value) {
     Object.assign(options, {
       headerFooterStyled: headerFooterStyled.value,
-      headerFooterFontSize: headerFooterFontSize.value,
-    });
+      headerFooterFontSize: headerFooterFontSize.value
+    })
   }
 
-  showExportSettingsDialog.value = false;
-  bus.emit("export", options);
-};
+  showExportSettingsDialog.value = false
+  bus.emit('export', options)
+}
 
 const onSelectChange = (key, value) => {
   // Dynamically update ref values
@@ -440,57 +440,57 @@ const onSelectChange = (key, value) => {
     headerFooterStyled,
     headerFooterFontSize,
     tocTitle,
-    tocIncludeTopHeading,
-  };
-  if (refs[key]) {
-    refs[key].value = value;
+    tocIncludeTopHeading
   }
-};
+  if (refs[key]) {
+    refs[key].value = value
+  }
+}
 
 const loadThemesFromDisk = () => {
-  const { userDataPath } = global.marktext.paths;
-  const themeDir = path.join(userDataPath, "themes/export");
+  const { userDataPath } = global.marktext.paths
+  const themeDir = path.join(userDataPath, 'themes/export')
 
   // Search for dictionaries on filesystem.
   if (isDirectory(themeDir)) {
     fs.readdirSync(themeDir).forEach(async (filename) => {
-      const fullname = path.join(themeDir, filename);
+      const fullname = path.join(themeDir, filename)
       if (/.+\.css$/i.test(filename) && isFile(fullname)) {
         try {
-          const content = await fsPromises.readFile(fullname, "utf8");
+          const content = await fsPromises.readFile(fullname, 'utf8')
 
           // Match comment with theme name in first line only.
           const match = content.match(
-            /^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/,
-          );
+            /^(?:\/\*+[ \t]*([A-z0-9 -]+)[ \t]*(?:\*+\/|[\n\r])?)/
+          )
 
-          let label;
+          let label
           if (match && match[1]) {
-            label = match[1];
+            label = match[1]
           } else {
-            label = filename;
+            label = filename
           }
 
           themeList.value.push({
             value: filename,
-            label,
-          });
+            label
+          })
         } catch (e) {
-          console.error("loadThemesFromDisk failed:", e);
+          console.error('loadThemesFromDisk failed:', e)
         }
       }
-    });
+    })
   }
-};
+}
 
 // Lifecycle
 onMounted(() => {
-  bus.on("showExportDialog", showDialog);
-});
+  bus.on('showExportDialog', showDialog)
+})
 
 onBeforeUnmount(() => {
-  bus.off("showExportDialog", showDialog);
-});
+  bus.off('showExportDialog', showDialog)
+})
 </script>
 
 <style scoped>

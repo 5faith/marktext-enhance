@@ -5,7 +5,7 @@ import { isSamePathSync } from '../../common/filesystem/paths'
 import bus from '../bus'
 import { hasKeys, getUniqueId } from '../util'
 import listToTree from '../util/listToTree'
-import { createDocumentState, getOptionsFromState, getSingleFileState, getBlankFileState } from '../store/help'
+import { createDocumentState, getSingleFileState, getBlankFileState } from '../store/help'
 import notice from '../services/notification'
 import { defineStore } from 'pinia'
 import { usePreferencesStore } from './preferences'
@@ -846,7 +846,7 @@ export const useEditorStore = defineStore('editor', {
 
       const {
         id: currentId,
-        filename,
+        filename: _filename,
         pathname,
         markdown: oldMarkdown,
         trimTrailingNewline

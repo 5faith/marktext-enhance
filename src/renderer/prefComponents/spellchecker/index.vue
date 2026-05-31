@@ -65,142 +65,142 @@
 </template>
 
 <script>
-import { SpellChecker } from "@/spellchecker";
-import { getLanguageName } from "@/spellchecker/languageMap";
-import { usePreferencesStore } from "@/stores";
-import { isLinux, isOsx, isWindows } from "@/util";
-import Bool from "../common/bool";
-import Compound from "../common/compound";
-import CurSelect from "../common/select";
-import Separator from "../common/separator";
-import notice from "@/services/notification";
+import { SpellChecker } from '@/spellchecker'
+import { getLanguageName } from '@/spellchecker/languageMap'
+import { usePreferencesStore } from '@/stores'
+import { isLinux, isOsx, isWindows } from '@/util'
+import Bool from '../common/bool'
+import Compound from '../common/compound'
+import CurSelect from '../common/select'
+import Separator from '../common/separator'
+import notice from '@/services/notification'
 
 export default {
   components: {
     Bool,
     Compound,
     CurSelect,
-    Separator,
+    Separator
   },
-  data() {
-    this.isOsx = isOsx;
-    this.isLinux = isLinux;
-    this.isWindows = isWindows;
+  data () {
+    this.isOsx = isOsx
+    this.isLinux = isLinux
+    this.isWindows = isWindows
     return {
       availableDictionaries: [],
-      spellchecker: null,
-    };
+      spellchecker: null
+    }
   },
   computed: {
-    spellcheckerEnabled() {
-      return usePreferencesStore().spellcheckerEnabled;
+    spellcheckerEnabled () {
+      return usePreferencesStore().spellcheckerEnabled
     },
-    spellcheckerNoUnderline() {
-      return usePreferencesStore().spellcheckerNoUnderline;
+    spellcheckerNoUnderline () {
+      return usePreferencesStore().spellcheckerNoUnderline
     },
-    spellcheckerAutoDetectLanguage() {
-      return usePreferencesStore().spellcheckerAutoDetectLanguage;
+    spellcheckerAutoDetectLanguage () {
+      return usePreferencesStore().spellcheckerAutoDetectLanguage
     },
-    spellcheckerLanguage() {
-      return usePreferencesStore().spellcheckerLanguage;
-    },
+    spellcheckerLanguage () {
+      return usePreferencesStore().spellcheckerLanguage
+    }
   },
-  created() {
+  created () {
     this.$nextTick(() => {
-      this.refreshDictionaryList();
-    });
+      this.refreshDictionaryList()
+    })
   },
   methods: {
-    getAvailableDictionaries() {
+    getAvailableDictionaries () {
       // Get available dictionaries from Electron's built-in spell checker
       if (!this.spellchecker) {
         // Create a new spell checker instance to get available dictionaries
-        this.spellchecker = new SpellChecker(false);
+        this.spellchecker = new SpellChecker(false)
       }
 
-      const dictionaries = this.spellchecker.getAvailableDictionaries();
+      const dictionaries = this.spellchecker.getAvailableDictionaries()
       return dictionaries.map((item) => {
         return {
           value: item,
-          label: getLanguageName(item),
-        };
-      });
+          label: getLanguageName(item)
+        }
+      })
     },
-    refreshDictionaryList() {
-      this.availableDictionaries = this.getAvailableDictionaries();
+    refreshDictionaryList () {
+      this.availableDictionaries = this.getAvailableDictionaries()
     },
-    async handleImportDictionary() {
+    async handleImportDictionary () {
       const { dialog } =
-        require("electron").remote || require("@electron/remote");
+        require('electron').remote || require('@electron/remote')
       const result = await dialog.showOpenDialog({
-        title: "Select dictionary file (.dic or .aff)",
+        title: 'Select dictionary file (.dic or .aff)',
         filters: [
-          { name: "Hunspell Dictionary", extensions: ["dic", "aff"] },
-          { name: "All Files", extensions: ["*"] },
+          { name: 'Hunspell Dictionary', extensions: ['dic', 'aff'] },
+          { name: 'All Files', extensions: ['*'] }
         ],
-        properties: ["openFile"],
-      });
+        properties: ['openFile']
+      })
 
       if (result.canceled || !result.filePaths.length) {
-        return;
+        return
       }
 
-      const filePath = result.filePaths[0];
-      const spellchecker = new SpellChecker(false);
+      const filePath = result.filePaths[0]
+      const spellchecker = new SpellChecker(false)
 
-      const importResult = await spellchecker.importDictionary(filePath);
+      const importResult = await spellchecker.importDictionary(filePath)
 
       if (importResult.success) {
         notice.notify({
-          title: "Import Dictionary",
-          type: "info",
-          message: importResult.message,
-        });
+          title: 'Import Dictionary',
+          type: 'info',
+          message: importResult.message
+        })
         // Force refresh the dictionary list
         this.$nextTick(() => {
-          this.refreshDictionaryList();
-        });
+          this.refreshDictionaryList()
+        })
       } else {
         notice.notify({
-          title: "Import Dictionary",
-          type: "warning",
-          message: importResult.message,
-        });
+          title: 'Import Dictionary',
+          type: 'warning',
+          message: importResult.message
+        })
       }
     },
-    ensureDictLanguage() {
-      const { spellcheckerLanguage } = this;
+    ensureDictLanguage () {
+      const { spellcheckerLanguage } = this
       if (!this.spellchecker) {
-        this.spellchecker = new SpellChecker(false);
+        this.spellchecker = new SpellChecker(false)
       }
 
-      const dicts = this.spellchecker.getAvailableDictionaries();
-      const index = dicts.findIndex((d) => d === spellcheckerLanguage);
+      const dicts = this.spellchecker.getAvailableDictionaries()
+      const index = dicts.findIndex((d) => d === spellcheckerLanguage)
       if (index === -1 && dicts.length >= 1) {
         // Language is not supported, prefer OS language.
-        let lang = process.env.LANG;
-        lang = lang ? lang.split(".")[0] : null;
+        let lang = process.env.LANG
+        lang = lang ? lang.split('.')[0] : null
         if (lang) {
-          lang = lang.replace(/_/g, "-");
+          lang = lang.replace(/_/g, '-')
           if (dicts.findIndex((d) => d === lang) === -1) {
-            lang = null;
+            lang = null
           }
         }
-        this.onSelectChange("spellcheckerLanguage", lang || dicts[0]);
+        this.onSelectChange('spellcheckerLanguage', lang || dicts[0])
       }
     },
 
-    handleSpellcheckerEnabled(value) {
+    handleSpellcheckerEnabled (value) {
       if (value) {
-        this.ensureDictLanguage();
+        this.ensureDictLanguage()
       }
-      this.onSelectChange("spellcheckerEnabled", value);
+      this.onSelectChange('spellcheckerEnabled', value)
     },
-    onSelectChange(type, value) {
-      usePreferencesStore().setSinglePreference({ type, value });
-    },
-  },
-};
+    onSelectChange (type, value) {
+      usePreferencesStore().setSinglePreference({ type, value })
+    }
+  }
+}
 </script>
 
 <style scoped>

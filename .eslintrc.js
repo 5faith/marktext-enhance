@@ -51,7 +51,7 @@ module.exports = {
     indent: 'off',
     // Allow Vite-specific import queries (?inline, ?raw)
     'import/no-unresolved': ['error', {
-      ignore: ['\\?inline$', '\\?raw$']
+      ignore: ['\\?inline$', '\\?raw$', '^virtual:']
     }],
     // Allow unused vars that start with underscore
     'no-unused-vars': ['error', { 

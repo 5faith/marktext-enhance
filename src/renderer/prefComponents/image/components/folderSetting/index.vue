@@ -45,59 +45,59 @@
 </template>
 
 <script>
-import { usePreferencesStore } from "@/stores";
-import { shell } from "electron";
-import Bool from "@/prefComponents/common/bool";
-import Compound from "@/prefComponents/common/compound";
-import TextBox from "@/prefComponents/common/textBox";
+import { usePreferencesStore } from '@/stores'
+import { shell } from 'electron'
+import Bool from '@/prefComponents/common/bool'
+import Compound from '@/prefComponents/common/compound'
+import TextBox from '@/prefComponents/common/textBox'
 
 export default {
   components: {
     Bool,
     Compound,
-    TextBox,
+    TextBox
   },
-  data() {
-    return {};
+  data () {
+    return {}
   },
   computed: {
-    imageFolderPath() {
-      return usePreferencesStore().imageFolderPath;
+    imageFolderPath () {
+      return usePreferencesStore().imageFolderPath
     },
-    imagePreferRelativeDirectory() {
-      return usePreferencesStore().imagePreferRelativeDirectory;
+    imagePreferRelativeDirectory () {
+      return usePreferencesStore().imagePreferRelativeDirectory
     },
-    imageRelativeDirectoryName() {
-      return usePreferencesStore().imageRelativeDirectoryName;
+    imageRelativeDirectoryName () {
+      return usePreferencesStore().imageRelativeDirectoryName
     },
     imageInsertAction: {
       get: function () {
-        return usePreferencesStore().imageInsertAction;
-      },
+        return usePreferencesStore().imageInsertAction
+      }
     },
     folderPathPlaceholder: {
       get: function () {
-        return usePreferencesStore().imageFolderPath || "";
-      },
+        return usePreferencesStore().imageFolderPath || ''
+      }
     },
     relativeDirectoryNamePlaceholder: {
       get: function () {
-        return usePreferencesStore().imageRelativeDirectoryName || "assets";
-      },
-    },
+        return usePreferencesStore().imageRelativeDirectoryName || 'assets'
+      }
+    }
   },
   methods: {
-    openImageFolder() {
-      shell.openPath(this.imageFolderPath);
+    openImageFolder () {
+      shell.openPath(this.imageFolderPath)
     },
-    modifyImageFolderPath(value) {
-      usePreferencesStore().setImageFolderPath(value);
+    modifyImageFolderPath (value) {
+      usePreferencesStore().setImageFolderPath(value)
     },
-    onSelectChange(type, value) {
-      usePreferencesStore().setSinglePreference({ type, value });
-    },
-  },
-};
+    onSelectChange (type, value) {
+      usePreferencesStore().setSinglePreference({ type, value })
+    }
+  }
+}
 </script>
 
 <style scoped>
