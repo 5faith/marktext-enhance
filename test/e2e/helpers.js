@@ -22,11 +22,24 @@ const getElectronPath = () => {
 const launchElectron = async userArgs => {
   userArgs = userArgs || []
   const executablePath = getElectronPath()
-  const args = [mainEntrypoint, '--user-data-dir', getTempPath()].concat(userArgs)
+
+  // CI environment detection
+  const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+
+  const args = [mainEntrypoint, '--user-data-dir', getTempPath()]
+
+  // Add CI-specific flags for headless environments
+  if (isCI) {
+    args.push('--no-sandbox')
+    args.push('--disable-gpu')
+  }
+
+  args.push(...userArgs)
+
   const app = await _electron.launch({
     executablePath,
     args,
-    timeout: 30000
+    timeout: isCI ? 60000 : 30000
   })
   const page = await app.firstWindow()
   await page.waitForLoadState('domcontentloaded')

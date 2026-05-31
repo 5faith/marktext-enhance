@@ -13,7 +13,7 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "dev": "vite",
-    "e2e": "yarn run build && cross-env MARKTEXT_EXIT_ON_ERROR=1 playwright test -c test/e2e/playwright.config.js test/e2e",
+    "e2e": "vite build && cross-env MARKTEXT_EXIT_ON_ERROR=1 playwright test -c test/e2e/playwright.config.js test/e2e",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
     "postinstall": "node .electron-vue/postinstall.js && cd node_modules/@marktext/file-icons && npm install --no-save && npx rollup -c --environment BUILD:production && cd ../.. && yarn run rebuild && yarn run lint:fix",
