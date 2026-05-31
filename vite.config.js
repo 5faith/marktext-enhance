@@ -81,9 +81,7 @@ export default defineConfig(({ command }) => {
         'os': resolve(__dirname, 'src/renderer/shims/os.js'),
         'crypto': resolve(__dirname, 'src/renderer/shims/crypto.js'),
         'electron': resolve(__dirname, 'src/renderer/shims/electron.js'),
-        'electron-hunspell': resolve(__dirname, 'src/renderer/shims/electron-hunspell.js'),
-        '@marktext/file-icons': resolve(__dirname, 'node_modules/@marktext/file-icons/src/index.js'),
-        '@marktext/file-icons/build/index.css': resolve(__dirname, 'node_modules/@marktext/file-icons/src/index.css')
+        'electron-hunspell': resolve(__dirname, 'src/renderer/shims/electron-hunspell.js')
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
       dedupe: ['vue']
