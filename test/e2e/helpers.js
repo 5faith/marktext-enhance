@@ -62,7 +62,8 @@ const startDevServer = async () => {
   const viteBin = path.resolve(path.join('node_modules', '.bin', process.platform === 'win32' ? 'vite.cmd' : 'vite'))
   devServer = spawn(viteBin, ['--port', '9091', '--strictPort'], {
     stdio: 'pipe',
-    env: { ...process.env, NODE_ENV: 'development' }
+    env: { ...process.env, NODE_ENV: 'development' },
+    shell: process.platform === 'win32'
   })
 
   devServer.stderr.on('data', (data) => {
