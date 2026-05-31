@@ -5,6 +5,6 @@ const config = {
     viewport: { width: 1280, height: 720 },
     timeout: 30000
   },
-  globalTeardown: require.resolve('./global-teardown.js')
+  globalTeardown: './global-teardown.js'
 }
 module.exports = config
