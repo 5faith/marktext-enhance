@@ -16,6 +16,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    setupFiles: ['test/unit/setup.js'],
     include: ['test/unit/specs/**/*.spec.js'],
     coverage: {
       provider: 'v8',
