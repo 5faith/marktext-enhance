@@ -8,6 +8,9 @@ directories:
   output: "build"
 # Workaround: Don't download prebuilt libraries (GH#2953).
 buildDependenciesFromSource: true
+# Skip npm rebuild during build — native modules are already built during yarn install.
+# This avoids EPERM errors on Windows CI where .node files can be locked.
+npmRebuild: false
 files:
 - "dist/electron/**/*"
 # Don't bundle these files
