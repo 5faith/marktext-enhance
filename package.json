@@ -2,7 +2,7 @@
   "name": "marktext",
   "version": "1.0.0",
   "homepage": "https://marktext.app/",
-  "description": "Next generation markdown editor",
+  "description": "Next generation markdown editor - trigger build",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
