@@ -3,6 +3,8 @@ appId: "com.github.marktext.marktext"
 
 publish:
   provider: github
+  owner: 5faith
+  repo: marktext-enhance
 
 asar: true
 asarUnpack:
