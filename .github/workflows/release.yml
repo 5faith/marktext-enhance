@@ -4,6 +4,18 @@ on:
   push:
     branches:
       - 'release-v*'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Build target (linux/mac/win/all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - linux
+          - mac
+          - win
+          - all
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
