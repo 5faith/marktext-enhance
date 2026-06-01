@@ -174,20 +174,15 @@
     "url": "https://github.com/5faith/marktext-enhance/issues"
   },
   "author": {
-    "name": "Jocs",
-    "email": "ransixi@gmail.com",
-    "url": "https://github.com/Jocs"
+    "name": "Fidel",
+    "email": "supzachi@foxmail.com",
+    "url": "https://github.com/5faith"
   },
   "maintainer": [
     {
-      "name": "Jocs",
-      "email": "ransixi@gmail.com",
-      "url": "https://github.com/Jocs"
-    },
-    {
-      "name": "Felix Häusler",
-      "email": "hfelix@protonmail.ch",
-      "url": "https://github.com/fxha"
+      "name": "Fidel",
+      "email": "supzachi@foxmail.com",
+      "url": "https://github.com/5faith"
     }
   ]
 }
