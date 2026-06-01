@@ -90,7 +90,6 @@ export default defineConfig(({ command }) => {
       dedupe: ['vue']
     },
     define: {
-      __static: JSON.stringify(resolve(__dirname, 'static')),
       'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production')
     },
     plugins: [
@@ -119,7 +118,9 @@ export default defineConfig(({ command }) => {
         closeBundle() {
           const fs = require('fs')
           const path = require('path')
-          const outDir = path.resolve(__dirname, 'dist/electron')
+          const outDir = path.resolve(__dirname, 'dist')
+
+          // Generate index.html
           const assetsDir = path.join(outDir, 'assets')
           if (fs.existsSync(assetsDir)) {
             const files = fs.readdirSync(assetsDir)
@@ -141,10 +142,11 @@ export default defineConfig(({ command }) => {
 </body>
 </html>`
               fs.writeFileSync(path.join(outDir, 'index.html'), indexHtml)
-              console.log(`Generated dist/electron/index.html referencing ./assets/${mainJsFile}`)
+              console.log(`Generated dist/index.html referencing ./assets/${mainJsFile}`)
             }
           }
-          // Copy static directory
+
+          // Copy static/ to dist/static/
           const srcStatic = path.resolve(__dirname, 'static')
           const destStatic = path.join(outDir, 'static')
           if (fs.existsSync(srcStatic)) {
@@ -161,8 +163,16 @@ export default defineConfig(({ command }) => {
               })
             }
             copyDir(srcStatic, destStatic)
-            console.log('Copied static/ to dist/electron/static/')
+            console.log('Copied static/ to dist/static/')
           }
+          // Copy package.json with modified main entry
+          const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8'))
+          pkg.main = './main.js'
+          delete pkg.devDependencies
+          delete pkg.scripts
+          delete pkg.resolutions
+          fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(pkg, null, 2))
+          console.log('Copied package.json to dist/')
         }
       },
       electron([
@@ -173,7 +183,8 @@ export default defineConfig(({ command }) => {
           },
           vite: {
             build: {
-              outDir: resolve(__dirname, 'dist/electron'),
+              outDir: resolve(__dirname, 'dist'),
+              emptyOutDir: false,
               lib: {
                 entry: resolve(__dirname, 'src/main/index.js'),
                 formats: ['cjs'],
@@ -239,9 +250,7 @@ export default defineConfig(({ command }) => {
                 'main': resolve(__dirname, 'src/main')
               }
             },
-            define: {
-              __static: JSON.stringify(resolve(__dirname, 'static'))
-            }
+            define: {}
           }
         }
       ]),
@@ -249,7 +258,7 @@ export default defineConfig(({ command }) => {
     ],
     css: {},
     build: {
-      outDir: resolve(__dirname, 'dist/electron'),
+      outDir: resolve(__dirname, 'dist'),
       rollupOptions: {
         input: resolve(__dirname, 'src/renderer/main.js'),
         external: [

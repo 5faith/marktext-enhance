@@ -11,13 +11,14 @@ asarUnpack:
 - "**/*.node"
 directories:
   output: "build"
+  app: "dist"
 # Workaround: Don't download prebuilt libraries (GH#2953).
 buildDependenciesFromSource: true
 # Skip npm rebuild during build — native modules are already built during yarn install.
 # This avoids EPERM errors on Windows CI where .node files can be locked.
 npmRebuild: false
 files:
-- "dist/electron/**/*"
+- "**/*"
 - "!**/node_modules/**/{CHANGELOG.md,README.md,README,readme.md,readme}"
 - "!node_modules/css-b64-images/{draft.png,draft.xcf}"
 - "!node_modules/dagre-d3-renderer/dist/demo/"

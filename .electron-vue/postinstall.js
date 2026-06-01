@@ -56,5 +56,18 @@ if (process.platform === 'darwin' && fs.existsSync(keytarPath)) {
   let packageText = fs.readFileSync(keytarPackageJsonPath, { encoding : 'utf-8' })
 
   packageText = packageText.replace(/"install": "prebuild-install \|\| npm run build",/i, '"install": "npm run build",')
-  fs.writeFileSync(keytarPackageJsonPath, packageText, { encoding : 'utf-8' })
+  fs.writeFileSync(keytarPackageJsonPath, packageText, { encoding: 'utf-8' })
+}
+
+// Rebuild native modules for the correct Electron version
+const { execSync } = require('child_process')
+try {
+  console.log('[postinstall] Rebuilding native modules for Electron...')
+  execSync('npx electron-rebuild -f -w cld,ced,keytar,native-keymap,fontmanager-redux,keyboard-layout', {
+    cwd: path.resolve(__dirname, '..'),
+    stdio: 'inherit'
+  })
+  console.log('[postinstall] Native modules rebuilt successfully')
+} catch (err) {
+  console.error('[ERROR] Failed to rebuild native modules:', err.message)
 }
