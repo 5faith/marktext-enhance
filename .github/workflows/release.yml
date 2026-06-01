@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - 'release-v*'
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       target:

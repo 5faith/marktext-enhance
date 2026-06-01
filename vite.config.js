@@ -81,7 +81,10 @@ export default defineConfig(({ command }) => {
         'os': resolve(__dirname, 'src/renderer/shims/os.js'),
         'crypto': resolve(__dirname, 'src/renderer/shims/crypto.js'),
         'electron': resolve(__dirname, 'src/renderer/shims/electron.js'),
-        'electron-hunspell': resolve(__dirname, 'src/renderer/shims/electron-hunspell.js')
+        'electron-hunspell': resolve(__dirname, 'src/renderer/shims/electron-hunspell.js'),
+        'electron-log': resolve(__dirname, 'src/renderer/shims/electron-log.js'),
+        '@hfelix/electron-localshortcut': resolve(__dirname, 'src/renderer/shims/electron-localshortcut.js'),
+        'fontmanager-redux': resolve(__dirname, 'src/renderer/shims/fontmanager-redux.js')
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
       dedupe: ['vue']
@@ -111,6 +114,57 @@ export default defineConfig(({ command }) => {
         resolvers: [ElementPlusResolver()],
         dts: false
       }),
+      {
+        name: 'generate-index-html',
+        closeBundle() {
+          const fs = require('fs')
+          const path = require('path')
+          const outDir = path.resolve(__dirname, 'dist/electron')
+          const assetsDir = path.join(outDir, 'assets')
+          if (fs.existsSync(assetsDir)) {
+            const files = fs.readdirSync(assetsDir)
+            const mainJsFile = files.find(f => f.startsWith('main-') && f.endsWith('.js'))
+            const mainCssFile = files.find(f => f.startsWith('main-') && f.endsWith('.css'))
+            if (mainJsFile) {
+              const cssLink = mainCssFile ? `\n  <link rel="stylesheet" href="./assets/${mainCssFile}">` : ''
+              const indexHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob: file:; script-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; style-src * 'self' 'unsafe-inline' data: blob:; font-src * 'self' data: blob: file:; img-src * 'self' data: blob: file:; connect-src * 'self' http://localhost:* ws://localhost:* file:;">
+  <title>MarkText</title>${cssLink}
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="./assets/${mainJsFile}"></script>
+</body>
+</html>`
+              fs.writeFileSync(path.join(outDir, 'index.html'), indexHtml)
+              console.log(`Generated dist/electron/index.html referencing ./assets/${mainJsFile}`)
+            }
+          }
+          // Copy static directory
+          const srcStatic = path.resolve(__dirname, 'static')
+          const destStatic = path.join(outDir, 'static')
+          if (fs.existsSync(srcStatic)) {
+            const copyDir = (src, dest) => {
+              if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true })
+              fs.readdirSync(src).forEach(file => {
+                const srcPath = path.join(src, file)
+                const destPath = path.join(dest, file)
+                if (fs.statSync(srcPath).isDirectory()) {
+                  copyDir(srcPath, destPath)
+                } else {
+                  fs.copyFileSync(srcPath, destPath)
+                }
+              })
+            }
+            copyDir(srcStatic, destStatic)
+            console.log('Copied static/ to dist/electron/static/')
+          }
+        }
+      },
       electron([
         {
           entry: 'src/main/index.js',
@@ -199,31 +253,15 @@ export default defineConfig(({ command }) => {
       rollupOptions: {
         input: resolve(__dirname, 'src/renderer/main.js'),
         external: [
-          'snabbdom',
-          'snabbdom-to-html',
           'keyboard-layout',
           'keytar',
-          'fontmanager-redux',
           'native-keymap',
           'ced',
           'cld',
           '@hfelix/spellchecker',
-          'electron-log',
-          '@electron/remote',
           'electron-store',
           'electron-window-state',
-          '@hfelix/electron-localshortcut',
-          '@hfelix/electron-spellchecker',
-          'vscode-ripgrep',
-          'octokit/rest',
-          'fs-extra',
-          'graceful-fs',
-          'chokidar',
-          'fs/promises',
-        'child_process',
-        'os',
-        'crypto',
-        'util'
+          '@hfelix/electron-spellchecker'
         ]
       }
     },
