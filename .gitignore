@@ -43,3 +43,5 @@ graphify-out/cache
 dev.log
 
 .worktrees/
+test-results
+assets
