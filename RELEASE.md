@@ -17,15 +17,17 @@
 ```bash
 git add package.json
 git commit -m "chore: release v1.0.1"
+git push origin main
 ```
 
-### 3. 推送到 release 分支触发构建
+### 3. 打 tag 触发构建
 
 ```bash
-git push origin release-v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-push 到 `release-v*` 分支会自动触发 GitHub Actions Release workflow，构建 3 个平台的产物并发布到 GitHub Release。
+push `v*` tag 会自动触发 GitHub Actions Release workflow，构建 3 个平台的产物并发布到 GitHub Release。
 
 ### 手动触发
 
@@ -45,7 +47,7 @@ push 到 `release-v*` 分支会自动触发 GitHub Actions Release workflow，�
 
 ## Release Workflow 说明
 
-- **触发条件：** push 到 `release-v*` 分支
+- **触发条件：** push `v*` tag
 - **构建平台：** Linux (AppImage/deb/rpm/tar.gz)、macOS (dmg/zip)、Windows (nsis/zip)
 - **发布方式：** `--publish always`，自动创建 GitHub Release 并上传产物
 - **产物输出：** `build/` 目录
