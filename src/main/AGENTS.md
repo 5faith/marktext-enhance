@@ -46,7 +46,7 @@ src/main/
 
 ## Notes
 
-- **Electron 28 pinned** — upgrading breaks native modules
+- **Electron 35 pinned** — upgrading breaks native modules
 - **Native modules**: keytar, fontmanager-redux, native-keymap, ced, cld
 - **Platform differences**: Menu bar (macOS), tray (all), keybindings vary
 - **HACKs**: See `#1034/#1035` for file watcher debt

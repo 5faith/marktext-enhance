@@ -1,6 +1,6 @@
 # MarkText — Agent Guidelines
 
-Next-gen WYSIWYG Markdown editor built with Electron 28 + Vue 3 + Vite 5.
+Next-gen WYSIWYG Markdown editor built with Electron 35 + Vue 3 + Vite 5.
 
 > **Migration Note**: Migrated from Vue 2/Webpack to Vue 3/Vite. See [`docs/dev/VUE3_MIGRATION.md`](docs/dev/VUE3_MIGRATION.md).
 
@@ -61,7 +61,7 @@ src/
 
 | Component | Version | Notes |
 |-----------|---------|-------|
-| Electron | 28 | **Pinned** — native modules break on upgrade |
+| Electron | 35 | **Pinned** — native modules break on upgrade |
 | Vue | 3.4+ | Composition API (`<script setup>`) for new components |
 | Vue Router | 4 | - |
 | Pinia | 2.0 | **Primary** state management (Vuex migration complete) |
@@ -123,7 +123,7 @@ src/
 ## Important Notes
 
 - `yarn install` is slow due to preinstall, rebuild, and lint:fix hooks
-- Electron 28 is pinned — upgrading requires testing all native modules
+- Electron 35 is pinned — upgrading requires testing all native modules
 - `package.json` has no `engines` field; Node >=22 requirement documented in `docs/dev/BUILD.md`
 - `resolutions` field pins: `cld`, `node-abi`, `node-addon-api`, `turndown`, `snabbdom`
 

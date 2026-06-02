@@ -90,7 +90,7 @@ MarkText 当前的拼写检查系统完全依赖 Electron/Chromium 内置的 Hun
 
 ### Risk 1: electron-hunspell 与 Electron 版本兼容性
 
-**风险**: `electron-hunspell` 可能不完全兼容 Electron 28
+**风险**: `electron-hunspell` 可能不完全兼容 Electron 35
 
 **缓解措施**:
 

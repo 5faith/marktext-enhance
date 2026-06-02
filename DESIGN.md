@@ -1,6 +1,6 @@
 ## Overview
 
-MarkText 是一个基于 Electron 28 + Vue 3 + Vite 5 的下一代所见即所得 Markdown 编辑器。主题系统采用 CSS 变量实现，支持 6 种内置主题，通过动态切换 `:root` 变量实现主题切换。
+MarkText 是一个基于 Electron 35 + Vue 3 + Vite 5 的下一代所见即所得 Markdown 编辑器。主题系统采用 CSS 变量实现，支持 6 种内置主题，通过动态切换 `:root` 变量实现主题切换。
 
 **主题系统核心特点：**
 - 所有主题变量定义在 `:root` 选择器中

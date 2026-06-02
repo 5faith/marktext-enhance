@@ -4,7 +4,7 @@
   "homepage": "https://marktext.app/",
   "description": "Next generation markdown editor - trigger build",
   "license": "MIT",
-  "main": "./dist/electron/main.js",
+  "main": "./dist/main.js",
   "scripts": {
     "release": "echo 'Please run \"build\" or \"release:{linux,mac,win}\"' && exit 1",
     "release:linux": "vite build && electron-builder --linux",

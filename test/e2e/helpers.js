@@ -3,7 +3,7 @@ const path = require('path')
 const { spawn } = require('child_process')
 const { _electron } = require('playwright')
 
-const mainEntrypoint = 'dist/electron/main.js'
+const mainEntrypoint = 'dist/main.js'
 
 let devServer = null
 
