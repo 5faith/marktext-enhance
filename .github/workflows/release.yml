@@ -79,6 +79,8 @@ jobs:
 
       - name: Rebuild native modules for Electron
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
+        env:
+          CXXFLAGS: "--std=c++20"
 
       - name: Strip ripgrep on Linux
         if: runner.os == 'Linux'
@@ -177,6 +179,8 @@ jobs:
 
       - name: Rebuild native modules for Electron
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
+        env:
+          CXXFLAGS: "--std=c++20"
 
       - name: Lint
         run: |
