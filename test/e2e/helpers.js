@@ -116,9 +116,24 @@ const launchElectron = async userArgs => {
       VITE_DEV_SERVER_URL: process.env.VITE_DEV_SERVER_URL || 'http://localhost:9091'
     }
   })
-  const page = await app.firstWindow({ timeout: isCI ? 60000 : 30000 })
-  await page.waitForLoadState('domcontentloaded')
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  // Detect early Electron crash (e.g. missing native modules)
+  const crashPromise = new Promise((_, reject) => {
+    app.on('exit', (code) => {
+      if (code !== null && code !== 0) {
+        reject(new Error(`Electron process crashed with exit code ${code}. Check native module compatibility.`))
+      }
+    })
+  })
+
+  const windowPromise = (async () => {
+    const page = await app.firstWindow({ timeout: isCI ? 60000 : 30000 })
+    await page.waitForLoadState('domcontentloaded')
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    return page
+  })()
+
+  const page = await Promise.race([windowPromise, crashPromise])
   return { app, page }
 }
 
