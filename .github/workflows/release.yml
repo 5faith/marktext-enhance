@@ -94,6 +94,8 @@ jobs:
           else
             echo "[CI] native-keymap/binding.gyp already patched"
           fi
+          # Force node-gyp to regenerate Makefile from patched binding.gyp
+          rm -rf node_modules/native-keymap/build
 
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
