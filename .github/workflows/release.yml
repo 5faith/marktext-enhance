@@ -85,27 +85,10 @@ jobs:
       - name: Install Python setuptools
         run: pip install setuptools
 
-      - name: Patch native-keymap for Electron 35 C++20 requirement
-        if: runner.os == 'Linux'
-        run: |
-          node -e "
-          const fs = require('fs');
-          const gyp = 'node_modules/native-keymap/binding.gyp';
-          if (fs.existsSync(gyp)) {
-            let content = fs.readFileSync(gyp, 'utf8');
-            if (!content.includes('-std=c++20')) {
-              content = content.replace(
-                /'sources'\s*:\s*\[/,
-                '\"cflags_cc\": [\"-std=c++20\"], \n      \"sources\": ['
-              );
-              fs.writeFileSync(gyp, content);
-              console.log('Patched native-keymap/binding.gyp with C++20 flag');
-            }
-          }
-          "
-
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
+        env:
+          CXXFLAGS: "-std=c++20"
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
 
       - name: Strip ripgrep on Linux
