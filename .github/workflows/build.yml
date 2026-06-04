@@ -42,7 +42,7 @@ jobs:
           cache: yarn
 
       - name: Install build dependencies
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         #                         electron-builder                 | keyboard-layout         | keytar                      | fontmanager
         run: |
           sudo apt-get -y update
@@ -82,10 +82,10 @@ jobs:
         run: yarn install --check-files
 
       - name: Patch native-keymap for C++20
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: |
           if ! grep -q 'std=c++20' node_modules/native-keymap/binding.gyp; then
-            sed -i 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp
+            sed -i.bak 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp && rm -f node_modules/native-keymap/binding.gyp.bak
             echo "[CI] Patched native-keymap/binding.gyp"
           else
             echo "[CI] native-keymap/binding.gyp already patched"

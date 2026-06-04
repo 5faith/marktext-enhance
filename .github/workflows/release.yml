@@ -48,7 +48,7 @@ jobs:
           cache: yarn
 
       - name: Install build dependencies
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         #                         electron-builder                 | keyboard-layout         | keytar                      | fontmanager     | RPM on Ubuntu
         run: |
           sudo apt-get -y update
@@ -86,10 +86,10 @@ jobs:
         run: pip install setuptools
 
       - name: Patch native-keymap for C++20
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: |
           if ! grep -q 'std=c++20' node_modules/native-keymap/binding.gyp; then
-            sed -i 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp
+            sed -i.bak 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp && rm -f node_modules/native-keymap/binding.gyp.bak
             echo "[CI] Patched native-keymap/binding.gyp"
           else
             echo "[CI] native-keymap/binding.gyp already patched"
@@ -102,7 +102,7 @@ jobs:
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
 
       - name: Strip ripgrep on Linux
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: strip node_modules/vscode-ripgrep/bin/rg
 
       - name: Lint
@@ -127,7 +127,7 @@ jobs:
               fi
 
       - name: Calculate checksums
-        if: runner.os == 'Linux'
+        if: runner.os != 'Windows'
         run: |
           sha256sum build/marktext-x64.tar.gz
           sha256sum build/marktext-x86_64.AppImage
