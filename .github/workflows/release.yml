@@ -85,6 +85,10 @@ jobs:
       - name: Install Python setuptools
         run: pip install setuptools
 
+      - name: Apply patches (patch-package)
+        if: runner.os != 'Windows'
+        run: npx patch-package
+
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout

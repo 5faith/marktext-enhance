@@ -81,6 +81,10 @@ jobs:
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: yarn install --check-files --frozen-lockfile
 
+      - name: Apply patches (patch-package)
+        if: runner.os != 'Windows'
+        run: npx patch-package
+
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
