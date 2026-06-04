@@ -1,0 +1,12 @@
+diff --git a/node_modules/native-keymap/binding.gyp b/node_modules/native-keymap/binding.gyp
+index c8b244b..8f5a7f2 100644
+--- a/node_modules/native-keymap/binding.gyp
++++ b/node_modules/native-keymap/binding.gyp
+@@ -2,6 +2,7 @@
+   "targets": [
+     {
+       "target_name": "keymapping",
++      "cflags_cc": ["-std=c++20"],
+       "sources": [
+         "src/string_conversion.cc",
+         "src/keymapping.cc"

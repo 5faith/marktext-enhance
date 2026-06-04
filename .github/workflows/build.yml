@@ -81,17 +81,6 @@ jobs:
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: yarn install --check-files --frozen-lockfile
 
-      - name: Patch native-keymap binding.gyp for Electron 35 (C++20)
-        if: runner.os == 'Linux'
-        run: |
-          GYP_FILE=node_modules/native-keymap/binding.gyp
-          if ! grep -q 'std=c++20' "$GYP_FILE"; then
-            sed -i 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' "$GYP_FILE"
-            echo "Patched $GYP_FILE"
-          else
-            echo "$GYP_FILE already patched"
-          fi
-
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout

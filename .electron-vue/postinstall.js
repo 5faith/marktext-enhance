@@ -62,29 +62,11 @@ if (process.platform === 'darwin' && fs.existsSync(keytarPath)) {
 // Rebuild native modules for the correct Electron version
 const { execSync } = require('child_process')
 
-// Patch native-keymap binding.gyp for Electron 35 C++20 requirement
-const nativeKeymapGyp = path.resolve(__dirname, '../node_modules/native-keymap/binding.gyp')
-if (fs.existsSync(nativeKeymapGyp)) {
-  let content = fs.readFileSync(nativeKeymapGyp, 'utf8')
-  if (!content.includes('-std=c++20')) {
-    content = content.replace(
-      /'sources'\s*:\s*\[/,
-      '"cflags_cc": ["-std=c++20"], \n      "sources": ['
-    )
-    fs.writeFileSync(nativeKeymapGyp, content)
-    console.log('[postinstall] Patched native-keymap/binding.gyp with C++20 flag')
-  }
-}
-
 try {
   console.log('[postinstall] Rebuilding native modules for Electron...')
   execSync('npx electron-rebuild -f -w cld,ced,keytar,native-keymap,fontmanager-redux,keyboard-layout', {
     cwd: path.resolve(__dirname, '..'),
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      CXXFLAGS: '--std=c++20'
-    }
+    stdio: 'inherit'
   })
   console.log('[postinstall] Native modules rebuilt successfully')
 } catch (err) {
