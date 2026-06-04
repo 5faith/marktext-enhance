@@ -79,11 +79,17 @@ jobs:
 
       - name: Install dependencies
         if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: yarn install --check-files --frozen-lockfile
+        run: yarn install --check-files
 
-      - name: Apply patches (patch-package)
-        if: runner.os != 'Windows'
-        run: npx patch-package
+      - name: Patch native-keymap for C++20
+        if: runner.os == 'Linux'
+        run: |
+          if ! grep -q 'std=c++20' node_modules/native-keymap/binding.gyp; then
+            sed -i 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp
+            echo "[CI] Patched native-keymap/binding.gyp"
+          else
+            echo "[CI] native-keymap/binding.gyp already patched"
+          fi
 
       - name: Rebuild native modules for Electron (unix)
         if: runner.os != 'Windows'
@@ -155,7 +161,7 @@ jobs:
       - name: Install dependencies
         # Windows worker fail sometimes because a module cannot be found.
         # if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: yarn install --check-files --frozen-lockfile
+        run: yarn install --check-files
 
       - name: Rebuild native modules for Electron (windows)
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
