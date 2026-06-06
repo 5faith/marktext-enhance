@@ -21,14 +21,13 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  unix:
-    runs-on: ${{ matrix.os }}
-    continue-on-error: false
+  linux:
+    runs-on: ubuntu-latest
     timeout-minutes: 45
-
-    strategy:
-      matrix:
-        os: [macos-15, ubuntu-latest]
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      inputs.target == 'linux'
 
     env:
       DISPLAY: ":99.0"
@@ -48,14 +47,13 @@ jobs:
           cache: yarn
 
       - name: Install build dependencies
-        if: runner.os != 'Windows'
-        #                         electron-builder                 | keyboard-layout         | keytar                      | fontmanager     | RPM on Ubuntu
         run: |
           sudo apt-get -y update
           sudo apt-get install -y icnsutils graphicsmagick xz-utils libx11-dev libxkbfile-dev gnome-keyring libsecret-1-dev libfontconfig-dev rpm
 
       - name: Cache node_modules
         uses: actions/cache@v4
+        id: cache-node-modules
         with:
           path: ${{ github.workspace }}/node_modules
           key: ${{ runner.os }}-node_modules-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
@@ -74,9 +72,6 @@ jobs:
           path: ${{ env.HOME }}/.cache/electron-builder
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
-      - name: Install dependencies
-        run: yarn install --check-files
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -85,8 +80,10 @@ jobs:
       - name: Install Python setuptools
         run: pip install setuptools
 
+      - name: Install dependencies
+        run: yarn install --check-files
+
       - name: Patch native-keymap for C++20
-        if: runner.os != 'Windows'
         run: |
           if ! grep -q 'std=c++20' node_modules/native-keymap/binding.gyp; then
             sed -i.bak 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp && rm -f node_modules/native-keymap/binding.gyp.bak
@@ -100,12 +97,10 @@ jobs:
           sed -i.bak "s/-std=c++17/-std=c++20/g" node_modules/electron-rebuild/lib/src/module-type/node-gyp.js && rm -f node_modules/electron-rebuild/lib/src/module-type/node-gyp.js.bak
           echo "[CI] Patched electron-rebuild node-gyp.js: c++17 → c++20"
 
-      - name: Rebuild native modules for Electron (unix)
-        if: runner.os != 'Windows'
+      - name: Rebuild native modules for Electron
         run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
 
       - name: Strip ripgrep on Linux
-        if: runner.os != 'Windows'
         run: strip node_modules/vscode-ripgrep/bin/rg
 
       - name: Lint
@@ -119,18 +114,9 @@ jobs:
           run: yarn run test
 
       - name: Build and release
-        run: |
-              if [ "$RUNNER_OS" == "Linux" ]; then
-                yarn run release:linux --publish always
-              elif [ "$RUNNER_OS" == "macOS" ]; then
-                yarn run release:mac --publish always
-              else
-                echo "$RUNNER_OS not supported"
-                exit 1
-              fi
+        run: yarn run release:linux --publish always
 
-      - name: Calculate checksums
-        if: runner.os != 'Windows'
+      - name: Calculate Linux checksums
         run: |
           sha256sum build/marktext-x64.tar.gz
           sha256sum build/marktext-x86_64.AppImage
@@ -138,19 +124,13 @@ jobs:
           sha256sum build/marktext-*.rpm
         shell: bash
 
-      - name: Calculate checksums
-        if: runner.os == 'macOS'
-        run: |
-          shasum -a 256 build/marktext-arm64-mac.zip
-          shasum -a 256 build/marktext-x64-mac.zip
-          shasum -a 256 build/marktext-arm64.dmg
-          shasum -a 256 build/marktext-x64.dmg
-        shell: bash
-
-  windows:
-    runs-on: windows-latest
-    continue-on-error: false
+  macos:
+    runs-on: macos-15
     timeout-minutes: 45
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      inputs.target == 'mac'
 
     env:
       MARKTEXT_IS_STABLE: 1
@@ -170,6 +150,99 @@ jobs:
 
       - name: Cache node_modules
         uses: actions/cache@v4
+        id: cache-node-modules
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node_modules-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-cache-
+
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.HOME }}/.cache/electron
+          key: ${{ runner.os }}-electron-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+
+      - name: Cache Electron-Builder
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.HOME }}/.cache/electron-builder
+          key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python setuptools
+        run: pip install setuptools
+
+      - name: Install dependencies
+        run: yarn install --check-files
+
+      - name: Patch native-keymap for C++20
+        run: |
+          if ! grep -q 'std=c++20' node_modules/native-keymap/binding.gyp; then
+            sed -i.bak 's|"sources":|"cflags_cc": ["-std=c++20"], "sources":|' node_modules/native-keymap/binding.gyp && rm -f node_modules/native-keymap/binding.gyp.bak
+            echo "[CI] Patched native-keymap/binding.gyp"
+          else
+            echo "[CI] native-keymap/binding.gyp already patched"
+          fi
+          rm -rf node_modules/native-keymap/build
+          sed -i.bak "s/-std=c++17/-std=c++20/g" node_modules/electron-rebuild/lib/src/module-type/node-gyp.js && rm -f node_modules/electron-rebuild/lib/src/module-type/node-gyp.js.bak
+          echo "[CI] Patched electron-rebuild node-gyp.js: c++17 → c++20"
+
+      - name: Rebuild native modules for Electron
+        run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
+
+      - name: Lint
+        run: |
+          yarn run lint
+          yarn run validate-licenses
+
+      - name: Run unit and E2E tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: yarn run test
+
+      - name: Build and release
+        run: yarn run release:mac --publish always
+
+      - name: Calculate macOS checksums
+        run: |
+          shasum -a 256 build/marktext-arm64-mac.zip
+          shasum -a 256 build/marktext-x64-mac.zip
+          shasum -a 256 build/marktext-arm64.dmg
+          shasum -a 256 build/marktext-x64.dmg
+        shell: bash
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      inputs.target == 'win'
+
+    env:
+      MARKTEXT_IS_STABLE: 1
+      MARKTEXT_EXIT_ON_ERROR: 1
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          check-latest: true
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-node-modules
         with:
           path: ${{ github.workspace }}\node_modules
           key: ${{ runner.os }}-node_modules-cache-${{ hashFiles(format('{0}{1}', github.workspace, '\yarn.lock')) }}
@@ -213,7 +286,7 @@ jobs:
       - name: Build and release
         run: yarn run release:win --publish always
 
-      - name: Calculate checksums
+      - name: Calculate Windows checksums
         run: |
           get-filehash -Algorithm SHA256 "build\marktext-setup.exe"
           get-filehash -Algorithm SHA256 "build\marktext-*-win.zip"
