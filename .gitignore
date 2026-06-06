@@ -46,3 +46,20 @@ dev.log
 .worktrees/
 test-results
 assets
+
+# Dependencies
+.omo/*
+!.omo/rules/
+!.omo/rules/**
+.sisyphus/*
+!.sisyphus/rules/
+!.sisyphus/rules/**
+node_modules/
+
+# Build output
+dist/
+
+# Platform binaries (built, not committed)
+packages/*/bin/oh-my-opencode
+packages/*/bin/oh-my-opencode.exe
+packages/*/bin/*.map
