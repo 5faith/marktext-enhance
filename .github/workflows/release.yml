@@ -160,13 +160,13 @@ jobs:
       - name: Cache Electron
         uses: actions/cache@v4
         with:
-          path: ${{ env.HOME }}/.cache/electron
+          path: ~/Library/Caches/electron
           key: ${{ runner.os }}-electron-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
       - name: Cache Electron-Builder
         uses: actions/cache@v4
         with:
-          path: ${{ env.HOME }}/.cache/electron-builder
+          path: ~/Library/Caches/electron-builder
           key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
 
       - name: Setup Python
@@ -188,7 +188,9 @@ jobs:
           else
             echo "[CI] native-keymap/binding.gyp already patched"
           fi
+          # Force node-gyp to regenerate Makefile from patched binding.gyp
           rm -rf node_modules/native-keymap/build
+          # Patch electron-rebuild: change hardcoded -std=c++17 to -std=c++20
           sed -i.bak "s/-std=c++17/-std=c++20/g" node_modules/electron-rebuild/lib/src/module-type/node-gyp.js && rm -f node_modules/electron-rebuild/lib/src/module-type/node-gyp.js.bak
           echo "[CI] Patched electron-rebuild node-gyp.js: c++17 → c++20"
 
@@ -244,8 +246,8 @@ jobs:
         uses: actions/cache@v4
         id: cache-node-modules
         with:
-          path: ${{ github.workspace }}\node_modules
-          key: ${{ runner.os }}-node_modules-cache-${{ hashFiles(format('{0}{1}', github.workspace, '\yarn.lock')) }}
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node_modules-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: |
             ${{ runner.os }}-node_modules-cache-
 
