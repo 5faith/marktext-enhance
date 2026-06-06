@@ -30,8 +30,8 @@ jobs:
     if: |
       github.event_name != 'workflow_dispatch' ||
       inputs.target == 'all' ||
-      (inputs.target == 'linux' && matrix.os == 'ubuntu-latest') ||
-      (inputs.target == 'mac' && matrix.os == 'macos-15')
+      inputs.target == 'linux' ||
+      inputs.target == 'mac'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
 
