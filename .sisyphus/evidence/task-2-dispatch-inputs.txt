@@ -1,0 +1,10 @@
+Task 2 Dispatch Inputs Validation — PASSED
+============================================
+
+workflow_dispatch.inputs.target:
+  type: choice ✅
+  default: all ✅
+  options: [linux, mac, win, all] ✅
+
+unix job if: matrix.os + inputs.target logic ✅
+windows job if: inputs.target logic ✅

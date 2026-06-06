@@ -1,0 +1,8 @@
+Task 1 Checksum Validation — PASSED
+======================================
+
+Linux: "Calculate Linux checksums" — sha256sum (4 lines) ✅
+macOS: "Calculate macOS checksums" — shasum -a 256 (4 lines) ✅
+Windows: "Calculate Windows checksums" — Get-FileHash (2 lines) ✅
+No duplicate step names ✅
+Each checksum step is in the correct OS job ✅

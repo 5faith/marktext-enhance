@@ -1,0 +1,23 @@
+=== Task 2 Scenario 4: Windows cache 恢复 ===
+Date: 2026-06-06
+File: .github/workflows/build.yml
+
+Check 1: Windows cache node_modules has id (lines 153-161)
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      id: cacheNodeModules
+      ...
+  PASS — Has "id: cacheNodeModules"
+
+Check 2: Windows yarn install has uncommented cache-hit condition (lines 182-184)
+    - name: Install dependencies
+      if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
+      run: yarn install --check-files
+  PASS — Cache-hit condition is present and uncommented
+
+Check 3: Windows electron-rebuild has NO cache-hit condition (lines 186-187)
+    - name: Rebuild native modules for Electron (windows)
+      run: npx electron-rebuild -f -w ced,cld,keytar,native-keymap,fontmanager-redux,keyboard-layout
+  PASS — No "if:" or cache-hit condition; rebuild always executes
+
+RESULT: 3/3 checks PASS

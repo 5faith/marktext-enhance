@@ -1,0 +1,36 @@
+=== Task 2 Scenario 5: workflow_dispatch 输入 ===
+Date: 2026-06-06
+File: .github/workflows/build.yml
+
+Check 1: inputs.target.type = "choice" (line 18)
+    type: choice
+  PASS
+
+Check 2: default = "all" (line 17)
+    default: 'all'
+  PASS
+
+Check 3: options = [linux, mac, win, all] (lines 19-23)
+    options:
+      - linux
+      - mac
+      - win
+      - all
+  PASS — All 4 platforms listed
+
+Check 4: unix job if: uses inputs.target with matrix.os (lines 30-34)
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      (inputs.target == 'linux' && matrix.os == 'ubuntu-latest') ||
+      (inputs.target == 'mac' && matrix.os == 'macos-15')
+  PASS — Contains matrix.os AND inputs.target
+
+Check 5: windows job if: uses inputs.target (lines 131-134)
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      inputs.target == 'win'
+  PASS — Contains inputs.target
+
+RESULT: 5/5 checks PASS

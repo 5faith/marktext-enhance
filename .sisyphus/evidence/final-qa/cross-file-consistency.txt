@@ -1,0 +1,31 @@
+=== Cross-file Consistency Check ===
+Date: 2026-06-06
+Files: .github/workflows/release.yml, .github/workflows/build.yml
+
+Check 1: Target input options match
+  release.yml: [linux, mac, win, all]
+  build.yml:  [linux, mac, win, all]
+  PASS — Options identical
+
+Check 2: Same if: condition pattern
+  Both files use:
+    github.event_name != 'workflow_dispatch' ||
+    inputs.target == 'all' ||
+    <platform-specific condition>
+  release.yml: Simple per-job platform checks (no matrix)
+  build.yml:  Matrix-aware checks in unix job (matrix.os references)
+  Pattern is structurally identical, adapted to each file's job structure.
+  PASS
+
+Check 3: Same node version
+  release.yml: node-version: 22 (3 occurrences: linux, macos, windows)
+  build.yml:   node-version: 22 (2 occurrences: unix, windows)
+  PASS — All jobs use node 22
+
+Additional consistency checks:
+  - Both files use: actions/checkout@v4, setup-node@v4, setup-python@v5
+  - Both files use: cache@v4 for node_modules, electron, electron-builder
+  - Both files use: FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  PASS
+
+RESULT: CONSISTENT — 3/3 checks PASS

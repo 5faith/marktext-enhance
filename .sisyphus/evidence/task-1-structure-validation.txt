@@ -1,0 +1,13 @@
+Task 1 Structure Validation — PASSED
+=====================================
+
+1. yq eval '.jobs.linux.runs-on' → ubuntu-latest ✅
+2. yq eval '.jobs.macos.runs-on' → macos-15 ✅
+3. grep -c "strategy:" release.yml → 0 (matrix removed) ✅
+4. grep "runner.os" release.yml → Only in cache keys, no conditional usage ✅
+5. Python ordering:
+   Linux: setup-python L76 < yarn install L84 ✅
+   macOS: setup-python L173 < yarn install L181 ✅
+   Windows: setup-python L265 < yarn install L273 ✅
+6. No continue-on-error lines ✅
+7. YAML syntax: VALID (Python yaml.safe_load) ✅

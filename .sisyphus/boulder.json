@@ -1,0 +1,29 @@
+{
+  "active_plan": "D:\\workspace\\github-my\\marktext-enhance\\.sisyphus\\plans\\workflow-refactor.md",
+  "started_at": "2026-06-06T05:47:41.392Z",
+  "session_ids": [
+    "ses_16496ac57ffe0U7nd3SoVvGTn8",
+    "ses_164852f14ffe7Q0Ia1OvEMMIVK",
+    "ses_164858e92ffe8vNoCIFQW7admV",
+    "ses_1647f4186ffe1H8f4CBov9t8YF",
+    "ses_1647cbabaffeKYNIcb3P0KVA98",
+    "ses_1647c9f2cffebsyFb17fQ5Fwrk",
+    "ses_1647c4759ffeBNVaWnCmdErcQw",
+    "ses_1647c72a4ffeAinTO0rxEmXr8R",
+    "ses_16477e357ffemCy9eYH1rV90Z6",
+    "ses_164675fd2ffe4wlXMqLGISuQqa"
+  ],
+  "plan_name": "workflow-refactor",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "**release.yml — 拆分 unix matrix + 修复所有问题**",
+      "session_id": "ses_1647f4186ffe1H8f4CBov9t8YF",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-06-06T05:56:22.832Z"
+    }
+  }
+}
