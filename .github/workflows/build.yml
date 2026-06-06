@@ -10,14 +10,29 @@ on:
     paths-ignore:
       - "docs/**"
   workflow_dispatch:
+    inputs:
+      target:
+        description: 'Build target (linux/mac/win/all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - linux
+          - mac
+          - win
+          - all
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   unix:
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      (inputs.target == 'linux' && matrix.os == 'ubuntu-latest') ||
+      (inputs.target == 'mac' && matrix.os == 'macos-15')
     runs-on: ${{ matrix.os }}
-    continue-on-error: false
     timeout-minutes: 45
 
     strategy:
@@ -26,7 +41,6 @@ jobs:
 
     env:
       DISPLAY: ":99.0"
-      # MARKTEXT_IS_STABLE: 1
       MARKTEXT_EXIT_ON_ERROR: 1
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -114,12 +128,14 @@ jobs:
         run: yarn build:bin
 
   windows:
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.target == 'all' ||
+      inputs.target == 'win'
     runs-on: windows-latest
-    continue-on-error: false
     timeout-minutes: 45
 
     env:
-      # MARKTEXT_IS_STABLE: 1
       MARKTEXT_EXIT_ON_ERROR: 1
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -164,8 +180,7 @@ jobs:
         run: pip install setuptools
 
       - name: Install dependencies
-        # Windows worker fail sometimes because a module cannot be found.
-        # if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         run: yarn install --check-files
 
       - name: Rebuild native modules for Electron (windows)
