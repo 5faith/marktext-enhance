@@ -5,10 +5,14 @@ on:
     branches: [main]
     paths-ignore:
       - "docs/**"
+      - ".opencode/**"
+      - ".sisyphus/**"
   pull_request:
     branches: [main]
     paths-ignore:
       - "docs/**"
+      - ".opencode/**"
+      - ".sisyphus/**"
   workflow_dispatch:
     inputs:
       target:
